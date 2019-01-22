@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/toolbar_bottom"
+        android:layout_below="@id/toolbar_top"
+        android:background="@color/recyclerViewPrimary" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <Button
+            android:id="@+id/remove"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:gravity="start"
+            android:onClick="onBottomToolbarItemClick"
+            android:text="Remove" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/back_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/ic_skip_previous_24dp"
+                android:gravity="center"
+                android:onClick="onBottomToolbarItemClick"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/play_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/ic_play_24dp"
+                android:onClick="onBottomToolbarItemClick" />
+
+            <Button
+                android:id="@+id/next_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/ic_skip_next_24dp"
+                android:onClick="onBottomToolbarItemClick"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/add_audio_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/ic_playlist_add_24dp"
+            android:onClick="onBottomToolbarItemClick"
+            android:visibility="visible"
+            tools:context=".RecyclerViewController" />
+
+    </android.support.v7.widget.Toolbar>
+
+</RelativeLayout>
+

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="0dp"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp"
+    android:paddingEnd="10dp"
+    android:paddingLeft="10dp"
+    android:paddingStart="10dp"
+    android:paddingBottom="8dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/item_handle"
+        android:visibility="visible"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center_horizontal"
+        android:background = "@drawable/ic_reorder" />
+
+    <ImageView
+        android:id="@+id/album_art"
+        android:layout_toRightOf="@id/item_handle"
+        android:layout_toEndOf="@id/item_handle"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@color/recyclerViewPrimary"/>
+
+    <TextView
+        android:id="@+id/audio_title"
+        android:textStyle="bold"
+        android:layout_toRightOf="@id/album_art"
+        android:layout_toEndOf="@id/album_art"
+        android:textSize ="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="0dp"
+        android:singleLine="true"
+        android:text="@string/title">
+    </TextView>
+
+    <TextView
+        android:id="@+id/artist"
+        android:layout_toRightOf="@id/album_art"
+        android:layout_toEndOf="@id/album_art"
+        android:layout_below="@+id/audio_title"
+        android:textSize = "12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="0dp"
+        android:singleLine="true"
+        android:text="@string/artist">
+    </TextView>
+
+    <TextView
+        android:id="@+id/interpunct"
+        android:layout_toRightOf="@id/artist"
+        android:layout_toEndOf="@id/artist"
+        android:layout_below="@+id/audio_title"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="0dp"
+        android:singleLine="true"
+        android:text="@string/dot">
+    </TextView>
+
+    <TextView
+        android:id="@+id/audio_duration"
+        android:layout_toRightOf="@id/interpunct"
+        android:layout_toEndOf="@id/interpunct"
+        android:layout_below="@+id/audio_title"
+        android:textSize = "12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="0dp"
+        android:singleLine="true"
+        android:text="@string/timestamp">
+    </TextView>
+
+    <TextView
+        android:id="@+id/submitter_intro_text"
+        android:layout_toRightOf="@id/album_art"
+        android:layout_toEndOf="@id/album_art"
+        android:layout_below="@+id/artist"
+        android:textSize ="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="0dp"
+        android:singleLine="true"
+        android:text="@string/submitted_by">
+    </TextView>
+
+    <TextView
+        android:id="@+id/submitter"
+        android:layout_toRightOf="@id/submitter_intro_text"
+        android:layout_toEndOf="@id/submitter_intro_text"
+        android:layout_below="@+id/artist"
+        android:textSize ="12sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="0dp"
+        android:singleLine="true"
+        android:text="@string/submitter">
+    </TextView>
+</RelativeLayout>

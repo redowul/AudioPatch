@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_top"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <Button
+                android:id="@+id/toolbar_visibility_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="36dp"
+                android:layout_marginRight="36dp"
+                android:background="@drawable/ic_search_24dp"
+                android:onClick="toggleBottomToolbarVisibility" />
+
+            <Button
+                android:id="@+id/add_audio_button2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_gravity="end"
+                android:background="@drawable/ic_playlist_add_24dp"
+                android:onClick="selectAudioFromStorage"/>
+
+            <Button
+                android:id="@+id/toggle_recyclerview_permission"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/ic_play_24dp"
+                android:onClick="onBottomToolbarItemClick"
+                android:visibility="visible"
+                tools:context=".RecyclerViewController"/>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_main" />
+
+</android.support.design.widget.CoordinatorLayout>
