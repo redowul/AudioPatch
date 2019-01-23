@@ -113,8 +113,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onViewSwiped(int position) {
-        MainActivity mainActivity = new MainActivity();
         Controller controller = new Controller();
+        RecyclerViewController recyclerViewController = new RecyclerViewController();
         AudioController audioController = new AudioController();
 
         List<Audio> audioList = audioController.getAudioList();
@@ -122,7 +122,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             for(int i = 0; i < audioList.size(); i++) {
                 if (audioList.get(i).getSelected() && i == position) {
                     audioController.releaseSelectedAudio();                           // Releases selected audio from the MediaPlayer
-                    mainActivity.togglePlayButtonState();
+                    recyclerViewController.togglePlayButtonState();
                     break;
                 }
             }
@@ -170,7 +170,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onClick(View view) {
-            MainActivity mainActivity = new MainActivity();
             Controller controller = new Controller();
             AudioController audioController = new AudioController();
             RecyclerViewController recyclerViewController = new RecyclerViewController();
@@ -178,7 +177,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 audioController.setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
                 for (int i = 0; i < getItemCount(); i++) { notifyItemChanged(i); }
                 recyclerViewController.playSelectedItem();
-                mainActivity.togglePlayButtonState();
+                recyclerViewController.togglePlayButtonState();
             }
         }
     }

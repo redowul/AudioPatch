@@ -1,12 +1,13 @@
 package com.colabella.connor.audiopatch;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static Context applicationContext;
+    @SuppressLint("StaticFieldLeak")
     private static Button playButton;
 
     @Override
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.options_clear_queue) {
             RecyclerViewController recyclerViewController = new RecyclerViewController();
             recyclerViewController.clearAudioList();
+            Button playButton = findViewById(R.id.play_button);
             playButton.setBackgroundResource(R.drawable.ic_play_24dp);
             return true;
         }
@@ -145,6 +148,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Activity activity = this;
 
         audioController.selectAudioFromStorage(packageManager, activity); // Fires intent to search the device storage for audio to add to the RecyclerView
+
+        // When the add audio button is pressed, it can sometimes try to open the storage search menu more than once, requiring us to back out of tw instances
+        // of that same menu if we don't actually want to send anything. This prevents that by disabling the add button for 1 second whenever it's pressed.
+        Button button = findViewById(R.id.add_audio_button2); //TODO fix button name (relative to the example one on the lower toolbar)
+        button.setEnabled(false);   // Disable the button
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Button button = findViewById(R.id.add_audio_button2); //TODO fix button name (relative to the example one on the lower toolbar)
+                button.setEnabled(true);    // Re-enable the button
+            }
+        }, 1000);   // Delay for 1 second
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -170,12 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    // Return static variables
     public Context getStaticApplicationContext(){ return applicationContext; }
-
-    public void togglePlayButtonState(){ //TODO re-write when less tired (Needed for any action that isn't a button to toggle the state of the PlayButton)
-        AudioController audioController = new AudioController();
-        MediaPlayer mediaPlayer = audioController.getMediaPlayer();
-        playButton.setBackgroundResource(R.drawable.ic_pause_24dp);
-        if(mediaPlayer == null){ playButton.setBackgroundResource(R.drawable.ic_play_24dp); }
-    }
+    public Button getPlayButton(){ return playButton; }
 }

@@ -176,6 +176,18 @@ public class RecyclerViewController {
         }
     }
 
+    public void togglePlayButtonState(){ //TODO re-write when less tired (Needed for any action that isn't a button to toggle the state of the PlayButton)
+        MainActivity mainActivity = new MainActivity();
+        AudioController audioController = new AudioController();
+        Button playButton = mainActivity.getPlayButton();
+        MediaPlayer mediaPlayer = audioController.getMediaPlayer();
+
+        playButton.setBackgroundResource(R.drawable.ic_pause_24dp);
+        if(mediaPlayer == null){
+            playButton.setBackgroundResource(R.drawable.ic_play_24dp);
+        }
+    }
+
     private void addItem() {
         AudioController audioController = new AudioController();
         RecyclerViewAdapter recyclerViewAdapter = audioController.getRecyclerViewAdapter();
