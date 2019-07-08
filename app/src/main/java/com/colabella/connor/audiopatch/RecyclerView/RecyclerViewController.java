@@ -86,9 +86,9 @@ public class RecyclerViewController {
         MainActivity mainActivity = new MainActivity();
         AudioController audioController = new AudioController();
         RecyclerViewAdapter recyclerViewAdapter = audioController.getRecyclerViewAdapter();
-        Context context = mainActivity. getStaticApplicationContext();
+        Context context = mainActivity.getStaticApplicationContext();
 
-        Audio audioToPlay = audioController.getSelectedAudio();             // Retrieving the presently selected audio, if there is one.
+        Audio audioToPlay = audioController.getSelectedAudio();             // Retrieving the selected audio.
         if (audioToPlay == null) {
             if(audioController.getAudioList().size() > 0){                  // Check to see if there's any data in the audioList.
                 audioController.setSelectedAudio(0);                        // If there is, set the first item in the list to selected.

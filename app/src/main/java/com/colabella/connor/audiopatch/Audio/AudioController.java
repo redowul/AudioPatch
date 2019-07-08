@@ -109,7 +109,7 @@ public class AudioController {
                 }
                 else {
                     // Permission denied by user
-                    Toast.makeText(context, "Permission denied to read your external storagee", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Permission denied to read your external storage", Toast.LENGTH_SHORT).show();
                 }
             }
             break;
@@ -147,8 +147,12 @@ public class AudioController {
         Uri uri = resultData.getData();
         AudioDataParser audioDataParser = new AudioDataParser();
 
-        Audio audio = createAudio(uri, audioDataParser.getFileData(uri, context, 1), audioDataParser.getFileData(uri, context, 2),
-                audioDataParser.getFileData(uri, context, 3), audioDataParser.getFileData(uri, context, 4), context);
+        Audio audio = createAudio(uri,                                    // Used for album cover
+                audioDataParser.getFileData(uri, context, 1), // Filename
+                audioDataParser.getFileData(uri, context, 2), // Artist
+                audioDataParser.getFileData(uri, context, 3), // File's duration in milliseconds
+                audioDataParser.getFileData(uri, context, 4), //TODO Returns nickname of submitter
+                context);
 
         audioList.add(audio);
         recyclerViewAdapter.notifyDataSetChanged();

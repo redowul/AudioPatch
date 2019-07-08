@@ -18,7 +18,7 @@ public class Audio {
         this.selected = selected;
     }
 
-    public Audio(String data, String title, MediaMetadataRetriever albumArt, String artist, String duration, String submitter, boolean selected) {
+    Audio(String data, String title, MediaMetadataRetriever albumArt, String artist, String duration, String submitter, boolean selected) {
         this.data = data;
         this.title = title;
         this.albumArt = albumArt;

@@ -9,8 +9,9 @@
     android:paddingEnd="10dp"
     android:paddingLeft="10dp"
     android:paddingStart="10dp"
-    android:paddingBottom="8dp"
-    android:orientation="vertical">
+    android:paddingBottom="10dp"
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryDark">
 
     <ImageView
         android:id="@+id/item_handle"
