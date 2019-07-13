@@ -1,26 +1,13 @@
 package com.colabella.connor.audiopatch.RecyclerView;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
-import com.colabella.connor.audiopatch.Controller;
-import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract{
@@ -49,7 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //TODO change this back when usernames are implemented
         //holder.itemSubmitter.setText(submitter);
 
-        byte[] artwork = null;
+      /*  byte[] artwork = null;
         MediaMetadataRetriever myRetriever = audio.getAlbumArt();
         if (myRetriever != null) { artwork = myRetriever.getEmbeddedPicture(); }
         if(artwork != null){
@@ -86,6 +73,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.itemView.findViewById(R.id.item_handle).setVisibility(View.VISIBLE);
         }
         else { holder.itemView.findViewById(R.id.item_handle).setVisibility(View.GONE); }
+        */
     }
 
     @Override
@@ -96,7 +84,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onViewMoved(int fromPosition, int toPosition) {
-        AudioController audioController = new AudioController();
+      /*  AudioController audioController = new AudioController();
         List<Audio> audioList = audioController.getAudioList();
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
@@ -109,11 +97,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         audioController.setAudioList(audioList);
         notifyItemMoved(fromPosition, toPosition);
+        */
     }
 
     @Override
     public void onViewSwiped(int position) {
-        Controller controller = new Controller();
+      /*  Controller controller = new Controller();
         RecyclerViewController recyclerViewController = new RecyclerViewController();
         AudioController audioController = new AudioController();
 
@@ -131,6 +120,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             audioController.setAudioList(audioList);
             notifyItemRemoved(position);
         }
+        */
     }
 
     public void setTouchHelper(ItemTouchHelper touchHelper) {
@@ -170,7 +160,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onClick(View view) {
-            Controller controller = new Controller();
+        /*    Controller controller = new Controller();
             AudioController audioController = new AudioController();
             RecyclerViewController recyclerViewController = new RecyclerViewController();
             if (controller.getUser().getRecyclerViewPermission()) {
@@ -179,6 +169,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 recyclerViewController.playSelectedItem();
                 recyclerViewController.togglePlayButtonState();
             }
+            */
         }
     }
 }

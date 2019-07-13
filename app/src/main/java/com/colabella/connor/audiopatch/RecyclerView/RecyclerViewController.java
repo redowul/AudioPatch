@@ -1,11 +1,10 @@
-package com.colabella.connor.audiopatch.RecyclerView;
+/*package com.colabella.connor.audiopatch.RecyclerView;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
-
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Controller;
@@ -215,4 +214,4 @@ public class RecyclerViewController {
             audioController.releaseSelectedAudio();                           // Releases selected audio from the MediaPlayer
         }
     }
-}
+}*/

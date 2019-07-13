@@ -9,9 +9,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Display;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,8 +30,10 @@ import android.widget.Toast;
 
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.RecyclerView.RecyclerViewAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.RecyclerViewController;
 import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static Context applicationContext;
@@ -49,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        initializeRecyclerView();
+//        initializeRecyclerView();
 
         applicationContext = getApplicationContext();
         playButton = findViewById(R.id.play_button);
@@ -97,10 +103,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.options_clear_queue) {
-            RecyclerViewController recyclerViewController = new RecyclerViewController();
+          /*  RecyclerViewController recyclerViewController = new RecyclerViewController();
             recyclerViewController.clearAudioList();
             Button playButton = findViewById(R.id.play_button);
             playButton.setBackgroundResource(R.drawable.ic_play_24dp);
+            */
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -136,53 +143,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Handles all button clicks that occur in context_main.xml.
     public void onBottomToolbarItemClick(View view){
-        RecyclerViewController recyclerViewController = new RecyclerViewController();
-        recyclerViewController.determineButtonSelected(getResources().getResourceEntryName(view.getId()), view); // Passes determineButtonSelected() the String ID of the pressed button.
+       // RecyclerViewController recyclerViewController = new RecyclerViewController();
+       // recyclerViewController.determineButtonSelected(getResources().getResourceEntryName(view.getId()), view); // Passes determineButtonSelected() the String ID of the pressed button.
     }
 
     //Enables audio selection
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void selectAudioFromStorage(View view) {
-        AudioController audioController = new AudioController();
-        PackageManager packageManager = getPackageManager(); //PackageManager checks to see if permissions have been enabled yet.
-        Activity activity = this;
-
-        audioController.selectAudioFromStorage(packageManager, activity); // Fires intent to search the device storage for audio to add to the RecyclerView
-
-        // When the add audio button is pressed, it can sometimes try to open the storage search menu more than once, requiring us to back out of tw instances
-        // of that same menu if we don't actually want to send anything. This prevents that by disabling the add button for 1 second whenever it's pressed.
-        Button button = findViewById(R.id.add_audio_button2); //TODO fix button name (relative to the example one on the lower toolbar)
-        button.setEnabled(false);   // Disable the button
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                Button button = findViewById(R.id.add_audio_button2); //TODO fix button name (relative to the example one on the lower toolbar)
-                button.setEnabled(true);    // Re-enable the button
-            }
-        }, 1000);   // Delay for 1 second
-
+        System.out.println("TEST");
+        Intent myIntent = new Intent(MainActivity.this, DataRetrievalActivity.class);
+        MainActivity.this.startActivity(myIntent);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        AudioController audioController = new AudioController();
-        PackageManager packageManager = getPackageManager(); // PackageManager checks to see if permissions have been enabled yet.
-        Activity activity = this;
-        Context context = this;
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragments = new ArrayList<>();
+        private final List<String> mFragmentTitles = new ArrayList<>();
 
-        audioController.onRequestPermissionsResult(requestCode, permissions, grantResults, packageManager, activity, context);
-    }
+        Adapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if(resultData != null) {
-            if(resultCode == RESULT_OK && requestCode == 0){
-                Toast.makeText(this, "Audio selected.", Toast.LENGTH_SHORT).show();
-                Context context = this;
-                AudioController audioController = new AudioController();
-                audioController.onActivityResult(resultData, context);
-            }
+        void addFragment(Fragment fragment, String title) {
+            mFragments.add(fragment);
+            mFragmentTitles.add(title);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitles.get(position);
         }
     }
 

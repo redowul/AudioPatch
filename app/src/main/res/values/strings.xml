@@ -21,7 +21,10 @@
 
     <string name="title">Song Title</string>
     <string name="artist">Artist</string>
+    <string name="album">Album</string>
+    <string name="albums">Albums</string>
     <string name="dot">•</string>
+    <string name="hashtag">#</string>
     <string name="submitted_by">Submitted by</string>
     <string name="submitter">Submitter</string>
     <string name="timestamp">0:00</string>

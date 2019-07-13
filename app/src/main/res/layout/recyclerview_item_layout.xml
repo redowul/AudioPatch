@@ -11,7 +11,7 @@
     android:paddingStart="10dp"
     android:paddingBottom="10dp"
     android:orientation="vertical"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/recyclerViewDark">
 
     <ImageView
         android:id="@+id/item_handle"

@@ -1,6 +1,7 @@
 package com.colabella.connor.audiopatch.Audio;
 
-import android.media.MediaMetadataRetriever;
+import android.graphics.Bitmap;
+import android.os.Parcel;
 
 public class Audio {
 
@@ -11,21 +12,28 @@ public class Audio {
     private String duration;
     private String submitter;
     private boolean selected;   // If the item is currently selected by the RecyclerView
-    private MediaMetadataRetriever albumArt;
+    private Bitmap albumArt;
 
-    public Audio(String title, boolean selected){
-        this.title = title;
-        this.selected = selected;
-    }
-
-    Audio(String data, String title, MediaMetadataRetriever albumArt, String artist, String duration, String submitter, boolean selected) {
+    public Audio(String data, String title, Bitmap albumArt, String artist, String album, String duration, String submitter, boolean selected) {
         this.data = data;
         this.title = title;
         this.albumArt = albumArt;
         this.artist = artist;
+        this.album = album;
         this.duration = duration;
         this.submitter = submitter;
         this.selected = selected;
+    }
+
+    protected Audio(Parcel in) {
+        data = in.readString();
+        title = in.readString();
+        album = in.readString();
+        artist = in.readString();
+        duration = in.readString();
+        submitter = in.readString();
+        selected = in.readByte() != 0;
+        albumArt = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
     public String getData() {
@@ -56,24 +64,16 @@ public class Audio {
         return album;
     }
 
-    public void setAlbum(String album) {
-        this.album = album;
-    }
-
     public String getArtist() {
         return artist;
     }
 
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-
-    public String getDuration() {
+    public String getDuration(){
         return duration;
     }
 
-    public void setDuration(String duration) {
-        this.duration = duration;
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
     public String getSubmitter() {
@@ -84,7 +84,11 @@ public class Audio {
         this.submitter = submitter;
     }
 
-    public MediaMetadataRetriever getAlbumArt() {
+    public Bitmap getAlbumArt() {
         return albumArt;
+    }
+
+    public void setAlbumArt(Bitmap albumArt) {
+        this.albumArt = albumArt;
     }
 }
