@@ -16,21 +16,26 @@ import java.util.Collections;
 import java.util.List;
 
 public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract{
-    private static List<Audio> dataSet;
+    private static List<Audio> dataSet = new ArrayList<>();
     private ItemTouchHelper itemTouchHelper;
 
     ActivePlaylistAdapter() {
         //TODO only bother initializing after the user is confirmed for hosting?
-        dataSet = new ArrayList<>();
+        //dataSet = new ArrayList<>();
+    }
+
+    public Audio getSelectedItem(int index) {
+        return dataSet.get(index);
     }
 
     public void addItem(Audio item){
         dataSet.add(item);
     }
 
-    private void setSelectedAudio(int selectedAudioPos){
+    public void setSelectedAudio(int selectedAudioPos){
         for(Audio item: dataSet) { item.setSelected(false); }
         dataSet.get(selectedAudioPos).setSelected(true);
+        for (int i = 0; i < getItemCount(); i++) { notifyItemChanged(i); }
     }
 
     @Override
@@ -55,8 +60,6 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             String submitter = audio.getSubmitter();
             //TODO change this back when usernames are implemented
             //holder.itemSubmitter.setText(submitter);
-
-
 
             Bitmap albumArt = dataSet.get(position).getAlbumArt();
             if (albumArt != null) {
@@ -117,12 +120,9 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
     public void onViewSwiped(int position) {
         Controller controller = new Controller();
         if (controller.getUser().getRecyclerViewPermission()) {
-            for(int i = 0; i < dataSet.size(); i++) {
-                if (dataSet.get(i).getSelected() && i == position) {
-                    //audioController.releaseSelectedAudio();                           // Releases selected audio from the MediaPlayer
-                    //recyclerViewController.togglePlayButtonState();
-                    break;
-                }
+            if (dataSet.get(position).getSelected()) {
+                ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                activePlaylistController.releaseSelectedAudio();
             }
             dataSet.remove(position);
             notifyItemRemoved(position);
@@ -167,11 +167,11 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         @Override
         public void onClick(View view) {
             Controller controller = new Controller();
+            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
             if (controller.getUser().getRecyclerViewPermission()) {
                 setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
-                for (int i = 0; i < getItemCount(); i++) { notifyItemChanged(i); }
-                //recyclerViewController.playSelectedItem();
-                //recyclerViewController.togglePlayButtonState();
+                activePlaylistController.playSelectedItem(dataSet.get(getAdapterPosition()));
+                activePlaylistController.togglePlayButtonState();
             }
         }
     }

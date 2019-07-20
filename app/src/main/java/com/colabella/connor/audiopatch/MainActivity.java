@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //Enables audio selection
     public void selectAudioFromStorage(View view) {
-        System.out.println("TEST");
         Intent myIntent = new Intent(MainActivity.this, DataRetrievalActivity.class);
         MainActivity.this.startActivity(myIntent);
     }

@@ -25,7 +25,6 @@ public class AudioController {
     private static List<Audio> audioList = new ArrayList<>();               //todo differentiate between current playlist and audio collection stored on device
     private static List<List<Audio>> albumList = new ArrayList<>();
     private static List<List<List<Audio>>> artistList = new ArrayList<>();
-    private static MediaPlayer mediaPlayer = new MediaPlayer();
     private static SongAdapter songAdapter;
     private static AlbumAdapter albumAdapter;
     private static ArtistAdapter artistAdapter;
@@ -48,9 +47,6 @@ public class AudioController {
         }
         if (artistAdapter == null) {
             artistAdapter = new ArtistAdapter(getArtistList());
-        }
-        if (mediaPlayer == null) {
-            mediaPlayer = new MediaPlayer();
         }
     }
 
@@ -90,31 +86,6 @@ public class AudioController {
 
     public List<List<List<Audio>>> getArtistList() {
         return artistList;
-    }
-
-    public void playSelectedAudio(Context context, Uri uri) {
-        if (mediaPlayer == null) {
-            if (context != null && uri != null) {
-                mediaPlayer = MediaPlayer.create(context, uri);
-                mediaPlayer.start();
-            }
-        } else {  // MediaPlayer is not null
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
-            }
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = MediaPlayer.create(context, uri);
-            try {
-                mediaPlayer.start();
-            } catch (Exception e) {
-                DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                dataRetrievalActivity.snackBarException();
-                return;
-            }
-            DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-            dataRetrievalActivity.endActivity();
-        }
     }
 
     private List<Audio> getAudioFilesFromDeviceStorage() {
