@@ -53,7 +53,7 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         switch (holder.getItemViewType()) {
-            case 0: {
+            case 0: { // Albums
                 ViewHolder viewHolder = (ViewHolder)holder;
 
                 String albumTitle = albumDataSet.get(position).get(0).getAlbum();
@@ -86,8 +86,9 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 });
                 break;
             }
-            case 1: {
+            case 1: { // Songs
                 final int songPosition = position - albumDataSet.size();
+                System.out.println("position of song " + songDataSet.get(songPosition).getTitle() + " is " + songPosition);
                 SongViewHolder viewHolder = (SongViewHolder)holder;
 
                 String itemTitle = songDataSet.get(songPosition).getTitle();
@@ -99,7 +100,15 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 String duration = songDataSet.get(songPosition).getDuration();
                 viewHolder.itemDuration.setText(duration);
 
-                Bitmap albumArt = songDataSet.get(songPosition).getAlbumArt();
+                Bitmap albumArt = null;
+                AudioController audioController = new AudioController();
+                List<List<Audio>> albumList = audioController.getAlbumList();
+                for (List<Audio> album: albumList) {
+                    if(album.get(0).getAlbum().equalsIgnoreCase(songDataSet.get(songPosition).getAlbum())) {
+                        albumArt = album.get(0).getAlbumArt();
+                        break;
+                    }
+                }
                 if (albumArt != null) { viewHolder.albumArt.setImageBitmap(albumArt); }
                 else { viewHolder.albumArt.setImageResource(R.drawable.audiopatchlogosquare); }
 

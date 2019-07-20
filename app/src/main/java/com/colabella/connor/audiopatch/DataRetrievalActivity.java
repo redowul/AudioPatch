@@ -176,7 +176,6 @@ public class DataRetrievalActivity extends AppCompatActivity {
         outState.clear(); // Clear the Activity's bundle of the subsidiary fragments' bundles.
     }
 
-    //TODO IMPORT THIS FUNCTIONALITY FROM DATARETRIEVER
     private void setupViewPager(ViewPager viewPager) {
         MainActivity.Adapter adapter = new MainActivity.Adapter(getSupportFragmentManager());
 

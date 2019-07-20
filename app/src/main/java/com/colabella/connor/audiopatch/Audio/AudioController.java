@@ -156,6 +156,7 @@ public class AudioController {
             // If we find a matching album title, add the given audio to that album's list.
             for (int i = 0; i < albumList.size(); i++) {
                 if (albumList.get(i).get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
+                    //item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
                     albumList.get(i).add(item);
                     break;
                 } else if (i == albumList.size() - 1) {

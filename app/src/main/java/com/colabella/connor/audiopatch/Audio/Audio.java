@@ -25,6 +25,11 @@ public class Audio {
         this.selected = selected;
     }
 
+    public Audio(Bitmap albumArt, String album) {
+        this.albumArt = albumArt;
+        this.album = album;
+    }
+
     protected Audio(Parcel in) {
         data = in.readString();
         title = in.readString();

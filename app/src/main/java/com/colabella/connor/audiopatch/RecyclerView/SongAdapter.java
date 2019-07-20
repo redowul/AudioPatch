@@ -47,6 +47,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         holder.itemDuration.setText(duration);
 
         Bitmap albumArt = dataSet.get(position).getAlbumArt();
+        AudioController audioController = new AudioController();
+        List<List<Audio>> albumList = audioController.getAlbumList();
+        for (List<Audio> album: albumList) {
+            if(album.get(0).getAlbum().equalsIgnoreCase(dataSet.get(position).getAlbum())) {
+                albumArt = album.get(0).getAlbumArt();
+                break;
+            }
+        }
         if (albumArt != null) { holder.albumArt.setImageBitmap(albumArt); }
         else { holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare); }
 
