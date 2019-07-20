@@ -10,8 +10,17 @@ import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract{
+    private static List<Audio> dataSet;
     private ItemTouchHelper itemTouchHelper;
+
+    RecyclerViewAdapter() {
+        //TODO only bother initializing after the user is confirmed for hosting?
+        dataSet = new ArrayList<>();
+    }
 
     @Override
     public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -21,20 +30,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(final RecyclerViewAdapter.ViewHolder holder, int position) {
-        AudioController audioController = new AudioController();
-        Audio audio = audioController.getAudioList().get(position);
-        String title = audio.getTitle();
-        holder.itemTitle.setText(title);
+        if(dataSet.size() > 0) {
+            Audio audio = dataSet.get(position);
+            String title = audio.getTitle();
+            holder.itemTitle.setText(title);
 
-        String artist = audio.getArtist();
-        holder.itemArtist.setText(artist);
+            String artist = audio.getArtist();
+            holder.itemArtist.setText(artist);
 
-        String duration = audio.getDuration();
-        holder.itemDuration.setText(duration);
+            String duration = audio.getDuration();
+            holder.itemDuration.setText(duration);
 
-        String submitter = audio.getSubmitter();
-        //TODO change this back when usernames are implemented
-        //holder.itemSubmitter.setText(submitter);
+            String submitter = audio.getSubmitter();
+            //TODO change this back when usernames are implemented
+            //holder.itemSubmitter.setText(submitter);
 
       /*  byte[] artwork = null;
         MediaMetadataRetriever myRetriever = audio.getAlbumArt();
@@ -74,12 +83,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         else { holder.itemView.findViewById(R.id.item_handle).setVisibility(View.GONE); }
         */
+        }
     }
 
     @Override
     public int getItemCount() {
-        AudioController audioController = new AudioController();
-        return audioController.getAudioList().size();
+        return dataSet.size();
     }
 
     @Override
