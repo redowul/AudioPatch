@@ -7,29 +7,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract{
+public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract{
     private static List<Audio> dataSet;
     private ItemTouchHelper itemTouchHelper;
 
-    RecyclerViewAdapter() {
+    ActivePlaylistAdapter() {
         //TODO only bother initializing after the user is confirmed for hosting?
         dataSet = new ArrayList<>();
     }
 
     @Override
-    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ActivePlaylistAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item_layout,parent,false);
-        return new RecyclerViewAdapter.ViewHolder(view);
+        return new ActivePlaylistAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final ActivePlaylistAdapter.ViewHolder holder, int position) {
         if(dataSet.size() > 0) {
             Audio audio = dataSet.get(position);
             String title = audio.getTitle();

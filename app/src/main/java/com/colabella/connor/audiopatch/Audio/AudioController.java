@@ -13,7 +13,7 @@ import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.RecyclerViewAdapter;
+import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import static java.lang.Long.valueOf;
 
 public class AudioController {
 
-    private static RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter();
+    private static ActivePlaylistAdapter recyclerViewAdapter = new ActivePlaylistAdapter();
     private static List<Audio> audioList = new ArrayList<>();               //todo differentiate between current playlist and audio collection stored on device
     private static List<List<Audio>> albumList = new ArrayList<>();
     private static List<List<List<Audio>>> artistList = new ArrayList<>();
@@ -31,7 +31,7 @@ public class AudioController {
     private static AlbumAdapter albumAdapter;
     private static ArtistAdapter artistAdapter;
 
-    public RecyclerViewAdapter getRecyclerViewAdapter() { return recyclerViewAdapter; }
+    public ActivePlaylistAdapter getRecyclerViewAdapter() { return recyclerViewAdapter; }
 
     public AudioController() {
         if (audioList.size() == 0 && albumList.size() == 0) {
