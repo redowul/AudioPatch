@@ -25,6 +25,11 @@ public class Audio {
         this.selected = selected;
     }
 
+    public Audio(String title, boolean selected) {
+        this.title = title;
+        this.selected = selected;
+    }
+
     public Audio(Bitmap albumArt, String album) {
         this.albumArt = albumArt;
         this.album = album;

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
+import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 
@@ -48,7 +49,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
         Bitmap albumArt = dataSet.get(position).getAlbumArt();
         AudioController audioController = new AudioController();
-        List<List<Audio>> albumList = audioController.getAlbumList();
+        final List<List<Audio>> albumList = audioController.getAlbumList();
         for (List<Audio> album: albumList) {
             if(album.get(0).getAlbum().equalsIgnoreCase(dataSet.get(position).getAlbum())) {
                 albumArt = album.get(0).getAlbumArt();
@@ -61,13 +62,20 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Audio audioData = dataSet.get(position);
-                Uri uri = Uri.parse(audioData.getData());
+                ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                Audio item = dataSet.get(position);
+                for (List<Audio> album: albumList) {
+                    if(item.getAlbum().equalsIgnoreCase(album.get(0).getAlbum())) {
+                       item.setAlbumArt(album.get(0).getAlbumArt());
+                       break;
+                    }
+                }
 
-                MainActivity mainActivity = new MainActivity();
-                Context context = mainActivity.getStaticApplicationContext();
-                AudioController audioController = new AudioController();
-                audioController.playSelectedAudio(context, uri);
+                ActivePlaylistAdapter activePlaylistAdapter = activePlaylistController.getActivePlaylistAdapter();
+                activePlaylistAdapter.addItem(item);
+                activePlaylistAdapter.notifyDataSetChanged();
+                DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
+                dataRetrievalActivity.endActivity();
             }
         });
     }

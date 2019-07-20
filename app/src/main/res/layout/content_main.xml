@@ -86,7 +86,7 @@
             android:background="@drawable/ic_playlist_add_24dp"
             android:onClick="onBottomToolbarItemClick"
             android:visibility="visible"
-            tools:context=".RecyclerViewController" />
+            tools:context=".ActivePlaylistController" />
 
     </android.support.v7.widget.Toolbar>
 

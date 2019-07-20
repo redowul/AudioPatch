@@ -1,18 +1,25 @@
 package com.colabella.connor.audiopatch.RecyclerView;
 
+import android.view.View;
+
+import com.colabella.connor.audiopatch.Audio.Audio;
+
 public class ActivePlaylistController {
 
+    private static ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
+    public ActivePlaylistAdapter getActivePlaylistAdapter() { return activePlaylistAdapter; }
+
     // Determines which button on the bottom toolbar was pressed
-   /* public void determineButtonSelected(String buttonIdString, View view) {
+    public void determineButtonSelected(String buttonIdString, View view) {
         switch (buttonIdString) {
             case "remove":
-                removeItem();                           // TODO Removes an item from the RecyclerView (Remove this function later. Exists only for bug-testing purposes)
+              //  removeItem();                           // TODO Removes an item from the RecyclerView (Remove this function later. Exists only for bug-testing purposes)
                 break;
             case "back_button":
-                selectPreviousItem();                   // Moves current selection to the previous available item in the RecyclerView. Selects the last item in the list if pressed at index 0.
+            //    selectPreviousItem();                   // Moves current selection to the previous available item in the RecyclerView. Selects the last item in the list if pressed at index 0.
                 break;
             case "play_button":
-                AudioController audioController = new AudioController();
+           /*     AudioController audioController = new AudioController();
                 MediaPlayer mediaPlayer = audioController.getMediaPlayer();
                 if(mediaPlayer == null) {
                     List<Audio> audioList = audioController.getAudioList();
@@ -36,21 +43,21 @@ public class ActivePlaylistController {
                     // - Meaning if the mediaPlayer is not null and no audio is playing, we should just un-pause the audio.
                     // - The mediaPlayer will thus handle itself when a piece of audio ends, independent of this button.
 
-
+*/
                 break;
             case "next_button":
-                selectNextItem();                       // Moves current selection to the next available item in the RecyclerView. Selects index 0 when called after reaching the end of the list.
+              //  selectNextItem();                       // Moves current selection to the next available item in the RecyclerView. Selects index 0 when called after reaching the end of the list.
                 break;
             case "add_audio_button":                    // TODO Adds a new item to the RecyclerView (Remove this function later. Exists only for bug-testing purposes)
                 addItem();
                 break;
             case "toggle_recyclerview_permission":      // TODO Toggles recyclerview permissions (Remove this function later. Exists only for bug-testing purposes)
-                toggleRecyclerViewItemClickability();
+             //   toggleRecyclerViewItemClickability();
                 break;
         }
     }
 
-    private void removeItem() {
+  /*  private void removeItem() {
         Controller controller = new Controller();
         AudioController audioController = new AudioController();
 
@@ -173,21 +180,15 @@ public class ActivePlaylistController {
             playButton.setBackgroundResource(R.drawable.ic_play_24dp);
         }
     }
-
+*/
     private void addItem() {
-        AudioController audioController = new AudioController();
-        RecyclerViewAdapter recyclerViewAdapter = audioController.getRecyclerViewAdapter();
-
         //if (controller.getUser().getRecyclerViewPermission()) {
         Audio item = new Audio("Item", false);
-        List<Audio> audioList = audioController.getAudioList();
-        audioList.add(item);
-        audioController.setAudioList(audioList);
-        recyclerViewAdapter.notifyDataSetChanged();
-        audioController.setRecyclerViewAdapter(recyclerViewAdapter);
+        activePlaylistAdapter.addItem(item);
+        activePlaylistAdapter.notifyDataSetChanged();
         //}
     }
-
+/*
     public void clearAudioList(){
         Controller controller = new Controller();
         AudioController audioController = new AudioController();

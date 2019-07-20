@@ -1,14 +1,18 @@
 package com.colabella.connor.audiopatch.RecyclerView;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.Controller;
 import com.colabella.connor.audiopatch.R;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract{
@@ -18,6 +22,15 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
     ActivePlaylistAdapter() {
         //TODO only bother initializing after the user is confirmed for hosting?
         dataSet = new ArrayList<>();
+    }
+
+    public void addItem(Audio item){
+        dataSet.add(item);
+    }
+
+    private void setSelectedAudio(int selectedAudioPos){
+        for(Audio item: dataSet) { item.setSelected(false); }
+        dataSet.get(selectedAudioPos).setSelected(true);
     }
 
     @Override
@@ -43,20 +56,17 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             //TODO change this back when usernames are implemented
             //holder.itemSubmitter.setText(submitter);
 
-      /*  byte[] artwork = null;
-        MediaMetadataRetriever myRetriever = audio.getAlbumArt();
-        if (myRetriever != null) { artwork = myRetriever.getEmbeddedPicture(); }
-        if(artwork != null){
-            holder.albumArt.setImageResource(0);
-            Bitmap bMap = BitmapFactory.decodeByteArray(artwork, 0, artwork.length);
-            holder.albumArt.setImageBitmap(bMap);
-            holder.itemSubmitter.setText("Passed");
-        }
-        else {
-            holder.albumArt.setImageBitmap(null);
-            holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare);
-            holder.itemSubmitter.setText("Failed");
-        }
+
+
+            Bitmap albumArt = dataSet.get(position).getAlbumArt();
+            if (albumArt != null) {
+                holder.albumArt.setImageBitmap(albumArt);
+                holder.itemSubmitter.setText("Passed");
+            }
+            else {
+                holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare);
+                holder.itemSubmitter.setText("Failed");
+            }
 
         holder.itemHandle.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -72,7 +82,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         });
 
         holder.itemView.setBackgroundResource(R.color.recyclerViewPrimary); // Sets all items to primary background color, representing none being selected.
-        if(audioController.getAudioList().get(position).getSelected()){ // If isSelected returns true, highlight the item.
+        if(dataSet.get(position).getSelected()) { // If isSelected returns true, highlight the item.
             holder.itemView.setBackgroundResource(R.color.recyclerViewAccent);
         }
         Controller controller = new Controller();
@@ -80,7 +90,6 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             holder.itemView.findViewById(R.id.item_handle).setVisibility(View.VISIBLE);
         }
         else { holder.itemView.findViewById(R.id.item_handle).setVisibility(View.GONE); }
-        */
         }
     }
 
@@ -91,43 +100,33 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
     @Override
     public void onViewMoved(int fromPosition, int toPosition) {
-      /*  AudioController audioController = new AudioController();
-        List<Audio> audioList = audioController.getAudioList();
+
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(audioList, i, i + 1);
+                Collections.swap(dataSet, i, i + 1);
             }
         } else {
             for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(audioList, i, i - 1);
+                Collections.swap(dataSet, i, i - 1);
             }
         }
-        audioController.setAudioList(audioList);
         notifyItemMoved(fromPosition, toPosition);
-        */
     }
 
     @Override
     public void onViewSwiped(int position) {
-      /*  Controller controller = new Controller();
-        RecyclerViewController recyclerViewController = new RecyclerViewController();
-        AudioController audioController = new AudioController();
-
-        List<Audio> audioList = audioController.getAudioList();
+        Controller controller = new Controller();
         if (controller.getUser().getRecyclerViewPermission()) {
-            for(int i = 0; i < audioList.size(); i++) {
-                if (audioList.get(i).getSelected() && i == position) {
-                    audioController.releaseSelectedAudio();                           // Releases selected audio from the MediaPlayer
-                    recyclerViewController.togglePlayButtonState();
+            for(int i = 0; i < dataSet.size(); i++) {
+                if (dataSet.get(i).getSelected() && i == position) {
+                    //audioController.releaseSelectedAudio();                           // Releases selected audio from the MediaPlayer
+                    //recyclerViewController.togglePlayButtonState();
                     break;
                 }
             }
-
-            audioList.remove(position);
-            audioController.setAudioList(audioList);
+            dataSet.remove(position);
             notifyItemRemoved(position);
         }
-        */
     }
 
     public void setTouchHelper(ItemTouchHelper touchHelper) {
@@ -167,16 +166,13 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
         @Override
         public void onClick(View view) {
-        /*    Controller controller = new Controller();
-            AudioController audioController = new AudioController();
-            RecyclerViewController recyclerViewController = new RecyclerViewController();
+            Controller controller = new Controller();
             if (controller.getUser().getRecyclerViewPermission()) {
-                audioController.setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
+                setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
                 for (int i = 0; i < getItemCount(); i++) { notifyItemChanged(i); }
-                recyclerViewController.playSelectedItem();
-                recyclerViewController.togglePlayButtonState();
+                //recyclerViewController.playSelectedItem();
+                //recyclerViewController.togglePlayButtonState();
             }
-            */
         }
     }
 }

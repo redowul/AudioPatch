@@ -22,7 +22,6 @@ import static java.lang.Long.valueOf;
 
 public class AudioController {
 
-    private static ActivePlaylistAdapter recyclerViewAdapter = new ActivePlaylistAdapter();
     private static List<Audio> audioList = new ArrayList<>();               //todo differentiate between current playlist and audio collection stored on device
     private static List<List<Audio>> albumList = new ArrayList<>();
     private static List<List<List<Audio>>> artistList = new ArrayList<>();
@@ -30,8 +29,6 @@ public class AudioController {
     private static SongAdapter songAdapter;
     private static AlbumAdapter albumAdapter;
     private static ArtistAdapter artistAdapter;
-
-    public ActivePlaylistAdapter getRecyclerViewAdapter() { return recyclerViewAdapter; }
 
     public AudioController() {
         if (audioList.size() == 0 && albumList.size() == 0) {

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
+import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import java.util.List;
@@ -64,13 +65,14 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
 
         @Override
         public void onClick(View view) {
-            int position = this.getAdapterPosition();
-            Audio audioData = dataSet.get(position);
-            Uri uri = Uri.parse(audioData.getData());
-            MainActivity mainActivity = new MainActivity();
-            Context context = mainActivity.getStaticApplicationContext();
-            AudioController audioController = new AudioController();
-            audioController.playSelectedAudio(context, uri);
+            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+            Audio item = dataSet.get(this.getAdapterPosition());
+            if(dataSet.get(0).getAlbumArt() != null) { item.setAlbumArt(dataSet.get(0).getAlbumArt()); }
+            ActivePlaylistAdapter activePlaylistAdapter = activePlaylistController.getActivePlaylistAdapter();
+            activePlaylistAdapter.addItem(item);
+            activePlaylistAdapter.notifyDataSetChanged();
+            DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
+            dataRetrievalActivity.endActivity();
         }
     }
 }

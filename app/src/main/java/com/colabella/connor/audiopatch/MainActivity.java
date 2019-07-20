@@ -20,9 +20,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-
-import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
+import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistController;
 import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
 
 import java.util.ArrayList;
@@ -48,17 +47,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        initializeRecyclerView();
+       initializeRecyclerView();
 
         applicationContext = getApplicationContext();
         playButton = findViewById(R.id.play_button);
     }
 
     private void initializeRecyclerView(){
-        AudioController audioController = new AudioController();
+        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        ActivePlaylistAdapter recyclerViewAdapter = audioController.getRecyclerViewAdapter();
+        ActivePlaylistAdapter recyclerViewAdapter = activePlaylistController.getActivePlaylistAdapter();
 
         SwipeAndDragHelper swipeAndDragHelper = new SwipeAndDragHelper(recyclerViewAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeAndDragHelper);
@@ -136,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Handles all button clicks that occur in context_main.xml.
     public void onBottomToolbarItemClick(View view){
-       // RecyclerViewController recyclerViewController = new RecyclerViewController();
-       // recyclerViewController.determineButtonSelected(getResources().getResourceEntryName(view.getId()), view); // Passes determineButtonSelected() the String ID of the pressed button.
+        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+        activePlaylistController.determineButtonSelected(getResources().getResourceEntryName(view.getId()), view); // Passes determineButtonSelected() the String ID of the pressed button.
     }
 
     //Enables audio selection
