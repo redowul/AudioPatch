@@ -24,15 +24,15 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         //dataSet = new ArrayList<>();
     }
 
-    public Audio getSelectedItem(int index) {
+    Audio getSelectedItem(int index) {
         return dataSet.get(index);
     }
 
-    public void addItem(Audio item){
+    void addItem(Audio item){
         dataSet.add(item);
     }
 
-    public void setSelectedAudio(int selectedAudioPos){
+    void setSelectedAudio(int selectedAudioPos){
         for(Audio item: dataSet) { item.setSelected(false); }
         dataSet.get(selectedAudioPos).setSelected(true);
         for (int i = 0; i < getItemCount(); i++) { notifyItemChanged(i); }
