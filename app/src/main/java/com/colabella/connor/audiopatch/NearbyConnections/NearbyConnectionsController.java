@@ -4,13 +4,18 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.R;
 
 public class NearbyConnectionsController {
 
@@ -19,8 +24,19 @@ public class NearbyConnectionsController {
     private String packageName;
     private Context context;
     private MenuItem savedItem;
+    private boolean permissionGranted = false; //TODO Access this variable from storage so that advertising/discovery messages display after subsequent boots
     private boolean isAdvertising = false;
     private boolean isDiscovering = false;
+
+    public boolean getIsAdvertising(){ return this.isAdvertising; }
+
+    public void setIsAdvertising(boolean b) { this.isAdvertising = b; }
+
+    public boolean getIsDiscovering(){ return this.isDiscovering; }
+
+    public void setIsDiscovering(boolean b){ this.isDiscovering = b; }
+
+    public NearbyConnectionsController(){ }
 
     public NearbyConnectionsController(NavigationView navigationView, PackageManager packageManager, String packageName, Context context){
         this.navigationView = navigationView;
@@ -35,31 +51,19 @@ public class NearbyConnectionsController {
 
         // set item as selected to persist highlight if it isn't advertise or discover
         //if (!menuItem.isChecked() && !menuItem.toString().equals("Advertise") && !menuItem.toString().equals("Discover")) {
-            menuItem.setChecked(true);
+           // menuItem.setChecked(true);
 
-        MainActivity mainActivity = new MainActivity();
-        /*String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(mainActivity.getStaticApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
-        String textColor = "#" + Integer.toHexString(ContextCompat.getColor(mainActivity.getStaticApplicationContext(), R.color.textColor) & 0x00ffffff);
-        ColorStateList colorStateList = new ColorStateList(
-                new int[][] {
-                        new int[] {-android.R.attr.state_checked}, // unchecked
-                        new int[] { android.R.attr.state_checked}  // checked
-                },
-                new int[] {
-                        Color.parseColor(textColor),
-                        Color.parseColor(colorPrimary)
-                }
-        );
-        if(menuItem.toString().equals("Advertise")) {
-            navigationView.setItemTextColor(colorStateList);
-        }*/
+       // if(menuItem.toString().equals("Advertise")) {
+        //    navigationView.setItemTextColor(colorStateList);
+        //    navigationView.setItemIconTintList(colorStateList);
+       // }
 
         //navigationView.setItemIconTintList(csl);
             //navigationView.setItemIconTintList(ColorStateList2);
       //  }
 
         // If permission has been granted, enable advertising/discovery with NearbyConnections
-        /*else*/ /*if (!menuItem.isChecked() && menuItem.toString().equals("Advertise")
+        if (!menuItem.isChecked() && menuItem.toString().equals("Advertise")
                 && packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) == PackageManager.PERMISSION_GRANTED
                 || !menuItem.isChecked() && menuItem.toString().equals("Discover")
                 && packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) == PackageManager.PERMISSION_GRANTED) {
@@ -139,12 +143,12 @@ public class NearbyConnectionsController {
         else {
             //Functions to request device location and then enable functionality immediately after user approval
             if (!menuItem.isChecked() && menuItem.toString().equals("Advertise") && packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
-                this.isAdvertising = true;
+                setIsAdvertising(true);
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
             else if (!menuItem.isChecked() && menuItem.toString().equals("Discover") && packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
                 this.isDiscovering = true;
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
 
             //Disable functions if they're currently enabled and are being pressed again
@@ -163,42 +167,32 @@ public class NearbyConnectionsController {
 
         //TODO Add code here to update the UI based on the item selected
         // For example, swap UI fragments here
-        */
     }
-
-    public boolean checkIsAdvertising() { return isAdvertising; }
-
-    private void setIsAdvertising(boolean b) { this.isAdvertising = b; }
 
     public void advertise () {
         //Check the PackageManager to see if permissions have been enabled yet.
 
         //NearbyConnections nearbyConnections = new NearbyConnections();
-
         //If permission has been granted, start the activity.
-        if (packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) == PackageManager.PERMISSION_GRANTED) {
+        //if (packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) == PackageManager.PERMISSION_GRANTED) {
             if (!this.isAdvertising) {
                 this.isAdvertising = true;
 
+                Toast.makeText(context, "Now advertising.", Toast.LENGTH_SHORT).show();
                 //n.setUserNickname(nickName);
                 //nearbyConnections.startAdvertising(context);
-                Toast.makeText(context, "Now advertising.", Toast.LENGTH_SHORT).show();
             }
             else {
                 this.isAdvertising = false;
                // nearbyConnections.stopAdvertising();
                 Toast.makeText(context, "No longer advertising.", Toast.LENGTH_SHORT).show();
             }
-        }
-        else {
+       // }
+        //else {
             //this.isAdvertising = true;
-            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
-        }
+        //    ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+      //  }
     }
-
-    public boolean checkIsDiscovering(){ return isDiscovering; }
-
-    public void setIsDiscovering(boolean b){ isDiscovering = b; }
 
     public void discover () {
         //Check the PackageManager to see if permissions have been enabled yet.
@@ -212,18 +206,18 @@ public class NearbyConnectionsController {
 
                 //nearbyConnections.setUserNickname(nickName);
                 //nearbyConnections.startDiscovery(context);
-                Toast.makeText(context, "Searching for devices.", Toast.LENGTH_SHORT).show();
-
+                if(permissionGranted) { Toast.makeText(context, "Searching for devices.", Toast.LENGTH_SHORT).show(); }
             }
             else {
                 this.isDiscovering = false;
+                this.permissionGranted = true;
                 //nearbyConnections.stopDiscovery();
                 Toast.makeText(context, "Device search halted.", Toast.LENGTH_SHORT).show();
             }
         }
         else {
             //this.isDiscovering = true;
-            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
     }
 }

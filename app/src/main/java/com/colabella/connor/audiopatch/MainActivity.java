@@ -5,12 +5,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -60,6 +63,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
        navigationView = findViewById(R.id.nav_view);
        navigationView.setNavigationItemSelectedListener(this);
+       String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
+       String textColor = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.textColor) & 0x00ffffff);
+       ColorStateList colorStateList = new ColorStateList(
+               new int[][]{
+                       new int[]{-android.R.attr.state_checked}, // unchecked
+                       new int[]{android.R.attr.state_checked}  // checked
+               },
+               new int[]{
+                       Color.parseColor(textColor),
+                       Color.parseColor(colorPrimary)
+               });
+       navigationView.setItemTextColor(colorStateList);
+       navigationView.setItemIconTintList(colorStateList);
+       navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     private void initializeRecyclerView(){
@@ -109,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Button playButton = findViewById(R.id.play_button);
             playButton.setBackgroundResource(R.drawable.ic_play_24dp);
             */
-            return true;
+            return false;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -139,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController(navigationView, getPackageManager(), getPackageName(), MainActivity.this);
+        NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController(navigationView, getPackageManager(), getPackageName(), this);
         nearbyConnectionsController.clickedDrawerFragment(menuItem);
         return true;
     }
@@ -172,6 +189,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return mFragmentTitles.get(position);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 0: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //Since the permission was granted, we want to go straight back to the process we were starting before requesting the permission.
+                    //TODO Trigger DataRetriever
+                }
+                else {
+                    // permission denied
+                    Toast.makeText(MainActivity.this, "Permission denied to read your external storage", Toast.LENGTH_SHORT).show();
+                    //closeNow();
+                }
+            }
+            break;
+            case 1: {
+                NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController();
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    nearbyConnectionsController.advertise();
+                    Toast.makeText(this, "Now advertising.", Toast.LENGTH_SHORT).show();
+                }
+                else {  // permission denied
+                    nearbyConnectionsController.setIsAdvertising(false);
+                    Toast.makeText(MainActivity.this, "Permission denied to access your device's location.", Toast.LENGTH_SHORT).show();
+                }
+            }
+            break;
+            case 2: {
+                NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController();
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Searching for devices.", Toast.LENGTH_SHORT).show();
+                    nearbyConnectionsController.discover();
+                }
+                else {  // permission denied
+                    nearbyConnectionsController.setIsDiscovering(false);
+                    Toast.makeText(MainActivity.this, "Permission denied to access your device's location.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
 
     // Return static variables
     public Context getStaticApplicationContext(){ return applicationContext; }
