@@ -1,5 +1,6 @@
 package com.colabella.connor.audiopatch.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -192,7 +193,7 @@ public class ActivePlaylistController {
         }
     }
 */
-    void togglePlayButtonState() { //TODO re-write when less tired (Needed for any action that isn't a button to toggle the state of the PlayButton)
+    static void togglePlayButtonState() { //TODO re-write when less tired (Needed for any action that isn't a button to toggle the state of the PlayButton)
         MainActivity mainActivity = new MainActivity();
         Button playButton = mainActivity.getPlayButton();
 

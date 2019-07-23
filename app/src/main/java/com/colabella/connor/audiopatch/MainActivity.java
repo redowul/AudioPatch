@@ -1,6 +1,5 @@
 package com.colabella.connor.audiopatch;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -27,20 +25,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistController;
 import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static Context applicationContext;
-    @SuppressLint("StaticFieldLeak")
     private static Button playButton;
     private NavigationView navigationView;
 
@@ -77,6 +71,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        navigationView.setItemTextColor(colorStateList);
        navigationView.setItemIconTintList(colorStateList);
        navigationView.getMenu().getItem(0).setChecked(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(applicationContext == null) {
+            applicationContext = getApplicationContext();
+        }
+        if(playButton == null) {
+            playButton = findViewById(R.id.play_button);
+        }
     }
 
     private void initializeRecyclerView(){
@@ -210,16 +215,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController();
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    nearbyConnectionsController.advertise();
-                    Toast.makeText(this, "Now advertising.", Toast.LENGTH_SHORT).show();
+                    if(nearbyConnectionsController.getIsAdvertising()) { nearbyConnectionsController.advertise(); }
+                    else if(nearbyConnectionsController.getIsDiscovering()) { nearbyConnectionsController.discover(); }
                 }
                 else {  // permission denied
                     nearbyConnectionsController.setIsAdvertising(false);
+                    nearbyConnectionsController.setIsDiscovering(false);
                     Toast.makeText(MainActivity.this, "Permission denied to access your device's location.", Toast.LENGTH_SHORT).show();
                 }
             }
             break;
-            case 2: {
+           /* case 2: {
                 NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController();
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -230,10 +236,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     nearbyConnectionsController.setIsDiscovering(false);
                     Toast.makeText(MainActivity.this, "Permission denied to access your device's location.", Toast.LENGTH_SHORT).show();
                 }
-            }
+            }*/
         }
     }
-
 
     // Return static variables
     public Context getStaticApplicationContext(){ return applicationContext; }

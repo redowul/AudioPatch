@@ -23,17 +23,13 @@ import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
 import java.util.ArrayList;
 import java.util.List;
-
-
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class DataRetrievalActivity extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
-    static FloatingActionButton endActivityButton, snackBarButton, closeSoftKeyboardButton;
-
-    @SuppressLint("StaticFieldLeak")
-    static SearchView simpleSearchView;
+    private static FloatingActionButton endActivityButton, snackBarButton, closeSoftKeyboardButton;
+    private SearchView simpleSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +50,6 @@ public class DataRetrievalActivity extends AppCompatActivity {
         endActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AudioController audioController = new AudioController();
-                audioController.endActivity();
                 finish();
             }
         });
@@ -171,6 +165,20 @@ public class DataRetrievalActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(endActivityButton == null){
+            endActivityButton = findViewById(R.id.fab);
+        }
+        if(snackBarButton == null) {
+            snackBarButton = findViewById(R.id.snackbar_action);
+        }
+        if(closeSoftKeyboardButton == null) {
+            closeSoftKeyboardButton = findViewById(R.id.close_soft_keyboard);
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.clear(); // Clear the Activity's bundle of the subsidiary fragments' bundles.
@@ -195,21 +203,14 @@ public class DataRetrievalActivity extends AppCompatActivity {
     }
 
     public void endActivity() {
-        if(simpleSearchView != null) {
-            simpleSearchView.setQuery("", true);
-            simpleSearchView.clearFocus();
-        }
         if(endActivityButton != null && snackBarButton != null) {
             endActivityButton.performClick();
-            endActivityButton = null;
-            snackBarButton = null;
-            closeSoftKeyboardButton = null;
         }
     }
 
-    public void backButtonPressed(View view) {
+    public void backButtonPressed(View view) { // Attached to song selection recyclerView xml.
         onBackPressed();
-    } // Attached to song selection recyclerView xml.
+    }
 
     public void setCloseSoftKeyboardButton(View view) { closeSoftKeyboardButton.performClick(); }
 
@@ -225,6 +226,9 @@ public class DataRetrievalActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        endActivity();
+        if(simpleSearchView != null) {
+            simpleSearchView.setQuery("", true);
+            simpleSearchView.clearFocus();
+        }
     }
 }

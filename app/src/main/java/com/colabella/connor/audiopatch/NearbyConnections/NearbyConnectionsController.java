@@ -23,18 +23,9 @@ public class NearbyConnectionsController {
     private PackageManager packageManager;
     private String packageName;
     private Context context;
-    private MenuItem savedItem;
-    private boolean permissionGranted = false; //TODO Access this variable from storage so that advertising/discovery messages display after subsequent boots
-    private boolean isAdvertising = false;
-    private boolean isDiscovering = false;
-
-    public boolean getIsAdvertising(){ return this.isAdvertising; }
-
-    public void setIsAdvertising(boolean b) { this.isAdvertising = b; }
-
-    public boolean getIsDiscovering(){ return this.isDiscovering; }
-
-    public void setIsDiscovering(boolean b){ this.isDiscovering = b; }
+    private static MenuItem savedItem;
+    private static boolean isAdvertising = false;
+    private static boolean isDiscovering = false;
 
     public NearbyConnectionsController(){ }
 
@@ -45,7 +36,119 @@ public class NearbyConnectionsController {
         this.context = context;
     }
 
-    public void clickedDrawerFragment(@NonNull MenuItem menuItem) {
+    public boolean getIsAdvertising(){ return isAdvertising; }
+
+    public void setIsAdvertising(boolean b) { isAdvertising = b; }
+
+    public boolean getIsDiscovering(){ return isDiscovering; }
+
+    public void setIsDiscovering(boolean b){ isDiscovering = b; }
+
+    public void clickedDrawerFragment(@NonNull MenuItem menuItem) { // function to handle enabling of advertising/discovery with NearbyConnections
+        if (packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) == PackageManager.PERMISSION_GRANTED) {
+            //if (menuItem.toString().equals("Advertise") || menuItem.toString().equals("Discover")) {
+               if(!menuItem.isChecked()) {
+                   if(menuItem.toString().equals("Advertise")) {
+
+                   }
+                   menuItem.setChecked(true);
+               }
+               else {
+                   menuItem.setChecked(false);
+               }
+        }
+        else {
+
+            if (!menuItem.isChecked() && menuItem.toString().equals("Advertise")) { isAdvertising = true; }
+            else { isDiscovering = true; }
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
+        savedItem = menuItem;
+
+    }
+            //else if (!menuItem.isChecked() && menuItem.toString().equals("Advertise") || !menuItem.isChecked() && menuItem.toString().equals("Discover")) {
+     /*       if (savedItem != null) {
+                Menu menu = navigationView.getMenu();
+                for (int i = 0; i < menu.size(); i++) { //TODO is loop unnecessary?
+                    //If Advertise checked = true when Discover is pressed, uncheck Advertise.
+                    if (!menuItem.isChecked() && menuItem.toString().equals("Discover") &&
+                            savedItem.isChecked() && savedItem.toString().equals("Advertise")) {
+
+                        savedItem.setChecked(false);
+                        menuItem.setChecked(true);
+
+                        advertise();
+                        discover();
+                        //TODO Stop advertising, start discovering (But disband current room first.)
+                        //  break;
+                    }
+
+                    //If Discover is checked when Advertise is pressed, uncheck Discover.
+                    else if (!menuItem.isChecked() && menuItem.toString().equals("Advertise") &&
+                            savedItem.isChecked() && savedItem.toString().equals("Discover")) {
+
+                        savedItem.setChecked(false);
+                        menuItem.setChecked(true);
+
+                        discover();
+                        advertise();
+                        //TODO Stop discovering, start advertising (But leave current room first.)
+                        // break;
+                    }
+
+                    //Advertise is unchecked and savedItem won't return a null error. Enable advertising
+                    else if (!menuItem.isChecked() && menuItem.toString().equals("Advertise") &&
+                            !savedItem.isChecked() && savedItem.toString().equals("Discover")) {
+                        advertise();
+                        menuItem.setChecked(true);
+                        //break;
+                    }
+
+                    //Discover is unchecked and savedItem won't return a null error. Enable discovery
+                    else if (!menuItem.isChecked() && menuItem.toString().equals("Discover") &&
+                            !savedItem.isChecked() && savedItem.toString().equals("Advertise")) {
+                        discover();
+                        menuItem.setChecked(true);
+                        //break;
+                    }
+
+                    else {
+                        if (menuItem.toString().equals("Advertise")) {
+                            advertise();
+                            menuItem.setChecked(true);
+                        }
+
+                        else if (menuItem.toString().equals("Discover")) {
+                            discover();
+                            menuItem.setChecked(true);
+                        }
+                        // break;
+                    }
+                }
+            }
+            else { // savedItem is null and neither function is active, so fire whichever is pressed first.
+                if (menuItem.toString().equals("Advertise")) {
+                    advertise();
+                    menuItem.setChecked(true);
+                }
+
+                else if (menuItem.toString().equals("Discover")) {
+                    discover();
+                    menuItem.setChecked(true);
+                }
+            }
+        }
+
+
+        savedItem = menuItem;
+        // close drawer when item is tapped
+        //drawer.closeDrawers();
+
+        //TODO Add code here to update the UI based on the item selected
+        // For example, swap UI fragments here
+    }*/
+
+    /*public void clickedDrawerFragment(@NonNull MenuItem menuItem) {
         //Local PackageManager variable
 
 
@@ -81,7 +184,7 @@ public class NearbyConnectionsController {
                         advertise();
                         discover();
                         //TODO Stop advertising, start discovering (But disband current room first.)
-                      //  break;
+                        //  break;
                     }
 
                     //If Discover is checked when Advertise is pressed, uncheck Discover.
@@ -94,7 +197,7 @@ public class NearbyConnectionsController {
                         discover();
                         advertise();
                         //TODO Stop discovering, start advertising (But leave current room first.)
-                       // break;
+                        // break;
                     }
 
                     //Advertise is unchecked and savedItem won't return a null error. Enable advertising
@@ -123,7 +226,7 @@ public class NearbyConnectionsController {
                             discover();
                             menuItem.setChecked(true);
                         }
-                       // break;
+                        // break;
                     }
                 }
             }
@@ -143,11 +246,11 @@ public class NearbyConnectionsController {
         else {
             //Functions to request device location and then enable functionality immediately after user approval
             if (!menuItem.isChecked() && menuItem.toString().equals("Advertise") && packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) != PackageManager.PERMISSION_GRANTED) {
-                setIsAdvertising(true);
+                isAdvertising = true;
                 ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
             else if (!menuItem.isChecked() && menuItem.toString().equals("Discover") && packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) != PackageManager.PERMISSION_GRANTED) {
-                this.isDiscovering = true;
+                isDiscovering = true;
                 ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
 
@@ -167,7 +270,7 @@ public class NearbyConnectionsController {
 
         //TODO Add code here to update the UI based on the item selected
         // For example, swap UI fragments here
-    }
+    }*/
 
     public void advertise () {
         //Check the PackageManager to see if permissions have been enabled yet.
@@ -175,17 +278,19 @@ public class NearbyConnectionsController {
         //NearbyConnections nearbyConnections = new NearbyConnections();
         //If permission has been granted, start the activity.
         //if (packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) == PackageManager.PERMISSION_GRANTED) {
-            if (!this.isAdvertising) {
-                this.isAdvertising = true;
+            if (!isAdvertising) {
+                isAdvertising = true;
 
-                Toast.makeText(context, "Now advertising.", Toast.LENGTH_SHORT).show();
+                MainActivity mainActivity = new MainActivity();
+                Toast.makeText(mainActivity.getStaticApplicationContext(), "Now advertising.", Toast.LENGTH_SHORT).show();
                 //n.setUserNickname(nickName);
                 //nearbyConnections.startAdvertising(context);
             }
             else {
-                this.isAdvertising = false;
+                isAdvertising = false;
                // nearbyConnections.stopAdvertising();
-                Toast.makeText(context, "No longer advertising.", Toast.LENGTH_SHORT).show();
+                MainActivity mainActivity = new MainActivity();
+                Toast.makeText(mainActivity.getStaticApplicationContext(), "No longer advertising.", Toast.LENGTH_SHORT).show();
             }
        // }
         //else {
@@ -196,21 +301,19 @@ public class NearbyConnectionsController {
 
     public void discover () {
         //Check the PackageManager to see if permissions have been enabled yet.
-
         //NearbyConnections nearbyConnections = new NearbyConnections();
-
         //If permission has been granted, start the activity.
         if (packageManager.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, packageName) == PackageManager.PERMISSION_GRANTED) {
             if (!isDiscovering) {
-                this.isDiscovering = true;
+                isDiscovering = true;
 
                 //nearbyConnections.setUserNickname(nickName);
                 //nearbyConnections.startDiscovery(context);
-                if(permissionGranted) { Toast.makeText(context, "Searching for devices.", Toast.LENGTH_SHORT).show(); }
+                MainActivity mainActivity = new MainActivity();
+                Toast.makeText(mainActivity.getStaticApplicationContext(), "Searching for devices.", Toast.LENGTH_SHORT).show();
             }
             else {
-                this.isDiscovering = false;
-                this.permissionGranted = true;
+                isDiscovering = false;
                 //nearbyConnections.stopDiscovery();
                 Toast.makeText(context, "Device search halted.", Toast.LENGTH_SHORT).show();
             }

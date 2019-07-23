@@ -1,5 +1,7 @@
 package com.colabella.connor.audiopatch.Audio;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -20,14 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 import static java.lang.Long.valueOf;
 
-public class AudioController {
+public class AudioController extends Application {
 
     private static List<Audio> audioList = new ArrayList<>();               //todo differentiate between current playlist and audio collection stored on device
     private static List<List<Audio>> albumList = new ArrayList<>();
     private static List<List<List<Audio>>> artistList = new ArrayList<>();
-    private static SongAdapter songAdapter;
-    private static AlbumAdapter albumAdapter;
-    private static ArtistAdapter artistAdapter;
+    private SongAdapter songAdapter;
+    private AlbumAdapter albumAdapter;
+    private ArtistAdapter artistAdapter;
 
     public AudioController() {
         if (audioList.size() == 0 && albumList.size() == 0) {
@@ -79,10 +81,6 @@ public class AudioController {
     public ArtistAdapter getArtistAdapter() {
         return artistAdapter;
     }
-
-    public void endActivity() {
-        albumAdapter = null;
-    } // Need to manually set static variables to null so they can be garbage collected
 
     public List<List<List<Audio>>> getArtistList() {
         return artistList;
