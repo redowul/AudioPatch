@@ -1,12 +1,6 @@
 package com.colabella.connor.audiopatch;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.widget.Toast;
-
 import com.colabella.connor.audiopatch.NearbyConnections.User;
-
-import java.util.List;
 
 public class Controller {
     private static boolean[] permissions = {true}; // [0] RecyclerView Interactivity

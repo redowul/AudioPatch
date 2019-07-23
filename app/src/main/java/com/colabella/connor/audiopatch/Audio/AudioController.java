@@ -1,63 +1,45 @@
 package com.colabella.connor.audiopatch.Audio;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import static java.lang.Long.valueOf;
 
-public class AudioController extends Application {
+public class AudioController {
 
-    private static List<Audio> audioList = new ArrayList<>();               //todo differentiate between current playlist and audio collection stored on device
-    private static List<List<Audio>> albumList = new ArrayList<>();
-    private static List<List<List<Audio>>> artistList = new ArrayList<>();
-    private SongAdapter songAdapter;
-    private AlbumAdapter albumAdapter;
-    private ArtistAdapter artistAdapter;
+    private List<Audio> audioList;               //todo differentiate between current playlist and audio collection stored on device
+    private List<List<Audio>> albumList;
+    private List<List<List<Audio>>> artistList;
+    private SongAdapter songAdapter = new SongAdapter();
+    private AlbumAdapter albumAdapter = new AlbumAdapter();
+    private ArtistAdapter artistAdapter = new ArtistAdapter();
 
-    public AudioController() {
-        if (audioList.size() == 0 && albumList.size() == 0) {
-            audioList = getAudioFilesFromDeviceStorage();
-            for (Audio item : audioList) {
-                albumList = sortAudioByAlbum(albumList, item);
-            }
-            for (List<Audio> album : albumList) {
-                artistList = sortAudioByArtist(artistList, album);
-            }
-        }
-        if (songAdapter == null) {
+    public AudioController() { }
+
+    void setAudioList(List<Audio> list) {
+        if(audioList == null) {
+            audioList = list;
             songAdapter = new SongAdapter(audioList);
         }
-        if (albumAdapter == null) {
-            albumAdapter = new AlbumAdapter(albumList);
+        if (albumList == null) {
+           // albumList = ;
         }
-        if (artistAdapter == null) {
-            artistAdapter = new ArtistAdapter(getArtistList());
+        if (artistList == null) {
+
         }
-    }
-
-    public List<Audio> getAudioList() {
-        return audioList;
-    }
-
-    public SongAdapter getSongAdapter() {
-        return songAdapter;
     }
 
     public List<List<Audio>> getAlbumList() {
@@ -74,6 +56,10 @@ public class AudioController extends Application {
         return albumsBySelectedArtist;
     }
 
+    public SongAdapter getSongAdapter() {
+        return songAdapter;
+    }
+
     public AlbumAdapter getAlbumAdapter() {
         return albumAdapter;
     }
@@ -86,34 +72,12 @@ public class AudioController extends Application {
         return artistList;
     }
 
-    private List<Audio> getAudioFilesFromDeviceStorage() {
+    public void getAudioFilesFromDeviceStorage() {
+        /*RetrieveAudioTask retrieveAudioTask = new RetrieveAudioTask();
         MainActivity mainActivity = new MainActivity();
-
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
-        Cursor cursor = mainActivity.getStaticApplicationContext().getContentResolver().query(uri, null, selection, null, null);
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                    String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                    if (artist.equals("<unknown>")) {
-                        artist = "Unknown artist";
-                    }
-                    String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                    String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                    String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                    duration = milliSecondsToTimer(valueOf(duration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
-
-                    Audio audio = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
-                    audioList.add(audio); // Adds new audio object to the database
-                }
-                while (cursor.moveToNext());   // While there are more audio files to be read, continue reading those files
-            }
-            cursor.close();
-        }
-        return audioList;
+        Context context = mainActivity.getStaticApplicationContext();
+        retrieveAudioTask.execute(context); // Handles album cover retrieval on a secondary thread
+        */
     }
 
     private List<List<Audio>> sortAudioByAlbum(List<List<Audio>> albumList, Audio item) {
@@ -169,31 +133,6 @@ public class AudioController extends Application {
         return artistList;
     }
 
-    private String milliSecondsToTimer(long milliseconds) {
-        String finalTimerString = "";
-        String secondsString;
-
-        // Convert total duration into time
-        int hours = (int) (milliseconds / (1000 * 60 * 60));
-        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
-        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-        // Add hours if there
-        if (hours > 0) {
-            finalTimerString = hours + ":";
-        }
-
-        // Prepending 0 to seconds if it is one digit
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        } else {
-            secondsString = "" + seconds;
-        }
-        finalTimerString = finalTimerString + minutes + ":" + secondsString;
-
-        // return timer string
-        return finalTimerString;
-    }
-
     public static class AlbumCoverTask extends AsyncTask<Audio, Void, Void> {
 
         @Override
@@ -223,6 +162,77 @@ public class AudioController extends Application {
             }
             return albumCover;
         }
+    }
+}
+
+class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
+
+    private List<Audio> audioList = new ArrayList<>();
+
+    @Override
+    // Actual download method, run in the task thread
+    protected Void doInBackground(Context... params) {
+        //Audio item = params[0];
+        //item.setAlbumArt(getAlbumCover(item.getAlbumArt(), item.getData()));
+
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+
+        Cursor cursor = params[0].getContentResolver().query(uri, null, selection, null, null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                    String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                    if (artist.equals("<unknown>")) {
+                        artist = "Unknown artist";
+                    }
+                    String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                    String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                    String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                    duration = milliSecondsToTimer(valueOf(duration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
+
+                    Audio audio = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
+                    audioList.add(audio);
+                }
+                while (cursor.moveToNext());   // While there are more audio files to be read, continue reading those files
+            }
+            cursor.close();
+        }
+        return null;
+    }
+
+    @Override
+    // Once the image is downloaded, associates it to the imageView
+    protected void onPostExecute(Void param) {
+        AudioController audioController = new AudioController();
+        audioController.setAudioList(audioList);
+    }
+
+    private String milliSecondsToTimer(long milliseconds) {
+        String finalTimerString = "";
+        String secondsString;
+
+        // Convert total duration into time
+        int hours = (int) (milliseconds / (1000 * 60 * 60));
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = hours + ":";
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
     }
 }
 /*

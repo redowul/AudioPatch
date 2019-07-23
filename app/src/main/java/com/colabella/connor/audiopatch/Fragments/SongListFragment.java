@@ -19,9 +19,9 @@ public class SongListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        RecyclerView rv = (RecyclerView) inflater.inflate(R.layout.fragment_song_list, container, false);
-        setupRecyclerView(rv);
-        return rv;
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_song_list, container, false);
+        setupRecyclerView(recyclerView);
+        return recyclerView;
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -31,5 +31,6 @@ public class SongListFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),1);
         recyclerView.setLayoutManager(gridLayoutManager); // set LayoutManager to RecyclerView
         recyclerView.setAdapter(songAdapter);
+        System.out.println(songAdapter + "TEST");
     }
 }

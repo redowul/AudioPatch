@@ -27,7 +27,7 @@ public class SongSelectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_album_song_selection, container, false);
 
-        AlbumListViewAdapter audioListViewRecyclerViewAdapter = new AlbumListViewAdapter();
+        /*AlbumListViewAdapter audioListViewRecyclerViewAdapter = new AlbumListViewAdapter();
 
         RecyclerView recyclerView = view.findViewById(R.id.songSelectionRecyclerView);
         recyclerView.setNestedScrollingEnabled(false); // Ensures recyclerView can overScroll, and doesn't get stuck inside of the nestedScrollView. (Allows view to scroll past where finger stops.)
@@ -60,7 +60,7 @@ public class SongSelectionFragment extends Fragment {
             TextView artistLabel = view.findViewById(R.id.artist_label);
             String albumName = selectedAlbum.get(0).getAlbum();
             if(albumName != null) { artistLabel.setText(albumName); }
-        }
+        }*/
         return view;
     }
 }

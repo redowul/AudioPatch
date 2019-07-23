@@ -2,6 +2,8 @@ package com.colabella.connor.audiopatch;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -35,6 +37,9 @@ public class DataRetrievalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dataretriever);
+
+        //AudioController audioController = new AudioController();
+        //audioController.getAudioFilesFromDeviceStorage();
 
         ViewPager viewPager = findViewById(R.id.viewpager);
         if (viewPager != null) {
@@ -89,7 +94,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
         });
 
         // perform set on query text listener event
-        simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // do something on text submit
@@ -104,7 +109,8 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 AlbumAdapter albumAdapter = new AlbumAdapter();
                 ArtistAdapter artistAdapter = new ArtistAdapter();
 
-                List<Audio> audioList = audioController.getAudioList();
+                //List<Audio> audioList = audioController.getAudioList();
+                List<Audio> audioList = songAdapter.getDataSet();
                 List<List<Audio>> albumList = audioController.getAlbumList();
                 List<List<List<Audio>>> artistList = audioController.getArtistList();
 
@@ -161,10 +167,11 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 }
                 return true;
             }
-        });
+        });*/
     }
 
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     protected void onResume() {
         super.onResume();
         if(endActivityButton == null){

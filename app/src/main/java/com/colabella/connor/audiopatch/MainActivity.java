@@ -1,6 +1,8 @@
 package com.colabella.connor.audiopatch;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,6 +28,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistController;
@@ -55,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        applicationContext = getApplicationContext();
        playButton = findViewById(R.id.play_button);
 
+       AudioController audioController = new AudioController();
+       audioController.getAudioFilesFromDeviceStorage();
+
        navigationView = findViewById(R.id.nav_view);
        navigationView.setNavigationItemSelectedListener(this);
        String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     protected void onResume() {
         super.onResume();
         if(applicationContext == null) {

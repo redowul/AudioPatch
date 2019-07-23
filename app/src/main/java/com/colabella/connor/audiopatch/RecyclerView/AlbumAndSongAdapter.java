@@ -1,8 +1,6 @@
 package com.colabella.connor.audiopatch.RecyclerView;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -19,7 +17,6 @@ import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.Fragments.SongSelectionFragment;
-import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 
 import java.util.List;
@@ -30,8 +27,10 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private List<Audio> songDataSet;
 
     public AlbumAndSongAdapter(List<List<Audio>> albumList, List<Audio> songList) {
-        this.albumDataSet = albumList;
-        this.songDataSet = songList;
+        if(albumDataSet == null && songDataSet == null) {
+            albumDataSet = albumList;
+            songDataSet = songList;
+        }
     }
 
     @Override
@@ -89,7 +88,6 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
             case 1: { // Songs
                 final int songPosition = position - albumDataSet.size();
-                System.out.println("position of song " + songDataSet.get(songPosition).getTitle() + " is " + songPosition);
                 SongViewHolder viewHolder = (SongViewHolder)holder;
 
                 String itemTitle = songDataSet.get(songPosition).getTitle();

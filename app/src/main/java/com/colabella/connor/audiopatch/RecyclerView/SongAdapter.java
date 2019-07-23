@@ -1,8 +1,6 @@
 package com.colabella.connor.audiopatch.RecyclerView;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +11,31 @@ import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
-import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
-    private static List<Audio> dataSet;
+    private static List<Audio> dataSet = new ArrayList<>();
+
+    public List<Audio> getDataSet() {
+        return dataSet;
+    }
 
     public SongAdapter() { }
 
     public SongAdapter(List<Audio> audioList) {
-        dataSet = audioList;
+        System.out.println("Test 1");
+        if(dataSet != null) {
+            System.out.println("Test 2");
+            if (dataSet.size() == 0) {
+                System.out.println("Test 3");
+                dataSet = audioList;
+                System.out.println("Test 4: " + dataSet.size());
+            }
+        }
     }
 
     // inflates the row layout from xml when needed
@@ -88,7 +98,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return dataSet.size();
+        if (dataSet != null) {
+            return dataSet.size();
+        }
+        return 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
