@@ -32,13 +32,16 @@ public class AudioController {
     void setAudioList(List<Audio> list) {
         if(audioList == null) {
             audioList = list;
+            //audioList = list;
             songAdapter = new SongAdapter(audioList);
         }
-        if (albumList == null) {
-           // albumList = ;
-        }
-        if (artistList == null) {
+    }
 
+    void setAlbumList(List<List<Audio>> list) {
+        if(albumList == null) {
+            albumList = list;
+            System.out.println(albumList.size());
+            //songAdapter = new SongAdapter(audioList);
         }
     }
 
@@ -73,14 +76,46 @@ public class AudioController {
     }
 
     public void getAudioFilesFromDeviceStorage() {
-        /*RetrieveAudioTask retrieveAudioTask = new RetrieveAudioTask();
+        RetrieveAudioTask retrieveAudioTask = new RetrieveAudioTask();
         MainActivity mainActivity = new MainActivity();
         Context context = mainActivity.getStaticApplicationContext();
         retrieveAudioTask.execute(context); // Handles album cover retrieval on a secondary thread
-        */
     }
 
-    private List<List<Audio>> sortAudioByAlbum(List<List<Audio>> albumList, Audio item) {
+    /*List<Audio> sortAudioByAlbum(List<Audio> audioList) {
+        AlbumCoverTask albumCoverTask = new AlbumCoverTask();
+        if(albumList == null) {
+            for (Audio item : audioList) {
+                if (albumList != null) {
+                    // If we find a matching album title, add the given audio to that album's list.
+                    for (int i = 0; i < albumList.size(); i++) {
+                        if (albumList.get(i).get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
+                            if (albumList.get(i).get(0).getAlbumArt() != null) {
+                                item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
+                            }
+                            albumList.get(i).add(item);
+                            break;
+                        } else if (i == albumList.size() - 1) {
+                            List<Audio> album = new ArrayList<>();
+                            albumCoverTask.execute(item); // Handles album cover retrieval on a secondary thread
+                            album.add(item);
+                            albumList.add(album);
+                            break;
+                        }
+                    }
+                } else {
+                    albumList = new ArrayList<>();
+                    List<Audio> album = new ArrayList<>();
+                    albumCoverTask.execute(item); // Handles album cover retrieval on a secondary thread
+                    album.add(item);
+                    albumList.add(album);
+                }
+            }
+        }
+        return audioList;
+    }*/
+
+    /*private List<List<Audio>> sortAudioByAlbum(List<List<Audio>> albumList, Audio item) {
         AlbumCoverTask albumCoverTask = new AlbumCoverTask();
         if (albumList.size() > 0) {
             // If we find a matching album title, add the given audio to that album's list.
@@ -104,7 +139,7 @@ public class AudioController {
             albumList.add(album);
         }
         return albumList;
-    }
+    }*/
 
     private List<List<List<Audio>>> sortAudioByArtist(List<List<List<Audio>>> artistList, List<Audio> album) {
         if (artistList.size() > 0) {
@@ -132,49 +167,16 @@ public class AudioController {
         }
         return artistList;
     }
-
-    public static class AlbumCoverTask extends AsyncTask<Audio, Void, Void> {
-
-        @Override
-        // Actual download method, run in the task thread
-        protected Void doInBackground(Audio... params) {
-            Audio item = params[0];
-            item.setAlbumArt(getAlbumCover(item.getAlbumArt(), item.getData()));
-            return null;
-        }
-
-        @Override
-        // Once the image is downloaded, associates it to the imageView
-        protected void onPostExecute(Void param) { }
-
-        private Bitmap getAlbumCover(Bitmap albumCover, String pathId) {
-            MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
-            try {
-                metaRetriever.setDataSource(pathId);
-                byte[] art = metaRetriever.getEmbeddedPicture();
-                BitmapFactory.Options opt = new BitmapFactory.Options();
-                opt.inSampleSize = 0; // Setting this lower returns a lower resolution image. For example, setting this variable to 2 returns an image 1/2 the size of the original. 4 = 1/4 the size, etc.
-                albumCover = BitmapFactory.decodeByteArray(art, 0, art.length, opt);
-                if (albumCover != null) { return albumCover; }
-            } catch (Exception ignored) { }
-            finally {
-                metaRetriever.release();
-            }
-            return albumCover;
-        }
-    }
 }
 
 class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
 
     private List<Audio> audioList = new ArrayList<>();
+    private List<List<Audio>> albumList = new ArrayList<>();
 
     @Override
     // Actual download method, run in the task thread
     protected Void doInBackground(Context... params) {
-        //Audio item = params[0];
-        //item.setAlbumArt(getAlbumCover(item.getAlbumArt(), item.getData()));
-
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 
@@ -193,8 +195,9 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                     duration = milliSecondsToTimer(valueOf(duration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
 
-                    Audio audio = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
-                    audioList.add(audio);
+                    Audio item = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
+                    item = sortAudioByAlbum(item);
+                    audioList.add(item);
                 }
                 while (cursor.moveToNext());   // While there are more audio files to be read, continue reading those files
             }
@@ -208,6 +211,54 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
     protected void onPostExecute(Void param) {
         AudioController audioController = new AudioController();
         audioController.setAudioList(audioList);
+        audioController.setAlbumList(albumList);
+    }
+
+    private Audio sortAudioByAlbum(Audio item) {
+            if (albumList.size() > 0) {
+                // If we find a matching album title, add the given audio to that album's list.
+                for (int i = 0; i < albumList.size(); i++) {
+                    if (albumList.get(i).get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
+                        if (albumList.get(i).get(0).getAlbumArt() != null) {
+                            item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
+                        }
+                        albumList.get(i).add(item);
+                        break;
+                    } else if (i == albumList.size() - 1) {
+                        List<Audio> album = new ArrayList<>();
+                        item.setAlbumArt(getAlbumCover(item.getData()));
+                        album.add(item);
+                        albumList.add(album);
+                        break;
+                    }
+                }
+            } else {
+                List<Audio> album = new ArrayList<>();
+                item.setAlbumArt(getAlbumCover(item.getData()));
+                album.add(item);
+                albumList.add(album);
+            }
+        return item;
+    }
+
+    private Bitmap getAlbumCover(String pathId) {
+        System.out.println("Is thing being called?");
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        Bitmap albumCover;
+        try {
+            metaRetriever.setDataSource(pathId);
+            byte[] art = metaRetriever.getEmbeddedPicture();
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inSampleSize = 0; // Setting this lower returns a lower resolution image. For example, setting this variable to 2 returns an image 1/2 the size of the original. 4 = 1/4 the size, etc.
+            albumCover = BitmapFactory.decodeByteArray(art, 0, art.length, opt);
+            if (albumCover != null) {
+                return albumCover;
+            }
+        } catch (Exception ignored) { }
+        finally {
+            metaRetriever.release();
+        }
+        return null;
     }
 
     private String milliSecondsToTimer(long milliseconds) {

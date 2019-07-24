@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
@@ -20,20 +19,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     private static List<Audio> dataSet = new ArrayList<>();
 
-    public List<Audio> getDataSet() {
-        return dataSet;
-    }
-
     public SongAdapter() { }
 
     public SongAdapter(List<Audio> audioList) {
-        System.out.println("Test 1");
         if(dataSet != null) {
-            System.out.println("Test 2");
             if (dataSet.size() == 0) {
-                System.out.println("Test 3");
                 dataSet = audioList;
-                System.out.println("Test 4: " + dataSet.size());
             }
         }
     }
@@ -58,14 +49,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         holder.itemDuration.setText(duration);
 
         Bitmap albumArt = dataSet.get(position).getAlbumArt();
-        AudioController audioController = new AudioController();
+        /*AudioController audioController = new AudioController();
         final List<List<Audio>> albumList = audioController.getAlbumList();
         for (List<Audio> album: albumList) {
             if(album.get(0).getAlbum().equalsIgnoreCase(dataSet.get(position).getAlbum())) {
                 albumArt = album.get(0).getAlbumArt();
                 break;
             }
-        }
+        }*/
         if (albumArt != null) { holder.albumArt.setImageBitmap(albumArt); }
         else { holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare); }
 
@@ -74,12 +65,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             public void onClick(View v) {
                 ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                 Audio item = dataSet.get(position);
-                for (List<Audio> album: albumList) {
+                /*for (List<Audio> album: albumList) {
                     if(item.getAlbum().equalsIgnoreCase(album.get(0).getAlbum())) {
                        item.setAlbumArt(album.get(0).getAlbumArt());
                        break;
                     }
-                }
+                }*/
 
                 ActivePlaylistAdapter activePlaylistAdapter = activePlaylistController.getActivePlaylistAdapter();
                 activePlaylistAdapter.addItem(item);
