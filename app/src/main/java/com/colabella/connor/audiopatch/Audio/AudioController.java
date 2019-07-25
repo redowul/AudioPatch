@@ -1,6 +1,5 @@
 package com.colabella.connor.audiopatch.Audio;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,18 +8,18 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
 import static java.lang.Long.valueOf;
 
 public class AudioController {
 
-    private List<Audio> audioList;               //todo differentiate between current playlist and audio collection stored on device
+    private List<Audio> audioList;
     private List<List<Audio>> albumList;
     private List<List<List<Audio>>> artistList;
     private SongAdapter songAdapter = new SongAdapter();
@@ -32,7 +31,6 @@ public class AudioController {
     void setAudioList(List<Audio> list) {
         if(audioList == null) {
             audioList = list;
-            //audioList = list;
             songAdapter = new SongAdapter(audioList);
         }
     }
@@ -40,8 +38,7 @@ public class AudioController {
     void setAlbumList(List<List<Audio>> list) {
         if(albumList == null) {
             albumList = list;
-            System.out.println(albumList.size());
-            //songAdapter = new SongAdapter(audioList);
+            albumAdapter = new AlbumAdapter(albumList);
         }
     }
 
@@ -59,8 +56,20 @@ public class AudioController {
         return albumsBySelectedArtist;
     }
 
+
+
+    void setSongAdapter(SongAdapter songAdapter) {
+        this.songAdapter = songAdapter;
+       // SongListFragment songListFragment = new SongListFragment();
+       // songListFragment.updateSongAdapter();
+    }
+
     public SongAdapter getSongAdapter() {
         return songAdapter;
+    }
+
+    void setAlbumAdapter(AlbumAdapter albumAdapter) {
+        this.albumAdapter = albumAdapter;
     }
 
     public AlbumAdapter getAlbumAdapter() {
@@ -81,65 +90,6 @@ public class AudioController {
         Context context = mainActivity.getStaticApplicationContext();
         retrieveAudioTask.execute(context); // Handles album cover retrieval on a secondary thread
     }
-
-    /*List<Audio> sortAudioByAlbum(List<Audio> audioList) {
-        AlbumCoverTask albumCoverTask = new AlbumCoverTask();
-        if(albumList == null) {
-            for (Audio item : audioList) {
-                if (albumList != null) {
-                    // If we find a matching album title, add the given audio to that album's list.
-                    for (int i = 0; i < albumList.size(); i++) {
-                        if (albumList.get(i).get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
-                            if (albumList.get(i).get(0).getAlbumArt() != null) {
-                                item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
-                            }
-                            albumList.get(i).add(item);
-                            break;
-                        } else if (i == albumList.size() - 1) {
-                            List<Audio> album = new ArrayList<>();
-                            albumCoverTask.execute(item); // Handles album cover retrieval on a secondary thread
-                            album.add(item);
-                            albumList.add(album);
-                            break;
-                        }
-                    }
-                } else {
-                    albumList = new ArrayList<>();
-                    List<Audio> album = new ArrayList<>();
-                    albumCoverTask.execute(item); // Handles album cover retrieval on a secondary thread
-                    album.add(item);
-                    albumList.add(album);
-                }
-            }
-        }
-        return audioList;
-    }*/
-
-    /*private List<List<Audio>> sortAudioByAlbum(List<List<Audio>> albumList, Audio item) {
-        AlbumCoverTask albumCoverTask = new AlbumCoverTask();
-        if (albumList.size() > 0) {
-            // If we find a matching album title, add the given audio to that album's list.
-            for (int i = 0; i < albumList.size(); i++) {
-                if (albumList.get(i).get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
-                    //item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
-                    albumList.get(i).add(item);
-                    break;
-                } else if (i == albumList.size() - 1) {
-                    List<Audio> album = new ArrayList<>();
-                    albumCoverTask.execute(item); // Handles album cover retrieval on a secondary thread
-                    album.add(item);
-                    albumList.add(album);
-                    break;
-                }
-            }
-        } else {
-            List<Audio> album = new ArrayList<>();
-            albumCoverTask.execute(item); // Handles album cover retrieval on a secondary thread
-            album.add(item);
-            albumList.add(album);
-        }
-        return albumList;
-    }*/
 
     private List<List<List<Audio>>> sortAudioByArtist(List<List<List<Audio>>> artistList, List<Audio> album) {
         if (artistList.size() > 0) {
@@ -198,6 +148,9 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     Audio item = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
                     item = sortAudioByAlbum(item);
                     audioList.add(item);
+                    AudioController audioController = new AudioController();
+                    SongAdapter songAdapter = new SongAdapter(audioList);
+                    audioController.setSongAdapter(songAdapter);
                 }
                 while (cursor.moveToNext());   // While there are more audio files to be read, continue reading those files
             }
@@ -238,11 +191,12 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                 album.add(item);
                 albumList.add(album);
             }
+        AudioController audioController = new AudioController();
+        audioController.setAlbumList(albumList);
         return item;
     }
 
     private Bitmap getAlbumCover(String pathId) {
-        System.out.println("Is thing being called?");
         MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
         Bitmap albumCover;
         try {

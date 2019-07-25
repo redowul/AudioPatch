@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
+
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.R;
@@ -26,7 +28,7 @@ public class GridDisplayFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView gridView = (RecyclerView) inflater.inflate(R.layout.fragment_album_selection, container, false);
-        //readBundle(getArguments(), gridView); // Receives int bundle from fragment initialization and determines which set of data to display via a switch statement
+        readBundle(getArguments(), gridView); // Receives int bundle from fragment initialization and determines which set of data to display via a switch statement
         return gridView;
     }
 
@@ -37,11 +39,11 @@ public class GridDisplayFragment extends Fragment {
     }
 
     private void initializeGridView(RecyclerView gridView, int arguments, Bundle bundle){
-       /* AudioController audioController = new AudioController();
+        AudioController audioController = new AudioController();
 
         switch(arguments) { // Instructs fragment whether to display artists or albums
             case 0: { // Display Artists
-                gridView.setAdapter(audioController.getArtistAdapter());
+                //gridView.setAdapter(audioController.getArtistAdapter());
             }
             break;
             case 1: { // Display All Albums
@@ -75,6 +77,5 @@ public class GridDisplayFragment extends Fragment {
         }
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
         gridView.setLayoutManager(gridLayoutManager); // set LayoutManager to RecyclerView
-        */
     }
 }
