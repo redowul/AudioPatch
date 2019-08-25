@@ -18,17 +18,28 @@ import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
-    private static List<List<List<Audio>>> dataSet;
+    private static List<List<List<Audio>>> dataSet = new ArrayList<>();
 
     public ArtistAdapter() { }
 
     public ArtistAdapter(List<List<List<Audio>>> artistList) {
-        dataSet = artistList;
+        if(dataSet != null) {
+            if (dataSet.size() == 0) {
+                dataSet = artistList;
+            }
+        }
     }
+
+    public List<List<List<Audio>>> getDataSet() {
+        return dataSet;
+    }
+
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -95,7 +106,12 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     }
 
     @Override
-    public int getItemCount() { return dataSet.size(); }
+    public int getItemCount() {
+        if(dataSet != null) {
+            return dataSet.size();
+        }
+        return 0;
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView itemArtist;

@@ -11,10 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.R;
+import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumListViewAdapter;
 
 import java.util.ArrayList;
@@ -27,21 +26,13 @@ public class SongSelectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_album_song_selection, container, false);
 
-        /*AlbumListViewAdapter audioListViewRecyclerViewAdapter = new AlbumListViewAdapter();
-
-        RecyclerView recyclerView = view.findViewById(R.id.songSelectionRecyclerView);
-        recyclerView.setNestedScrollingEnabled(false); // Ensures recyclerView can overScroll, and doesn't get stuck inside of the nestedScrollView. (Allows view to scroll past where finger stops.)
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(audioListViewRecyclerViewAdapter);
-
-        Bundle bundle = this.getArguments(); // Accepts passed album title from AlbumSelectionFragment. There will only ever be one match, allowing us to quickly find it & avoid the TransactionTooLarge Exception.
+        Bundle bundle = this.getArguments(); // Accepts passed album title from AlbumSelectionFragment. Since we're only passing a string, the value is small enough to avoid a TransactionTooLarge Exception.
         if (bundle != null) {
             List<Audio> selectedAlbum = new ArrayList<>();
             String selectedAlbumTitle = bundle.getString("albumKey");
 
-            AudioController audioController = new AudioController();
-            List<List<Audio>> albums = audioController.getAlbumList();
+            AlbumAdapter albumAdapter = new AlbumAdapter();
+            List<List<Audio>> albums = albumAdapter.getDataSet();
             for (List<Audio> album : albums) {
                 if (album.get(0).getAlbum().equalsIgnoreCase(selectedAlbumTitle)) {
                     selectedAlbum = album;
@@ -54,13 +45,21 @@ public class SongSelectionFragment extends Fragment {
             if (albumArt != null) { imageView.setImageBitmap(albumArt); }
             else { imageView.setImageResource(R.drawable.audiopatchlogosquare); }
 
+            AlbumListViewAdapter audioListViewRecyclerViewAdapter = new AlbumListViewAdapter(selectedAlbum);
+
             // Passes position of selected album within master album list to the RecyclerView
             audioListViewRecyclerViewAdapter.setDataSet(selectedAlbum);
 
             TextView artistLabel = view.findViewById(R.id.artist_label);
             String albumName = selectedAlbum.get(0).getAlbum();
             if(albumName != null) { artistLabel.setText(albumName); }
-        }*/
+
+            RecyclerView recyclerView = view.findViewById(R.id.songSelectionRecyclerView);
+            recyclerView.setNestedScrollingEnabled(false); // Ensures recyclerView can overScroll, and doesn't get stuck inside of the nestedScrollView. (Allows view to scroll past where finger stops.)
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(audioListViewRecyclerViewAdapter);
+        }
         return view;
     }
 }

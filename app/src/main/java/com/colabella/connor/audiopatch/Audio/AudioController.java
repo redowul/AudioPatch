@@ -8,37 +8,49 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
 import java.util.ArrayList;
 import java.util.List;
+
 import static java.lang.Long.valueOf;
 
 public class AudioController {
 
-    private List<Audio> audioList;
-    private List<List<Audio>> albumList;
-    private List<List<List<Audio>>> artistList;
-    private SongAdapter songAdapter = new SongAdapter();
-    private AlbumAdapter albumAdapter = new AlbumAdapter();
-    private ArtistAdapter artistAdapter = new ArtistAdapter();
+    private static List<Audio> audioList;
+    private static List<List<Audio>> albumList;
+    private static List<List<List<Audio>>> artistList;
+    private static SongAdapter songAdapter = new SongAdapter();
+    private static AlbumAdapter albumAdapter = new AlbumAdapter();
+    private static ArtistAdapter artistAdapter = new ArtistAdapter();
 
     public AudioController() { }
+
+    public List<Audio> getAudioList() {
+        return audioList;
+    }
 
     void setAudioList(List<Audio> list) {
         if(audioList == null) {
             audioList = list;
-            songAdapter = new SongAdapter(audioList);
+            songAdapter.updateDataSet(audioList);
+            songAdapter.notifyDataSetChanged();
         }
     }
 
     void setAlbumList(List<List<Audio>> list) {
         if(albumList == null) {
             albumList = list;
-            albumAdapter = new AlbumAdapter(albumList);
+            albumAdapter.updateDataSet(albumList);
+        }
+    }
+
+    void setArtistList(List<List<List<Audio>>> list) {
+        if(artistList == null) {
+            artistList = list;
+            artistAdapter = new ArtistAdapter(artistList);
         }
     }
 
@@ -56,10 +68,26 @@ public class AudioController {
         return albumsBySelectedArtist;
     }
 
+    public List<Audio> getAlbumByAlbumTitle(String albumTitle) { // returns album if the album title exists in the master album list
+        for (List<Audio> album : albumList) {
+            if (album.get(0).getAlbum().equalsIgnoreCase(albumTitle)) {
+                return album;
+            }
+        }
+        return null;
+    }
 
+    public List<List<Audio>> getArtistByArtistName (String artistName) { // returns artist if the artist's name exists in the master artist list
+        for (List<List<Audio>> artist : artistList) {
+            if (artist.get(0).get(0).getArtist().equalsIgnoreCase(artistName)) {
+                return artist;
+            }
+        }
+        return null;
+    }
 
-    void setSongAdapter(SongAdapter songAdapter) {
-        this.songAdapter = songAdapter;
+    void setSongAdapter(SongAdapter s) {
+        //songAdapter = s;
        // SongListFragment songListFragment = new SongListFragment();
        // songListFragment.updateSongAdapter();
     }
@@ -123,6 +151,7 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
 
     private List<Audio> audioList = new ArrayList<>();
     private List<List<Audio>> albumList = new ArrayList<>();
+    private List<List<List<Audio>>> artistList = new ArrayList<>();
 
     @Override
     // Actual download method, run in the task thread
@@ -149,8 +178,9 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     item = sortAudioByAlbum(item);
                     audioList.add(item);
                     AudioController audioController = new AudioController();
-                    SongAdapter songAdapter = new SongAdapter(audioList);
-                    audioController.setSongAdapter(songAdapter);
+                    audioController.getSongAdapter().updateDataSet(audioList);
+                    //SongAdapter songAdapter = new SongAdapter(audioList);
+                    //audioController.setSongAdapter(songAdapter);
                 }
                 while (cursor.moveToNext());   // While there are more audio files to be read, continue reading those files
             }
@@ -165,6 +195,7 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
         AudioController audioController = new AudioController();
         audioController.setAudioList(audioList);
         audioController.setAlbumList(albumList);
+        audioController.setArtistList(artistList);
     }
 
     private Audio sortAudioByAlbum(Audio item) {
@@ -175,13 +206,15 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                         if (albumList.get(i).get(0).getAlbumArt() != null) {
                             item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
                         }
-                        albumList.get(i).add(item);
+                        albumList.get(i).add(item);          // add item to its corresponding album
+                        sortAudioByArtist(albumList.get(i)); // update the artist list
                         break;
                     } else if (i == albumList.size() - 1) {
                         List<Audio> album = new ArrayList<>();
                         item.setAlbumArt(getAlbumCover(item.getData()));
                         album.add(item);
                         albumList.add(album);
+                        sortAudioByArtist(album);
                         break;
                     }
                 }
@@ -190,10 +223,42 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                 item.setAlbumArt(getAlbumCover(item.getData()));
                 album.add(item);
                 albumList.add(album);
+                sortAudioByArtist(album);
             }
-        AudioController audioController = new AudioController();
-        audioController.setAlbumList(albumList);
         return item;
+    }
+
+    private void sortAudioByArtist(List<Audio> album) {
+        if (artistList.size() > 0) {
+            for (int i = 0; i < artistList.size(); i++) {
+                if (artistList.size() > 0) {
+                    if (artistList.get(i).get(0).get(0).getArtist().equals(album.get(0).getArtist())) {
+                        for (int j = 0; j < artistList.get(i).size(); j++) {
+                            if (artistList.get(i).get(j).get(0).getAlbum().equals(album.get(0).getAlbum())) {
+                                artistList.get(i).set(j, album);
+                            }
+                            if(j == artistList.get(i).size()) {
+                                artistList.get(i).add(album);
+                            }
+                        }
+                        break;
+                    } else if (i == artistList.size() - 1) {
+                        List<List<Audio>> artist = new ArrayList<>();
+                        artist.add(album);
+                        artistList.add(artist);
+                        break;
+                    }
+                } else {
+                    List<List<Audio>> artist = new ArrayList<>();
+                    artist.add(album);
+                    artistList.add(artist);
+                }
+            }
+        } else {
+            List<List<Audio>> artist = new ArrayList<>();
+            artist.add(album);
+            artistList.add(artist);
+        }
     }
 
     private Bitmap getAlbumCover(String pathId) {
@@ -240,6 +305,7 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
         return finalTimerString;
     }
 }
+
 /*
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void selectAudioFromStorage(PackageManager packageManager, Activity activity) {

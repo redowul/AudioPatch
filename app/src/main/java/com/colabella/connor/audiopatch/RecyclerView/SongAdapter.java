@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +18,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private static List<Audio> dataSet = new ArrayList<>();
 
     public SongAdapter() { }
-
-    public SongAdapter(List<Audio> audioList) {
-        if(dataSet != null) {
-            if (dataSet.size() == 0) {
-                dataSet = audioList;
-            }
-        }
-    }
 
     // inflates the row layout from xml when needed
     @Override
@@ -39,52 +29,43 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        String itemTitle = dataSet.get(position).getTitle();
-        holder.itemTitle.setText(itemTitle);
+        if(dataSet != null) {
+            String itemTitle = dataSet.get(position).getTitle();
+            holder.itemTitle.setText(itemTitle);
 
-        String artist = dataSet.get(position).getArtist();
-        holder.itemArtist.setText(artist);
+            String artist = dataSet.get(position).getArtist();
+            holder.itemArtist.setText(artist);
 
-        String duration = dataSet.get(position).getDuration();
-        holder.itemDuration.setText(duration);
+            String duration = dataSet.get(position).getDuration();
+            holder.itemDuration.setText(duration);
 
-        Bitmap albumArt = dataSet.get(position).getAlbumArt();
-        /*AudioController audioController = new AudioController();
-        final List<List<Audio>> albumList = audioController.getAlbumList();
-        for (List<Audio> album: albumList) {
-            if(album.get(0).getAlbum().equalsIgnoreCase(dataSet.get(position).getAlbum())) {
-                albumArt = album.get(0).getAlbumArt();
-                break;
+            Bitmap albumArt = dataSet.get(position).getAlbumArt();
+
+            if (albumArt != null) {
+                holder.albumArt.setImageBitmap(albumArt);
             }
-        }*/
-        if (albumArt != null) { holder.albumArt.setImageBitmap(albumArt); }
-        else { holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare); }
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-                Audio item = dataSet.get(position);
-                /*for (List<Audio> album: albumList) {
-                    if(item.getAlbum().equalsIgnoreCase(album.get(0).getAlbum())) {
-                       item.setAlbumArt(album.get(0).getAlbumArt());
-                       break;
-                    }
-                }*/
-
-                ActivePlaylistAdapter activePlaylistAdapter = activePlaylistController.getActivePlaylistAdapter();
-                activePlaylistAdapter.addItem(item);
-                activePlaylistAdapter.notifyDataSetChanged();
-                DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                dataRetrievalActivity.endActivity();
+            else {
+                holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare);
             }
-        });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                    Audio item = dataSet.get(position);
+
+                    ActivePlaylistAdapter activePlaylistAdapter = activePlaylistController.getActivePlaylistAdapter();
+                    activePlaylistAdapter.addItem(item);
+                    activePlaylistAdapter.notifyDataSetChanged();
+                    DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
+                    dataRetrievalActivity.endActivity();
+                }
+            });
+        }
     }
 
     public void updateDataSet(List<Audio> audioList) {
         dataSet = audioList;
-        AudioController audioController = new AudioController();
-        audioController.getSongAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -95,7 +76,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         TextView itemTitle;
         TextView itemArtist;
         TextView itemDuration;

@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.Fragments.SongSelectionFragment;
 import com.colabella.connor.audiopatch.R;
@@ -100,8 +99,8 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.itemDuration.setText(duration);
 
                 Bitmap albumArt = null;
-                AudioController audioController = new AudioController();
-                final List<List<Audio>> albumList = audioController.getAlbumList();
+                AlbumAdapter albumAdapter = new AlbumAdapter();
+                final List<List<Audio>> albumList = albumAdapter.getDataSet();
                 for (List<Audio> album: albumList) {
                     if(album.get(0).getAlbum().equalsIgnoreCase(songDataSet.get(songPosition).getAlbum())) {
                         albumArt = album.get(0).getAlbumArt();

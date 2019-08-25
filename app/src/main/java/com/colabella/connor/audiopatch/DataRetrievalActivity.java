@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -24,6 +25,7 @@ import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -94,7 +96,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
         });
 
         // perform set on query text listener event
-        /*simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // do something on text submit
@@ -105,69 +107,67 @@ public class DataRetrievalActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String userInput) {
                 AudioController audioController = new AudioController();
-                SongAdapter songAdapter = new SongAdapter();
-                AlbumAdapter albumAdapter = new AlbumAdapter();
-                ArtistAdapter artistAdapter = new ArtistAdapter();
+                SongAdapter songAdapter = audioController.getSongAdapter();
+                AlbumAdapter albumAdapter = audioController.getAlbumAdapter();
+                ArtistAdapter artistAdapter = audioController.getArtistAdapter();
 
-                //List<Audio> audioList = audioController.getAudioList();
-                List<Audio> audioList = songAdapter.getDataSet();
+                List<Audio> audioList = audioController.getAudioList();
                 List<List<Audio>> albumList = audioController.getAlbumList();
                 List<List<List<Audio>>> artistList = audioController.getArtistList();
-
-                List<Audio> filteredAudio = new ArrayList<>(audioList);
-                List<List<Audio>> filteredAlbums = new ArrayList<>(albumList);
-                List<List<List<Audio>>> filteredArtists = new ArrayList<>(artistList);
+                List<Audio> filteredAudio = new ArrayList<>();
+                List<List<Audio>> filteredAlbums = new ArrayList<>();
+                List<List<List<Audio>>> filteredArtists = new ArrayList<>();
 
                 userInput = userInput.toLowerCase();
+                if (userInput.length() > 0) {
+                    for (Audio item : audioList) {
+                        String title = item.getTitle();
+                        String artist = item.getArtist();
+                        String albumTitle = item.getAlbum();
 
-                for (int i = 0; i < filteredAudio.size(); i++) {
-                    String title = filteredAudio.get(i).getTitle();
-                    String artist = filteredAudio.get(i).getArtist();
+                        title = title.toLowerCase();
+                        artist = artist.toLowerCase();
+                        albumTitle = albumTitle.toLowerCase();
 
-                    title = title.toLowerCase();
-                    artist = artist.toLowerCase();
-                    if (userInput.length() > 0) {
-                        if (!title.contains(userInput) && !artist.contains(userInput)) { // If userInput does not match the name of the album or the name of the artist, remove album from the list.
-                            filteredAudio.remove(i);
-                            songAdapter.updateDataSet(filteredAudio);
-                            i = -1;
+                        if (title.toLowerCase().contains(userInput) || artist.toLowerCase().contains(userInput)) {
+                            if (!filteredAudio.contains(item)) {
+                                filteredAudio.add(item);
+                            }
+                        }
+                        if (albumTitle.contains(userInput) || artist.contains(userInput)) {
+                            List<Audio> searchedAlbum = audioController.getAlbumByAlbumTitle(albumTitle);
+                            if (searchedAlbum != null) {
+                                if (!filteredAlbums.contains(searchedAlbum)) {
+                                    filteredAlbums.add(searchedAlbum);
+                                }
+                            }
+                        }
+                        if (artist.contains(userInput)) {
+                            List<List<Audio>> searchedArtist = audioController.getArtistByArtistName(artist);
+                            if (searchedArtist != null) {
+                                if (!filteredArtists.contains(searchedArtist)) {
+                                    filteredArtists.add(searchedArtist);
+                                }
+                            }
                         }
                     }
-                    else { songAdapter.updateDataSet(audioList); }
                 }
+                else {
+                    filteredAudio = audioList;
+                    filteredAlbums = albumList;
+                    filteredArtists = artistList;
+                }
+                songAdapter.updateDataSet(filteredAudio);
+                songAdapter.notifyDataSetChanged();
 
-                for (int i = 0; i < filteredAlbums.size(); i++) {
-                    String artist = filteredAlbums.get(i).get(0).getArtist();
-                    String album = filteredAlbums.get(i).get(0).getAlbum();
-                    artist = artist.toLowerCase();
-                    album = album.toLowerCase();
-                    if (userInput.length() > 0) {
-                        if (!album.contains(userInput) && !artist.contains(userInput)) { // If userInput does not match the name of the album or the name of the artist, remove album from the list.
-                            filteredAlbums.remove(i);
-                            albumAdapter.updateDataSet(filteredAlbums);
-                            i = -1;
-                        }
-                    }
-                    else { albumAdapter.updateDataSet(albumList); }
-                }
+                albumAdapter.updateDataSet(filteredAlbums);
+                albumAdapter.notifyDataSetChanged();
 
-                for (int i = 0; i < filteredArtists.size(); i++) {
-                    String artist = filteredArtists.get(i).get(0).get(0).getArtist();
-                    String album = filteredArtists.get(i).get(0).get(0).getAlbum();
-                    artist = artist.toLowerCase();
-                    album = album.toLowerCase();
-                    if (userInput.length() > 0) {
-                        if (!album.contains(userInput) && !artist.contains(userInput)) { // If userInput does not match the name of the album or the name of the artist, remove album from the list.
-                            filteredArtists.remove(i);
-                            artistAdapter.updateDataSet(filteredArtists);
-                            i = -1;
-                        }
-                    }
-                    else { artistAdapter.updateDataSet(audioController.getArtistList()); }
-                }
+                artistAdapter.updateDataSet(filteredArtists);
+                artistAdapter.notifyDataSetChanged();
                 return true;
             }
-        });*/
+        });
     }
 
     @Override
@@ -203,9 +203,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
             gridDisplayFragment.setArguments(bundle);
             adapter.addFragment(gridDisplayFragment, fragmentTitles[i]); // Fragment, Title to display on fragment's ViewPager tab
         }
-
         adapter.addFragment(new SongListFragment(), "Songs");
-
         viewPager.setAdapter(adapter);
     }
 

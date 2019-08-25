@@ -8,10 +8,20 @@ import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.R;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdapter.ViewHolder> {
-    private static List<Audio> dataSet;
+    private static List<Audio> dataSet = new ArrayList<>();
+
+    public AlbumListViewAdapter(List<Audio> selectedAlbum) {
+        if(dataSet != null) {
+            if (dataSet.size() == 0) {
+                dataSet = selectedAlbum;
+            }
+        }
+    }
 
     public void setDataSet(List<Audio> selectedAlbum) { // Sets RecyclerView data
         dataSet = selectedAlbum;

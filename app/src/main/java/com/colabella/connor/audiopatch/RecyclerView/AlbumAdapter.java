@@ -26,10 +26,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     public AlbumAdapter() { }
 
-    public AlbumAdapter(List<List<Audio>> albumList) {
-        if(dataSet == null) {
-            dataSet = albumList;
-        }
+    public List<List<Audio>> getDataSet() {
+        return dataSet;
     }
 
     @Override
@@ -81,8 +79,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     public void updateDataSet(List<List<Audio>> albumList) {
         dataSet = albumList;
-        AudioController audioController = new AudioController();
-        audioController.getAlbumAdapter().notifyDataSetChanged();
     }
 
     @Override
