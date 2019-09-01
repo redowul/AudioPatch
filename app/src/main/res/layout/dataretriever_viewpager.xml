@@ -12,6 +12,11 @@ android:layout_height="match_parent">
     android:layout_height="wrap_content"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_scrollFlags="scroll|enterAlways">
     <SearchView
         android:id="@+id/searchView"
         android:paddingTop="8dp"
@@ -21,7 +26,26 @@ android:layout_height="match_parent">
         android:queryHint="Search"
         android:inputType="textNoSuggestions"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_scrollFlags="scroll|enterAlways"/>
+        app:layout_scrollFlags="scroll|enterAlways">
+    </SearchView>
+        <Button
+            android:id="@+id/menu_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_toRightOf="@+id/searchView"
+            android:layout_toEndOf="@+id/searchView"
+            android:background="@drawable/menu_icon"
+            android:layout_gravity="end"
+            android:onClick="showMenu" />
+    </RelativeLayout>
+
+    <!--<android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_tops"
+        android:layout_gravity="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.Toolbar>-->
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"

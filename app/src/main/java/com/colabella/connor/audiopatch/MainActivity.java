@@ -1,6 +1,5 @@
 package com.colabella.connor.audiopatch;
 
-import android.annotation.SuppressLint;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
@@ -28,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
@@ -47,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar_top);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_items, menu);
         return true;
     }
 

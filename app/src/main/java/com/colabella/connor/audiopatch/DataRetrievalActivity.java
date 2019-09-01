@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -14,8 +13,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
@@ -25,7 +29,6 @@ import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -39,9 +42,6 @@ public class DataRetrievalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dataretriever);
-
-        //AudioController audioController = new AudioController();
-        //audioController.getAudioFilesFromDeviceStorage();
 
         ViewPager viewPager = findViewById(R.id.viewpager);
         if (viewPager != null) {
@@ -166,6 +166,46 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 artistAdapter.updateDataSet(filteredArtists);
                 artistAdapter.notifyDataSetChanged();
                 return true;
+            }
+        });
+    }
+
+    public void showMenu(final View view) {
+        PopupMenu popup = new PopupMenu(this, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.dataretriever_options_menu, popup.getMenu());
+        popup.show();
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.sort: {
+                        System.out.println("this one should be sort...");
+                        openSortSubmenu(view);
+                        return true;
+                    }
+                    case R.id.settings: {
+                        System.out.println("and finally settings");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    public void openSortSubmenu(View view) {
+        PopupMenu popup = new PopupMenu(this, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.dataretriever_sort_submenu, popup.getMenu());
+        popup.show();
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                System.out.println("Click works?");
+                return false;
             }
         });
     }

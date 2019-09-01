@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/alphabetical"
+        android:title="A to Z"/>
+
+    <item
+        android:id="@+id/reverse"
+        android:title="Z to A"/>
+
+    <item
+        android:id="@+id/randomize"
+        android:title="randomize"/>
+</menu>
