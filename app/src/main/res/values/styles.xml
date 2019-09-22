@@ -6,6 +6,7 @@
         <item name="colorAccent">@color/colorPrimaryAccent</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="android:itemBackground">@color/recyclerViewPrimary</item>
+        <item name="android:backgroundDimEnabled">false</item>
         <item name="popupMenuStyle">@style/PopupMenu</item>
     </style>
 
@@ -22,8 +23,14 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
-        <item name="android:dropDownHorizontalOffset">24dp</item>
-        <item name="android:dropDownVerticalOffset">24dp</item>
+   <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
+       <item name="android:popupBackground">@drawable/menu_background</item>
+       <item name="android:itemBackground">@color/recyclerViewDark</item>
+       <item name="android:colorBackground">@color/recyclerViewPrimary</item>
+       <item name="android:textColorSecondary">@color/textColor</item>
+       <item name="android:textSize">15sp</item>
+       <item name="android:paddingLeft">4dp</item>
+       <item name="android:paddingRight">4dp</item>
+       <item name="android:radius">4dp</item>
     </style>
 </resources>

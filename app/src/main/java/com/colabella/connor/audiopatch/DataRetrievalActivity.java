@@ -2,9 +2,15 @@ package com.colabella.connor.audiopatch;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,13 +19,26 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
@@ -28,6 +47,8 @@ import com.colabella.connor.audiopatch.Fragments.SongListFragment;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -170,13 +191,64 @@ public class DataRetrievalActivity extends AppCompatActivity {
         });
     }
 
-    public void showMenu(final View view) {
-        PopupMenu popup = new PopupMenu(this, view);
+    /*public void showPopup(View view) {
+        Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
+        PopupMenu popup = new PopupMenu(wrapper, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.dataretriever_options_menu, popup.getMenu());
         popup.show();
+    }*/
 
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+    @SuppressLint({"NewApi", "RestrictedApi"})
+    public void showPopup(final View view) {
+        Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
+        PopupMenu popup = new PopupMenu(wrapper, view);
+
+        MenuInflater inflater = popup.getMenuInflater();
+        MenuBuilder menuBuilder = new MenuBuilder(this);
+        inflater.inflate(R.menu.dataretriever_options_menu, menuBuilder);
+        //inflater.inflate(R.menu.dataretriever_options_menu, popup.getMenu());
+        MenuPopupHelper optionsMenu = new MenuPopupHelper(wrapper, menuBuilder, view);
+        optionsMenu.setForceShowIcon(true);
+
+        //optionsMenu.setGravity(Gravity.END);
+
+        //view.setX(Gravity.END - 10);
+        //view.setY(300);
+        optionsMenu.show();
+        //popup.show();
+
+        menuBuilder.setCallback(new MenuBuilder.Callback() {
+            @Override
+            public boolean onMenuItemSelected(MenuBuilder menuBuilder, MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.sort: {
+                        System.out.println("this one should be sort...");
+                        return true;
+                    }
+                    case R.id.settings: {
+                        System.out.println("and finally settings");
+                        return true;
+                    }
+                    case R.id.sortMenu_alphabetical: {
+                        System.out.println("item from submenu?");
+                        return true;
+                    }
+                    case R.id.sortMenu_omegapsical: {
+                        System.out.println("reverse of alphabetical");
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void onMenuModeChange(MenuBuilder menuBuilder) {
+
+            }
+        });
+
+        /*popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
@@ -192,10 +264,10 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
 
-    public void openSortSubmenu(View view) {
+    /*public void openSortSubmenu(View view) {
         PopupMenu popup = new PopupMenu(this, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.dataretriever_sort_submenu, popup.getMenu());
@@ -208,7 +280,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 return false;
             }
         });
-    }
+    }*/
 
     @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

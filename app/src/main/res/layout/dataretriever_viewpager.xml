@@ -37,7 +37,7 @@ android:layout_height="match_parent">
             android:layout_toEndOf="@+id/searchView"
             android:background="@drawable/menu_icon"
             android:layout_gravity="end"
-            android:onClick="showMenu" />
+            android:onClick="showPopup"/>
     </RelativeLayout>
 
     <!--<android.support.v7.widget.Toolbar

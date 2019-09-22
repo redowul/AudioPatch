@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/alphabetical"
+        android:id="@+id/sortMenu_alphabetical"
         android:title="A to Z"/>
 
     <item
-        android:id="@+id/reverse"
+        android:id="@+id/sortMenu_omegapsical"
         android:title="Z to A"/>
 
     <item
-        android:id="@+id/randomize"
-        android:title="randomize"/>
+        android:id="@+id/sortMenu_artist"
+        android:title="Artist"/>
+
+    <item
+        android:id="@+id/sortMenu_album"
+        android:title="Album"/>
+
+    <item
+        android:id="@+id/sortMenu_shortestDuration"
+        android:title="Shortest Duration"/>
+
+    <item
+        android:id="@+id/sortMenu_longestDuration"
+        android:title="Longest Duration"/>
 </menu>

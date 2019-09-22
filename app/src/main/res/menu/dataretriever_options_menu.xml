@@ -1,20 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/sort"
         android:orderInCategory="100"
         android:title="Sort by"
-        app:showAsAction="never">
-    </item>
+        android:icon="@drawable/ic_menu_send">
+            <menu>
+                <item
+                    android:id="@+id/sortMenu_alphabetical"
+                    android:title="A to Z"/>
 
+                <item
+                    android:id="@+id/sortMenu_omegapsical"
+                    android:title="Z to A"/>
 
+                <item
+                    android:id="@+id/sortMenu_artist"
+                    android:title="Artist"/>
 
+                <item
+                    android:id="@+id/sortMenu_album"
+                    android:title="Album"/>
+
+                <item
+                    android:id="@+id/sortMenu_shortestDuration"
+                    android:title="Short Duration"/>
+
+                <item
+                    android:id="@+id/sortMenu_longestDuration"
+                    android:title="Long Duration"/>
+            </menu>
+
+        </item>
 
     <item
         android:id="@+id/settings"
         android:orderInCategory="100"
         android:title="@string/settings"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_menu_send"
+    />
+
 </menu>
+
