@@ -24,11 +24,11 @@
 
                 <item
                     android:id="@+id/sortMenu_shortestDuration"
-                    android:title="Short Duration"/>
+                    android:title="Shortest Duration"/>
 
                 <item
                     android:id="@+id/sortMenu_longestDuration"
-                    android:title="Long Duration"/>
+                    android:title="Longest Duration"/>
             </menu>
 
         </item>
