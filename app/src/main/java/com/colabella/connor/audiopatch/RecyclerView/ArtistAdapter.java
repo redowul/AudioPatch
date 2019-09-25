@@ -102,7 +102,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public void updateDataSet(List<List<List<Audio>>> artistList) {
         dataSet = artistList;
         AudioController audioController = new AudioController();
-        audioController.getArtistAdapter().notifyDataSetChanged();
+        //audioController.getArtistAdapter().notifyDataSetChanged();
     }
 
     @Override

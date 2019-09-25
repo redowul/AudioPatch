@@ -175,7 +175,7 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     duration = milliSecondsToTimer(valueOf(duration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
 
                     Audio item = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
-                    item = sortAudioByAlbum(item);
+                    sortAudioByAlbum(item);
                     audioList.add(item);
                     AudioController audioController = new AudioController();
                     audioController.getSongAdapter().updateDataSet(audioList);
@@ -193,71 +193,72 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
     // Once the image is downloaded, associates it to the imageView
     protected void onPostExecute(Void param) {
         AudioController audioController = new AudioController();
-        audioController.setAudioList(audioList);
-        audioController.setAlbumList(albumList);
-        audioController.setArtistList(artistList);
+        audioController.getSongAdapter().notifyDataSetChanged();
+        audioController.getAlbumAdapter().notifyDataSetChanged();
+        audioController.getArtistAdapter().notifyDataSetChanged();
     }
 
-    private Audio sortAudioByAlbum(Audio item) {
-            if (albumList.size() > 0) {
-                // If we find a matching album title, add the given audio to that album's list.
-                for (int i = 0; i < albumList.size(); i++) {
-                    if (albumList.get(i).get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
-                        if (albumList.get(i).get(0).getAlbumArt() != null) {
-                            item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
-                        }
-                        albumList.get(i).add(item);          // add item to its corresponding album
-                        sortAudioByArtist(albumList.get(i)); // update the artist list
-                        break;
-                    } else if (i == albumList.size() - 1) {
-                        List<Audio> album = new ArrayList<>();
-                        item.setAlbumArt(getAlbumCover(item.getData()));
-                        album.add(item);
-                        albumList.add(album);
-                        sortAudioByArtist(album);
-                        break;
+    private void sortAudioByAlbum(Audio item) {
+        AudioController audioController = new AudioController();
+        if (albumList.size() > 0) {
+            // If we find a matching album title, add the given audio to that album's list.
+            for (int i = 0; i < albumList.size(); i++) {
+                if (albumList.get(i).get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
+                    if (albumList.get(i).get(0).getAlbumArt() != null) {
+                        item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
                     }
+                    albumList.get(i).add(item);          // add item to its corresponding album
+                    audioController.getAlbumAdapter().updateDataSet(albumList); // update the album adapter
+                    sortAudioByArtist(albumList.get(i)); // update the artist list
+                    break;
+                } else if (i == albumList.size() - 1) {
+                    List<Audio> album = new ArrayList<>();
+                    item.setAlbumArt(getAlbumCover(item.getData()));
+                    album.add(item);
+                    albumList.add(album);
+                    audioController.getAlbumAdapter().updateDataSet(albumList); // update the album adapter
+                    sortAudioByArtist(album);
+                    break;
                 }
-            } else {
-                List<Audio> album = new ArrayList<>();
-                item.setAlbumArt(getAlbumCover(item.getData()));
-                album.add(item);
-                albumList.add(album);
-                sortAudioByArtist(album);
             }
-        return item;
+        } else {
+            List<Audio> album = new ArrayList<>();
+            item.setAlbumArt(getAlbumCover(item.getData()));
+            album.add(item);
+            albumList.add(album);
+            audioController.getAlbumAdapter().updateDataSet(albumList); // update the album adapter
+            sortAudioByArtist(album);
+        }
     }
 
     private void sortAudioByArtist(List<Audio> album) {
+        AudioController audioController = new AudioController();
         if (artistList.size() > 0) {
             for (int i = 0; i < artistList.size(); i++) {
-                if (artistList.size() > 0) {
-                    if (artistList.get(i).get(0).get(0).getArtist().equals(album.get(0).getArtist())) {
-                        for (int j = 0; j < artistList.get(i).size(); j++) {
-                            if (artistList.get(i).get(j).get(0).getAlbum().equals(album.get(0).getAlbum())) {
-                                artistList.get(i).set(j, album);
-                            }
-                            if(j == artistList.get(i).size()) {
-                                artistList.get(i).add(album);
-                            }
+                if (artistList.get(i).get(0).get(0).getArtist().equals(album.get(0).getArtist())) {
+                    for (int j = 0; j < artistList.get(i).size(); j++) {
+                        if (artistList.get(i).get(j).get(0).getAlbum().equals(album.get(0).getAlbum())) {
+                            artistList.get(i).set(j, album);
                         }
-                        break;
-                    } else if (i == artistList.size() - 1) {
-                        List<List<Audio>> artist = new ArrayList<>();
-                        artist.add(album);
-                        artistList.add(artist);
-                        break;
+                        if (j == artistList.get(i).size()) {
+                            artistList.get(i).add(album);
+                            audioController.getArtistAdapter().updateDataSet(artistList); // update the artist adapter
+                        }
                     }
-                } else {
+                    break;
+                } else if (i == artistList.size() - 1) {
                     List<List<Audio>> artist = new ArrayList<>();
                     artist.add(album);
                     artistList.add(artist);
+                    audioController.getArtistAdapter().updateDataSet(artistList); // update the artist adapter
+                    break;
                 }
             }
         } else {
             List<List<Audio>> artist = new ArrayList<>();
             artist.add(album);
             artistList.add(artist);
+            audioController.getArtistAdapter().updateDataSet(artistList); // update the artist adapter
         }
     }
 

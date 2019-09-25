@@ -211,8 +211,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
         MenuPopupHelper optionsMenu = new MenuPopupHelper(wrapper, menuBuilder, view);
         optionsMenu.setForceShowIcon(true);
 
-        optionsMenu.setGravity(Gravity.END);
-
+        //optionsMenu.setGravity(Gravity.END);
         //view.setX(Gravity.END - 10);
         //view.setY(300);
         optionsMenu.show();
