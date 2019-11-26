@@ -1,0 +1,71 @@
+package com.colabella.connor.audiopatch.Audio;
+
+import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
+import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
+import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AudioSingleton {
+
+    private static AudioSingleton instance; // Should ideally be our only static item. All the other variables serve as a reference to this
+
+    private ArrayList<Audio> audioList;
+    private ArrayList<List<Audio>> albumList;
+    private ArrayList<List<List<Audio>>> artistList;
+    private SongAdapter songAdapter;
+    private AlbumAdapter albumAdapter;
+    private ArtistAdapter artistAdapter;
+
+    private AudioSingleton() {
+        this.audioList = new ArrayList<>();
+        this.albumList = new ArrayList<>();
+        this.artistList = new ArrayList<>();
+        this.songAdapter = new SongAdapter();
+        this.albumAdapter = new AlbumAdapter();
+        this.artistAdapter = new ArtistAdapter();
+    }
+
+    public static AudioSingleton getInstance() {
+        if (instance == null) {
+            instance = new AudioSingleton();
+        }
+        return instance;
+    }
+
+    ArrayList<Audio> getAudioList() {
+        return this.audioList;
+    }
+
+    public ArrayList<List<Audio>> getAlbumList() {
+        return this.albumList;
+    }
+
+    void setAlbumList(ArrayList<List<Audio>> albumList) {
+        this.albumList = albumList;
+        System.out.println("albumlist singleton size " + this.albumList.size());
+    }
+
+
+    SongAdapter getSongAdapter() {
+        return songAdapter;
+    }
+
+    public AlbumAdapter getAlbumAdapter() {
+        return albumAdapter;
+    }
+
+    public ArrayList<List<List<Audio>>> getArtistList() {
+        return artistList;
+    }
+
+    public void setArtistList(ArrayList<List<List<Audio>>> artistList) {
+        this.artistList = artistList;
+    }
+
+    public ArtistAdapter getArtistAdapter() {
+        return artistAdapter;
+    }
+}
+

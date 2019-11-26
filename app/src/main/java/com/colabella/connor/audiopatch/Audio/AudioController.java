@@ -1,5 +1,6 @@
 package com.colabella.connor.audiopatch.Audio;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.provider.MediaStore;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
@@ -19,40 +21,15 @@ import static java.lang.Long.valueOf;
 
 public class AudioController {
 
-    private static List<Audio> audioList;
     private static List<List<Audio>> albumList;
     private static List<List<List<Audio>>> artistList;
+
     private static SongAdapter songAdapter = new SongAdapter();
     private static AlbumAdapter albumAdapter = new AlbumAdapter();
     private static ArtistAdapter artistAdapter = new ArtistAdapter();
 
+
     public AudioController() { }
-
-    public List<Audio> getAudioList() {
-        return audioList;
-    }
-
-    void setAudioList(List<Audio> list) {
-        if(audioList == null) {
-            audioList = list;
-            songAdapter.updateDataSet(audioList);
-            songAdapter.notifyDataSetChanged();
-        }
-    }
-
-    void setAlbumList(List<List<Audio>> list) {
-        if(albumList == null) {
-            albumList = list;
-            albumAdapter.updateDataSet(albumList);
-        }
-    }
-
-    void setArtistList(List<List<List<Audio>>> list) {
-        if(artistList == null) {
-            artistList = list;
-            artistAdapter = new ArtistAdapter(artistList);
-        }
-    }
 
     public List<List<Audio>> getAlbumList() {
         return albumList;
@@ -60,7 +37,7 @@ public class AudioController {
 
     public List<List<Audio>> getAlbumsByArtist(String selectedArtist) {
         List<List<Audio>> albumsBySelectedArtist = new ArrayList<>();
-        for (List<Audio> album : albumList) {
+        for (List<Audio> album : AudioSingleton.getInstance().getAlbumList()) {
             if (album.get(0).getArtist().equalsIgnoreCase(selectedArtist)) {
                 albumsBySelectedArtist.add(album);
             }
@@ -86,6 +63,7 @@ public class AudioController {
         return null;
     }
 
+
     void setSongAdapter(SongAdapter s) {
         //songAdapter = s;
        // SongListFragment songListFragment = new SongListFragment();
@@ -108,9 +86,9 @@ public class AudioController {
         return artistAdapter;
     }
 
-    public List<List<List<Audio>>> getArtistList() {
-        return artistList;
-    }
+    //public List<List<List<Audio>>> getArtistList() {
+        //return artistList;
+    //}
 
     public void getAudioFilesFromDeviceStorage() {
         RetrieveAudioTask retrieveAudioTask = new RetrieveAudioTask();
@@ -148,18 +126,14 @@ public class AudioController {
 }
 
 class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
-
-    private List<Audio> audioList = new ArrayList<>();
-    private List<List<Audio>> albumList = new ArrayList<>();
-    private List<List<List<Audio>>> artistList = new ArrayList<>();
-
     @Override
     // Actual download method, run in the task thread
     protected Void doInBackground(Context... params) {
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
 
-        Cursor cursor = params[0].getContentResolver().query(uri, null, selection, null, null);
+        Cursor cursor = params[0].getContentResolver().query(uri, null, selection, null, sortOrder);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -175,12 +149,9 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     duration = milliSecondsToTimer(valueOf(duration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
 
                     Audio item = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
+                    AudioSingleton.getInstance().getAudioList().add(item);
+                    AudioSingleton.getInstance().getSongAdapter().updateDataSet(AudioSingleton.getInstance().getAudioList());
                     sortAudioByAlbum(item);
-                    audioList.add(item);
-                    AudioController audioController = new AudioController();
-                    audioController.getSongAdapter().updateDataSet(audioList);
-                    //SongAdapter songAdapter = new SongAdapter(audioList);
-                    //audioController.setSongAdapter(songAdapter);
                 }
                 while (cursor.moveToNext());   // While there are more audio files to be read, continue reading those files
             }
@@ -192,74 +163,59 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
     @Override
     // Once the image is downloaded, associates it to the imageView
     protected void onPostExecute(Void param) {
-        AudioController audioController = new AudioController();
-        audioController.getSongAdapter().notifyDataSetChanged();
-        audioController.getAlbumAdapter().notifyDataSetChanged();
-        audioController.getArtistAdapter().notifyDataSetChanged();
+        // apply sorting algorithms here
+
+
+        //AudioController audioController = new AudioController();
+        //audioController.getSongAdapter().notifyDataSetChanged();
+        //audioController.getAlbumAdapter().notifyDataSetChanged();
+        //audioController.getArtistAdapter().notifyDataSetChanged();
     }
 
     private void sortAudioByAlbum(Audio item) {
-        AudioController audioController = new AudioController();
-        if (albumList.size() > 0) {
-            // If we find a matching album title, add the given audio to that album's list.
-            for (int i = 0; i < albumList.size(); i++) {
-                if (albumList.get(i).get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
-                    if (albumList.get(i).get(0).getAlbumArt() != null) {
-                        item.setAlbumArt(albumList.get(i).get(0).getAlbumArt());
-                    }
-                    albumList.get(i).add(item);          // add item to its corresponding album
-                    audioController.getAlbumAdapter().updateDataSet(albumList); // update the album adapter
-                    sortAudioByArtist(albumList.get(i)); // update the artist list
-                    break;
-                } else if (i == albumList.size() - 1) {
-                    List<Audio> album = new ArrayList<>();
-                    item.setAlbumArt(getAlbumCover(item.getData()));
-                    album.add(item);
-                    albumList.add(album);
-                    audioController.getAlbumAdapter().updateDataSet(albumList); // update the album adapter
-                    sortAudioByArtist(album);
-                    break;
+        ArrayList<List<Audio>> albumList = AudioSingleton.getInstance().getAlbumList();
+        for (List<Audio> album : albumList) {
+            if (album.get(0).getAlbum().equals(item.getAlbum())) { // Only need to check the first item in an album since all item album fields within the same list will match.
+                if (album.get(0).getAlbumArt() != null) {
+                    item.setAlbumArt(album.get(0).getAlbumArt()); // gets album art from item at 0th index of the album array and uses it to set this audio item's art
                 }
+                album.add(item);
+                AudioSingleton.getInstance().setAlbumList(albumList);
+                AudioSingleton.getInstance().getAlbumAdapter().updateDataSet(AudioSingleton.getInstance().getAlbumList()); // update the album adapter
+                sortAudioByArtist(album);
+                return;
             }
-        } else {
-            List<Audio> album = new ArrayList<>();
-            item.setAlbumArt(getAlbumCover(item.getData()));
-            album.add(item);
-            albumList.add(album);
-            audioController.getAlbumAdapter().updateDataSet(albumList); // update the album adapter
-            sortAudioByArtist(album);
         }
+        item.setAlbumArt(getAlbumCover(item.getData()));
+        ArrayList<Audio> album = new ArrayList<>(); // creating new album
+        album.add(item); // adding item to the new album
+        AudioSingleton.getInstance().getAlbumList().add(album); // adding the new album to the album list
+        AudioSingleton.getInstance().getAlbumAdapter().updateDataSet(AudioSingleton.getInstance().getAlbumList()); // update the album adapter
+        sortAudioByArtist(album);
     }
 
     private void sortAudioByArtist(List<Audio> album) {
-        AudioController audioController = new AudioController();
+        ArrayList<List<List<Audio>>> artistList = AudioSingleton.getInstance().getArtistList();
         if (artistList.size() > 0) {
             for (int i = 0; i < artistList.size(); i++) {
-                if (artistList.get(i).get(0).get(0).getArtist().equals(album.get(0).getArtist())) {
+                if (artistList.get(i).get(0).get(0).getArtist().equals(album.get(0).getArtist())) { // if the artist in the artist list matches the artist of the passed album
+                    // iterate through this artist's albums
                     for (int j = 0; j < artistList.get(i).size(); j++) {
                         if (artistList.get(i).get(j).get(0).getAlbum().equals(album.get(0).getAlbum())) {
-                            artistList.get(i).set(j, album);
-                        }
-                        if (j == artistList.get(i).size()) {
-                            artistList.get(i).add(album);
-                            audioController.getArtistAdapter().updateDataSet(artistList); // update the artist adapter
+                            artistList.get(i).set(j, album); // update the album in this artist list
+                            AudioSingleton.getInstance().setArtistList(artistList);
+                            AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList()); // update the artist adapter
+                            return;
                         }
                     }
-                    break;
-                } else if (i == artistList.size() - 1) {
-                    List<List<Audio>> artist = new ArrayList<>();
-                    artist.add(album);
-                    artistList.add(artist);
-                    audioController.getArtistAdapter().updateDataSet(artistList); // update the artist adapter
-                    break;
+                    return;
                 }
             }
-        } else {
-            List<List<Audio>> artist = new ArrayList<>();
-            artist.add(album);
-            artistList.add(artist);
-            audioController.getArtistAdapter().updateDataSet(artistList); // update the artist adapter
         }
+        ArrayList<List<Audio>> artist = new ArrayList<>();
+        artist.add(album);
+        AudioSingleton.getInstance().getArtistList().add(artist);
+        AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList()); // update the artist adapter
     }
 
     private Bitmap getAlbumCover(String pathId) {
@@ -306,104 +262,3 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
         return finalTimerString;
     }
 }
-
-/*
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void selectAudioFromStorage(PackageManager packageManager, Activity activity) {
-        //If permission has been granted, start the activity.
-        if(packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, activity.getPackageName()) == PackageManager.PERMISSION_GRANTED) {
-            Intent searchAudio = new Intent(Intent.ACTION_GET_CONTENT);
-            activity.setResult(RESULT_OK, searchAudio);
-            searchAudio.setType("audio/*");
-            activity.startActivityForResult(searchAudio, 0);
-        }
-        //Permission has not yet been granted, so we need to request it.
-        else{ ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1); }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) //TODO Remove permissions[] if it's going unused?
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults, PackageManager packageManager, Activity activity, Context context) {
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //Since the permission was granted, we invoke a new instance of the process we tried starting before requesting the permission: this time getting through.
-                    selectAudioFromStorage(packageManager, activity);
-                }
-                else {
-                    // Permission denied by user
-                    Toast.makeText(context, "Permission denied to read your external storage", Toast.LENGTH_SHORT).show();
-                }
-            }
-            break;
-           /* case 2: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission granted and now can proceed
-                    // If the user was trying to advertise, begin advertising.
-                    if(isAdvertising){
-                        Context c = getApplicationContext();
-                        n.startAdvertising(c);
-                        Toast.makeText(MainActivity.this, "Now advertising.", Toast.LENGTH_SHORT).show();
-                    }
-                    // If the user was trying to discover, begin discovery.
-                    else if(isDiscovering){
-                        Context c = getApplicationContext();
-                        n.startDiscovery(c);
-                        Toast.makeText(MainActivity.this, "Searching for devices.", Toast.LENGTH_SHORT).show();
-                    }
-                    savedItem.setChecked(true);
-                }
-                else {
-                    // permission denied
-                    isAdvertising = false;
-                    isDiscovering = false;
-                    Toast.makeText(MainActivity.this, "Permission denied to access your device's location.", Toast.LENGTH_SHORT).show();
-                    //closeNow();
-                }
-            }
-        }
-    }
-
-    // Creates a new Audio object and sends it to the RecyclerView
-    public void onActivityResult(Intent resultData, Context context) {
-        Uri uri = resultData.getData();
-        AudioDataParser audioDataParser = new AudioDataParser();
-
-        Audio audio = createAudio(uri,                                    // Used for album cover
-                audioDataParser.getFileData(uri, context, 1), // Filename
-                audioDataParser.getFileData(uri, context, 2), // Artist
-                audioDataParser.getFileData(uri, context, 3), // File's duration in milliseconds
-                audioDataParser.getFileData(uri, context, 4), //TODO Returns nickname of submitter
-                context);
-
-        audioList.add(audio);
-        recyclerViewAdapter.notifyDataSetChanged();
-
-        // Function enabling guests to send audio to host devices. Only called if (isGuest == true),
-        // which is set to true only after successfully connecting as a guest to a host device.
-        //    String endpointId = n.getEndpointId();
-        /*if (n.getIsGuest()) {
-            try {
-                // Calls select method, which enables user to select an audio file to send to the host.
-                ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uriSound, "r");
-                Payload filePayload = Payload.fromFile(pfd);
-
-                // Construct a simple message mapping the ID of the file payload to the desired filename.
-                //Messages sent in this context are the name of the file and the nickname of the submitter.
-                String payloadFilenameMessage = filePayload.getId() + ":" + a.getFileData(uriSound, c, 1) + ":" + getNickName();
-                //String payloadSubmitterNickname = filePayload.getId() + "::" + getNickName();
-                //String payloadFilenameMessage = filePayload.getId() + ":" + a.getTitle(uriSound);
-
-                // Send data as a bytes payload.
-                Nearby.getConnectionsClient(MainActivity.this).sendPayload(endpointId, Payload.fromBytes(payloadFilenameMessage.getBytes(UTF_8)));
-                //Nearby.getConnectionsClient(MainActivity.this).sendPayload(endpointId, Payload.fromBytes(payloadSubmitterNickname.getBytes(UTF_8)));
-
-                // Finally, send the file payload.
-                Nearby.getConnectionsClient(MainActivity.this).sendPayload(endpointId, filePayload);
-            } catch (FileNotFoundException e) {
-                Toast.makeText(MainActivity.this, "File not found.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-*/

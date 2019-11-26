@@ -79,6 +79,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     public void updateDataSet(List<List<Audio>> albumList) {
         dataSet = albumList;
+        System.out.println("Dataset size is now " + dataSet.size());
     }
 
     @Override

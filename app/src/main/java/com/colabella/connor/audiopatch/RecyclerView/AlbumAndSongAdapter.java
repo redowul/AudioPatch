@@ -100,7 +100,7 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                 Bitmap albumArt = null;
                 AlbumAdapter albumAdapter = new AlbumAdapter();
-                final List<List<Audio>> albumList = albumAdapter.getDataSet();
+                List<List<Audio>> albumList = albumAdapter.getDataSet();
                 for (List<Audio> album: albumList) {
                     if(album.get(0).getAlbum().equalsIgnoreCase(songDataSet.get(songPosition).getAlbum())) {
                         albumArt = album.get(0).getAlbumArt();

@@ -127,7 +127,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
             // Handles album search feature. Filters albums on device by user input.
             @Override
             public boolean onQueryTextChange(String userInput) {
-                AudioController audioController = new AudioController();
+                /*AudioController audioController = new AudioController();
                 SongAdapter songAdapter = audioController.getSongAdapter();
                 AlbumAdapter albumAdapter = audioController.getAlbumAdapter();
                 ArtistAdapter artistAdapter = audioController.getArtistAdapter();
@@ -139,9 +139,9 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 List<List<Audio>> filteredAlbums = new ArrayList<>();
                 List<List<List<Audio>>> filteredArtists = new ArrayList<>();
 
-                userInput = userInput.toLowerCase();
+                userInput = userInput.toLowerCase();*/
                 if (userInput.length() > 0) {
-                    for (Audio item : audioList) {
+                   /* for (Audio item : audioList) {
                         String title = item.getTitle();
                         String artist = item.getArtist();
                         String albumTitle = item.getAlbum();
@@ -171,14 +171,14 @@ public class DataRetrievalActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                    }
+                    }*/
                 }
                 else {
-                    filteredAudio = audioList;
-                    filteredAlbums = albumList;
-                    filteredArtists = artistList;
+                   // filteredAudio = audioList;
+                  //  filteredAlbums = albumList;
+                   // filteredArtists = artistList;
                 }
-                songAdapter.updateDataSet(filteredAudio);
+                /*songAdapter.updateDataSet(filteredAudio);
                 songAdapter.notifyDataSetChanged();
 
                 albumAdapter.updateDataSet(filteredAlbums);
@@ -186,6 +186,8 @@ public class DataRetrievalActivity extends AppCompatActivity {
 
                 artistAdapter.updateDataSet(filteredArtists);
                 artistAdapter.notifyDataSetChanged();
+                */
+
                 return true;
             }
         });

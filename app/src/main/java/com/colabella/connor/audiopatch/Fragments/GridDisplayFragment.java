@@ -18,6 +18,7 @@ import android.widget.GridView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
+import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAndSongAdapter;
 
@@ -50,7 +51,7 @@ public class GridDisplayFragment extends Fragment {
             }
             break;
             case 1: { // Display All Albums
-                gridView.setAdapter(audioController.getAlbumAdapter()); // Fetches album list, which contains all available albums
+                gridView.setAdapter(AudioSingleton.getInstance().getAlbumAdapter()); // Fetches album list, which contains all available albums
             }
             break;
             case 2: { // Display Albums
