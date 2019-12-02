@@ -34,7 +34,7 @@ public class AudioSingleton {
         return instance;
     }
 
-    ArrayList<Audio> getAudioList() {
+    public ArrayList<Audio> getAudioList() {
         return this.audioList;
     }
 
@@ -47,8 +47,7 @@ public class AudioSingleton {
         System.out.println("albumlist singleton size " + this.albumList.size());
     }
 
-
-    SongAdapter getSongAdapter() {
+    public SongAdapter getSongAdapter() {
         return songAdapter;
     }
 
@@ -66,6 +65,24 @@ public class AudioSingleton {
 
     public ArtistAdapter getArtistAdapter() {
         return artistAdapter;
+    }
+
+    public List<Audio> getAlbumByAlbumTitle(String albumTitle) { // returns album if the album title exists in the master album list
+        for (List<Audio> album : this.albumList) {
+            if (album.get(0).getAlbum().equalsIgnoreCase(albumTitle)) {
+                return album;
+            }
+        }
+        return null;
+    }
+
+    public List<List<Audio>> getArtistByArtistName (String artistName) { // returns artist if the artist's name exists in the master artist list
+        for (List<List<Audio>> artist : this.artistList) {
+            if (artist.get(0).get(0).getArtist().equalsIgnoreCase(artistName)) {
+                return artist;
+            }
+        }
+        return null;
     }
 }
 

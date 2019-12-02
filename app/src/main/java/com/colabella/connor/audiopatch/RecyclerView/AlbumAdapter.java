@@ -26,7 +26,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     public AlbumAdapter() { }
 
-    public List<List<Audio>> getDataSet() {
+    List<List<Audio>> getDataSet() {
         return dataSet;
     }
 
@@ -59,9 +59,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                     AppCompatActivity activity = (AppCompatActivity) v.getContext();
                     Fragment songSelectionFragment = new SongSelectionFragment();
 
-                    DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                    dataRetrievalActivity.setCloseSoftKeyboardButton(v);
-
                     FragmentManager fragmentManager = activity.getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out); // Sets fade in/out animations for transitioning between album selection and song selection screens
@@ -72,6 +69,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                     String selectedAlbumTitle = dataSet.get(position).get(0).getAlbum();
                     bundle.putString("albumKey", selectedAlbumTitle);
                     songSelectionFragment.setArguments(bundle);
+
+                    DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
+                    dataRetrievalActivity.hideSoftKeyboard(dataRetrievalActivity.getInstance());
                 }
             });
         }
@@ -79,7 +79,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     public void updateDataSet(List<List<Audio>> albumList) {
         dataSet = albumList;
-        System.out.println("Dataset size is now " + dataSet.size());
     }
 
     @Override

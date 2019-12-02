@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
+import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.Fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
@@ -27,18 +28,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     private static List<List<List<Audio>>> dataSet = new ArrayList<>();
 
     public ArtistAdapter() { }
-
-    public ArtistAdapter(List<List<List<Audio>>> artistList) {
-        if(dataSet != null) {
-            if (dataSet.size() == 0) {
-                dataSet = artistList;
-            }
-        }
-    }
-
-    public List<List<List<Audio>>> getDataSet() {
-        return dataSet;
-    }
 
     // inflates the row layout from xml when needed
     @Override
@@ -95,14 +84,15 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out); // Sets fade in/out animations for transitioning between album selection and song selection screens
                 fragmentTransaction.add(R.id.fragment_container, gridDisplayFragment, "FromArtists").addToBackStack("SelectedAlbum");
                 fragmentTransaction.commit();
+
+                DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
+                dataRetrievalActivity.hideSoftKeyboard(dataRetrievalActivity.getInstance());
             }
         });
     }
 
     public void updateDataSet(List<List<List<Audio>>> artistList) {
         dataSet = artistList;
-        AudioController audioController = new AudioController();
-        //audioController.getArtistAdapter().notifyDataSetChanged();
     }
 
     @Override

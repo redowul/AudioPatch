@@ -115,7 +115,7 @@ public class ActivePlaylistController {
                 mediaPlayer.start();
             } catch (Exception e) {
                 DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                dataRetrievalActivity.snackBarException();
+                //dataRetrievalActivity.snackBarException();
                 return;
             }
         }

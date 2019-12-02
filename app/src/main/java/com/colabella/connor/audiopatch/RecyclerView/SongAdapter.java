@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
+import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +65,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         }
     }
 
-    public void updateDataSet(List<Audio> audioList) {
-        dataSet = audioList;
-    }
+    public void updateDataSet(List<Audio> audioList) { dataSet = audioList; }
 
     @Override
     public int getItemCount() {

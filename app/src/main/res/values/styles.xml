@@ -28,8 +28,10 @@
        <item name="android:colorBackground">@color/recyclerViewPrimary</item>
        <item name="android:textColorSecondary">@color/textColor</item>
        <item name="android:textSize">15sp</item>
-       <item name="android:paddingLeft">4dp</item>
-       <item name="android:paddingRight">4dp</item>
+       <item name="android:paddingTop">3dp</item>
+       <item name="android:paddingLeft">3dp</item>
+       <item name="android:paddingRight">3dp</item>
+       <item name="android:paddingBottom">3dp</item>
        <item name="android:radius">4dp</item>
     </style>
 </resources>

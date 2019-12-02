@@ -47,7 +47,7 @@ public class GridDisplayFragment extends Fragment {
 
         switch(arguments) { // Instructs fragment whether to display artists or albums
             case 0: { // Display Artists
-                gridView.setAdapter(audioController.getArtistAdapter());
+                gridView.setAdapter(AudioSingleton.getInstance().getArtistAdapter());
             }
             break;
             case 1: { // Display All Albums

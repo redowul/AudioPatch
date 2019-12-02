@@ -1,6 +1,5 @@
 package com.colabella.connor.audiopatch.Audio;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -8,12 +7,8 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.provider.MediaStore;
 import com.colabella.connor.audiopatch.MainActivity;
-import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,19 +16,7 @@ import static java.lang.Long.valueOf;
 
 public class AudioController {
 
-    private static List<List<Audio>> albumList;
-    private static List<List<List<Audio>>> artistList;
-
-    private static SongAdapter songAdapter = new SongAdapter();
-    private static AlbumAdapter albumAdapter = new AlbumAdapter();
-    private static ArtistAdapter artistAdapter = new ArtistAdapter();
-
-
     public AudioController() { }
-
-    public List<List<Audio>> getAlbumList() {
-        return albumList;
-    }
 
     public List<List<Audio>> getAlbumsByArtist(String selectedArtist) {
         List<List<Audio>> albumsBySelectedArtist = new ArrayList<>();
@@ -45,50 +28,14 @@ public class AudioController {
         return albumsBySelectedArtist;
     }
 
-    public List<Audio> getAlbumByAlbumTitle(String albumTitle) { // returns album if the album title exists in the master album list
-        for (List<Audio> album : albumList) {
-            if (album.get(0).getAlbum().equalsIgnoreCase(albumTitle)) {
-                return album;
-            }
-        }
-        return null;
-    }
-
     public List<List<Audio>> getArtistByArtistName (String artistName) { // returns artist if the artist's name exists in the master artist list
-        for (List<List<Audio>> artist : artistList) {
+        for (List<List<Audio>> artist : AudioSingleton.getInstance().getArtistList()) {
             if (artist.get(0).get(0).getArtist().equalsIgnoreCase(artistName)) {
                 return artist;
             }
         }
         return null;
     }
-
-
-    void setSongAdapter(SongAdapter s) {
-        //songAdapter = s;
-       // SongListFragment songListFragment = new SongListFragment();
-       // songListFragment.updateSongAdapter();
-    }
-
-    public SongAdapter getSongAdapter() {
-        return songAdapter;
-    }
-
-    void setAlbumAdapter(AlbumAdapter albumAdapter) {
-        this.albumAdapter = albumAdapter;
-    }
-
-    public AlbumAdapter getAlbumAdapter() {
-        return albumAdapter;
-    }
-
-    public ArtistAdapter getArtistAdapter() {
-        return artistAdapter;
-    }
-
-    //public List<List<List<Audio>>> getArtistList() {
-        //return artistList;
-    //}
 
     public void getAudioFilesFromDeviceStorage() {
         RetrieveAudioTask retrieveAudioTask = new RetrieveAudioTask();
@@ -164,12 +111,6 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
     // Once the image is downloaded, associates it to the imageView
     protected void onPostExecute(Void param) {
         // apply sorting algorithms here
-
-
-        //AudioController audioController = new AudioController();
-        //audioController.getSongAdapter().notifyDataSetChanged();
-        //audioController.getAlbumAdapter().notifyDataSetChanged();
-        //audioController.getArtistAdapter().notifyDataSetChanged();
     }
 
     private void sortAudioByAlbum(Audio item) {

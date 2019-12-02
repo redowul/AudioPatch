@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:id="@+id/main_content"
-android:layout_width="match_parent"
-android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ndroid="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 <android.support.design.widget.AppBarLayout
     android:id="@+id/appbar"
@@ -17,7 +18,7 @@ android:layout_height="match_parent">
         android:layout_height="wrap_content"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_scrollFlags="scroll|enterAlways">
-    <SearchView
+    <android.support.v7.widget.SearchView
         android:id="@+id/searchView"
         android:paddingTop="8dp"
         android:layout_width="wrap_content"
@@ -26,8 +27,10 @@ android:layout_height="match_parent">
         android:queryHint="Search"
         android:inputType="textNoSuggestions"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_scrollFlags="scroll|enterAlways">
-    </SearchView>
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:searchIcon="@drawable/ic_search_24dp"
+        android:focusable="false">
+    </android.support.v7.widget.SearchView>
         <Button
             android:id="@+id/menu_button"
             android:layout_width="24dp"
