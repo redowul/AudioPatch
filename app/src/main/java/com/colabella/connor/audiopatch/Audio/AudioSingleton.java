@@ -3,7 +3,6 @@ package com.colabella.connor.audiopatch.Audio;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,13 +37,16 @@ public class AudioSingleton {
         return this.audioList;
     }
 
+    void setAudioList(ArrayList<Audio> audioList) {
+        this.audioList = audioList;
+    }
+
     public ArrayList<List<Audio>> getAlbumList() {
         return this.albumList;
     }
 
     void setAlbumList(ArrayList<List<Audio>> albumList) {
         this.albumList = albumList;
-        System.out.println("albumlist singleton size " + this.albumList.size());
     }
 
     public SongAdapter getSongAdapter() {
@@ -59,7 +61,7 @@ public class AudioSingleton {
         return artistList;
     }
 
-    public void setArtistList(ArrayList<List<List<Audio>>> artistList) {
+    void setArtistList(ArrayList<List<List<Audio>>> artistList) {
         this.artistList = artistList;
     }
 

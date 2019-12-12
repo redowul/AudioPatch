@@ -1,8 +1,5 @@
 package com.colabella.connor.audiopatch;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.OnLifecycleEvent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -25,7 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.Toast;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
@@ -36,14 +32,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private static Context applicationContext;
+
+    private static MainActivity instance;
+
+    public MainActivity getInstance() {
+        return instance;
+    }
+
+    /*private static Context applicationContext;
     private static Button playButton;
     private NavigationView navigationView;
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
+
         Toolbar toolbar = findViewById(R.id.toolbar_top);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -55,13 +61,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
        initializeRecyclerView();
 
-       applicationContext = getApplicationContext();
-       playButton = findViewById(R.id.play_button);
+       //applicationContext = getApplicationContext();
+       //playButton = findViewById(R.id.play_button);
 
        AudioController audioController = new AudioController();
        audioController.getAudioFilesFromDeviceStorage();
 
-       navigationView = findViewById(R.id.nav_view);
+       NavigationView navigationView = findViewById(R.id.nav_view);
        navigationView.setNavigationItemSelectedListener(this);
        String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
        String textColor = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.textColor) & 0x00ffffff);
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
-    @Override
+    /*@Override
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     protected void onResume() {
         super.onResume();
@@ -89,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(playButton == null) {
             playButton = findViewById(R.id.play_button);
         }
-    }
+    }*/
 
     private void initializeRecyclerView(){
         ActivePlaylistController activePlaylistController = new ActivePlaylistController();
@@ -109,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -168,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController(navigationView, getPackageManager(), getPackageName(), this);
+        NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController(getPackageManager(), getPackageName(), this);
         nearbyConnectionsController.clickedDrawerFragment(menuItem);
         return true;
     }
@@ -248,6 +254,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     // Return static variables
-    public Context getStaticApplicationContext(){ return applicationContext; }
-    public Button getPlayButton(){ return playButton; }
+    //public Context getStaticApplicationContext(){ return applicationContext; }
+    //public Button getPlayButton(){ return playButton; }
 }

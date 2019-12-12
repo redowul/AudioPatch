@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import com.colabella.connor.audiopatch.MainActivity;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Long.valueOf;
@@ -40,7 +41,8 @@ public class AudioController {
     public void getAudioFilesFromDeviceStorage() {
         RetrieveAudioTask retrieveAudioTask = new RetrieveAudioTask();
         MainActivity mainActivity = new MainActivity();
-        Context context = mainActivity.getStaticApplicationContext();
+        Context context = mainActivity.getInstance();
+        //Context context = mainActivity.getStaticApplicationContext();
         retrieveAudioTask.execute(context); // Handles album cover retrieval on a secondary thread
     }
 
@@ -79,8 +81,11 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
+        Cursor cursor = null;
 
-        Cursor cursor = params[0].getContentResolver().query(uri, null, selection, null, sortOrder);
+        if(params[0] != null) {
+            cursor = params[0].getContentResolver().query(uri, null, selection, null, sortOrder);
+        }
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -108,9 +113,17 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
     }
 
     @Override
-    // Once the image is downloaded, associates it to the imageView
+    // Alphabetize the lists. Note that the audio list is alphabetized by default thanks to the sort order of the cursor in getContentResolver()
     protected void onPostExecute(Void param) {
-        // apply sorting algorithms here
+        // Sort artist list alphabetically
+        Collections.sort(AudioSingleton.getInstance().getArtistList(), Audio.sortArtistsAlphabeticallyComparator);
+        AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
+        AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
+
+        // Sort album list alphabetically
+        Collections.sort(AudioSingleton.getInstance().getAlbumList(), Audio.sortAlbumsAlphabeticallyComparator);
+        AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
+        AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
     }
 
     private void sortAudioByAlbum(Audio item) {

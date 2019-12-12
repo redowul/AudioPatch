@@ -29,8 +29,8 @@ public class NearbyConnectionsController {
 
     public NearbyConnectionsController(){ }
 
-    public NearbyConnectionsController(NavigationView navigationView, PackageManager packageManager, String packageName, Context context){
-        this.navigationView = navigationView;
+    public NearbyConnectionsController(PackageManager packageManager, String packageName, Context context){
+        //this.navigationView = navigationView;
         this.packageManager = packageManager;
         this.packageName = packageName;
         this.context = context;
@@ -282,7 +282,7 @@ public class NearbyConnectionsController {
                 isAdvertising = true;
 
                 MainActivity mainActivity = new MainActivity();
-                Toast.makeText(mainActivity.getStaticApplicationContext(), "Now advertising.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainActivity.getInstance(), "Now advertising.", Toast.LENGTH_SHORT).show();
                 //n.setUserNickname(nickName);
                 //nearbyConnections.startAdvertising(context);
             }
@@ -290,7 +290,7 @@ public class NearbyConnectionsController {
                 isAdvertising = false;
                // nearbyConnections.stopAdvertising();
                 MainActivity mainActivity = new MainActivity();
-                Toast.makeText(mainActivity.getStaticApplicationContext(), "No longer advertising.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainActivity.getInstance(), "No longer advertising.", Toast.LENGTH_SHORT).show();
             }
        // }
         //else {
@@ -310,7 +310,7 @@ public class NearbyConnectionsController {
                 //nearbyConnections.setUserNickname(nickName);
                 //nearbyConnections.startDiscovery(context);
                 MainActivity mainActivity = new MainActivity();
-                Toast.makeText(mainActivity.getStaticApplicationContext(), "Searching for devices.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainActivity.getInstance(), "Searching for devices.", Toast.LENGTH_SHORT).show();
             }
             else {
                 isDiscovering = false;

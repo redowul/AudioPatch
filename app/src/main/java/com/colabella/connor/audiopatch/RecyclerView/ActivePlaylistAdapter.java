@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract{
-    private static List<Audio> dataSet = new ArrayList<>();
+    private List<Audio> dataSet = new ArrayList<>();
     private ItemTouchHelper itemTouchHelper;
 
     ActivePlaylistAdapter() {
