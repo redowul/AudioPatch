@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
+import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.Fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.MainActivity;
@@ -39,11 +40,11 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        int albumCount = dataSet.get(position).size();
+        AudioController audioController = new AudioController();
+        int albumCount = audioController.getAlbumsByArtist(dataSet.get(position).get(0).get(0).getArtist()).size();
 
         MainActivity mainActivity = new MainActivity();
-        Context context = mainActivity.getStaticApplicationContext();
-
+        Context context = mainActivity.getInstance();
         Locale locale = context.getResources().getConfiguration().locale;
         if(albumCount == 1) {
             String albums = String.format(locale,"%d %s", albumCount, context.getString(R.string.album));
@@ -84,9 +85,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out); // Sets fade in/out animations for transitioning between album selection and song selection screens
                 fragmentTransaction.add(R.id.fragment_container, gridDisplayFragment, "FromArtists").addToBackStack("SelectedAlbum");
                 fragmentTransaction.commit();
-
-                DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                dataRetrievalActivity.hideSoftKeyboard(dataRetrievalActivity.getInstance());
             }
         });
     }

@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 
@@ -93,7 +92,7 @@ public class ActivePlaylistController {
             MainActivity mainActivity = new MainActivity();
             String audioToPlayStringified = selectedItem.getData();          // Convert Audio to String
             Uri audioToPlayUri = Uri.parse(audioToPlayStringified);         // Convert to Uri by parsing the String
-            playSelectedAudio(mainActivity.getStaticApplicationContext(), audioToPlayUri);     // Sends the data to the Audio Controller
+            playSelectedAudio(mainActivity.getInstance(), audioToPlayUri);     // Sends the data to the Audio Controller
         }
     }
 
@@ -114,9 +113,7 @@ public class ActivePlaylistController {
             try {
                 mediaPlayer.start();
             } catch (Exception e) {
-                DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                //dataRetrievalActivity.snackBarException();
-                return;
+                System.out.println(e);
             }
         }
     }
@@ -192,10 +189,9 @@ public class ActivePlaylistController {
         }
     }
 */
-    static void togglePlayButtonState() { //TODO re-write when less tired (Needed for any action that isn't a button to toggle the state of the PlayButton)
+    void togglePlayButtonState() { //TODO re-write when less tired (Needed for any action that isn't a button to toggle the state of the PlayButton)
         MainActivity mainActivity = new MainActivity();
-        Button playButton = mainActivity.getPlayButton();
-
+        Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
         playButton.setBackgroundResource(R.drawable.ic_play_24dp);
         if(mediaPlayer.isPlaying()) {
             playButton.setBackgroundResource(R.drawable.ic_pause_24dp);
@@ -215,6 +211,7 @@ public class ActivePlaylistController {
             mediaPlayer.stop();
             togglePlayButtonState();
             mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 /*

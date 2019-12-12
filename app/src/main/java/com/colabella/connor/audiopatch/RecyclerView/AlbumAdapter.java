@@ -71,7 +71,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                     songSelectionFragment.setArguments(bundle);
 
                     DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                    dataRetrievalActivity.hideSoftKeyboard(dataRetrievalActivity.getInstance());
+                    //dataRetrievalActivity.hideSoftKeyboard(dataRetrievalActivity.getInstance()); //TODO undo this?
                 }
             });
         }

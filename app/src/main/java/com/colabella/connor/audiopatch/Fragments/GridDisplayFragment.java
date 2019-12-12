@@ -44,7 +44,6 @@ public class GridDisplayFragment extends Fragment {
 
     private void initializeGridView(RecyclerView gridView, int arguments, Bundle bundle){
         AudioController audioController = new AudioController();
-
         switch(arguments) { // Instructs fragment whether to display artists or albums
             case 0: { // Display Artists
                 gridView.setAdapter(AudioSingleton.getInstance().getArtistAdapter());
@@ -54,7 +53,7 @@ public class GridDisplayFragment extends Fragment {
                 gridView.setAdapter(AudioSingleton.getInstance().getAlbumAdapter()); // Fetches album list, which contains all available albums
             }
             break;
-            case 2: { // Display Albums
+            case 2: { // Display Albums & Songs
                 String artist = bundle.getString("string");
                 final List<List<Audio>> albumList = audioController.getAlbumsByArtist(artist); // List of all albums by selected artist
                 List<Audio> songList = new ArrayList<>();
@@ -74,7 +73,7 @@ public class GridDisplayFragment extends Fragment {
                     }
                 });
 
-                AlbumAndSongAdapter albumAndSongAdapter = new AlbumAndSongAdapter(albumList, songList);
+                AlbumAndSongAdapter albumAndSongAdapter = new AlbumAndSongAdapter(albumList, songList); //TODO this is where the problem is. I'm using a different adapter to display the data
                 gridView.setAdapter(albumAndSongAdapter);
                 return;
             }
