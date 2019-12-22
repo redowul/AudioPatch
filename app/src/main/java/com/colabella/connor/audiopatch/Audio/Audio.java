@@ -66,7 +66,7 @@ public class Audio {
         this.title = newTitle;
     }
 
-    public boolean getSelected() {
+    public boolean isSelected() {
         return selected;
     }
 

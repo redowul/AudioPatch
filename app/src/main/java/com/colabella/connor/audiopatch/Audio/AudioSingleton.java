@@ -1,5 +1,6 @@
 package com.colabella.connor.audiopatch.Audio;
 
+import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
@@ -16,6 +17,7 @@ public class AudioSingleton {
     private SongAdapter songAdapter;
     private AlbumAdapter albumAdapter;
     private ArtistAdapter artistAdapter;
+    private ActivePlaylistAdapter activePlaylistAdapter;
 
     private AudioSingleton() {
         this.audioList = new ArrayList<>();
@@ -24,6 +26,7 @@ public class AudioSingleton {
         this.songAdapter = new SongAdapter();
         this.albumAdapter = new AlbumAdapter();
         this.artistAdapter = new ArtistAdapter();
+        this.activePlaylistAdapter = new ActivePlaylistAdapter();
     }
 
     public static AudioSingleton getInstance() {
@@ -85,6 +88,14 @@ public class AudioSingleton {
             }
         }
         return null;
+    }
+
+    public ActivePlaylistAdapter getActivePlaylistAdapter() {
+        return activePlaylistAdapter;
+    }
+
+    public void setActivePlaylistAdapter(ActivePlaylistAdapter activePlaylistAdapter) {
+        this.activePlaylistAdapter = activePlaylistAdapter;
     }
 }
 

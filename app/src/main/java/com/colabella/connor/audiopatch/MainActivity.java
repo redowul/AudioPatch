@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.colabella.connor.audiopatch.Audio.AudioController;
+import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistController;
@@ -61,9 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
        initializeRecyclerView();
 
-       //applicationContext = getApplicationContext();
-       //playButton = findViewById(R.id.play_button);
-
        AudioController audioController = new AudioController();
        audioController.getAudioFilesFromDeviceStorage();
 
@@ -85,23 +83,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
-    /*@Override
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    protected void onResume() {
-        super.onResume();
-        if(applicationContext == null) {
-            applicationContext = getApplicationContext();
-        }
-        if(playButton == null) {
-            playButton = findViewById(R.id.play_button);
-        }
-    }*/
-
     private void initializeRecyclerView(){
         ActivePlaylistController activePlaylistController = new ActivePlaylistController();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        ActivePlaylistAdapter recyclerViewAdapter = activePlaylistController.getActivePlaylistAdapter();
+        ActivePlaylistAdapter recyclerViewAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
 
         SwipeAndDragHelper swipeAndDragHelper = new SwipeAndDragHelper(recyclerViewAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeAndDragHelper);

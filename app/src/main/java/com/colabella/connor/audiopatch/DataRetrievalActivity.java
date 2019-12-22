@@ -19,7 +19,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.Fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.Fragments.SongListFragment;
@@ -151,7 +150,6 @@ public class DataRetrievalActivity extends AppCompatActivity {
         final MenuPopupHelper optionsMenu = new MenuPopupHelper(wrapper, menuBuilder, view);
         optionsMenu.show();
 
-        //ViewPager viewPager = instance.findViewById(R.id.viewpager);
         // Inflate the menu; this adds items to the action bar if it is present.
         menuBuilder.setCallback(new MenuBuilder.Callback() {
             @Override
@@ -249,6 +247,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
                             AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
                         }
                     }
+
                     break;
                 }
                 AudioSingleton.getInstance().getSongAdapter().updateDataSet(AudioSingleton.getInstance().getAudioList());
@@ -273,7 +272,6 @@ public class DataRetrievalActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         MainActivity.Adapter adapter = new MainActivity.Adapter(getSupportFragmentManager());
-
         String[] fragmentTitles = {"Artists", "Albums"}; // Titles to be displayed at the top of our ViewPager's gridDisplayFragment tabs
 
         for (int i = 0; i <= 1; i++) { // Loops twice, once for each item passed
@@ -286,27 +284,6 @@ public class DataRetrievalActivity extends AppCompatActivity {
         adapter.addFragment(new SongListFragment(), "Songs");
         viewPager.setAdapter(adapter);
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        ViewPager viewPager = instance.findViewById(R.id.viewpager);
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.dataretriever_options_menu, menu);
-        if (viewPager.getCurrentItem()==0){
-            menu.findItem(R.id.sortMenu_alphabetical).setVisible(true);
-        }
-        else {
-            menu.findItem(R.id.sortMenu_alphabetical).setVisible(false);
-            System.out.println("TEST TEST TEST");
-        }/*else if(mViewPager.getCurrentItem()==1){
-            menu.findItem(R.id.action_search).setVisible(false);
-        } else if(mViewPager.getCurrentItem()==2){
-            // configure
-        } else if(mViewPager.getCurrentItem()==3){
-            // configure
-        }
-        return super.onCreateOptionsMenu(menu);
-    }*/
 
     public void endActivity() {
         instance.finish();

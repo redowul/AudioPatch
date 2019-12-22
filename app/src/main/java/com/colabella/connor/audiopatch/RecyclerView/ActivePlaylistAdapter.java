@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.Controller;
 import com.colabella.connor.audiopatch.R;
 import java.util.ArrayList;
@@ -16,13 +17,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract{
-    private List<Audio> dataSet = new ArrayList<>();
+   // private static ActivePlaylistAdapter instance;
+    private static List<Audio> dataSet = new ArrayList<>();
     private ItemTouchHelper itemTouchHelper;
 
-    ActivePlaylistAdapter() {
-        //TODO only bother initializing after the user is confirmed for hosting?
-        //dataSet = new ArrayList<>();
-    }
+    //TODO only bother initializing after the user is confirmed for hosting?
+   /* public static ActivePlaylistAdapter getInstance() {
+        if (instance == null) {
+            instance = new ActivePlaylistAdapter();
+        }
+        return instance;
+    }*/
 
     Audio getSelectedItem(int index) {
         return dataSet.get(index);
@@ -33,9 +38,31 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
     }
 
     void setSelectedAudio(int selectedAudioPos){
-        for(Audio item: dataSet) { item.setSelected(false); }
-        dataSet.get(selectedAudioPos).setSelected(true);
-        for (int i = 0; i < getItemCount(); i++) { notifyItemChanged(i); }
+        for (int i = 0; i < getItemCount(); i++) {
+            dataSet.get(i).setSelected(false);
+            if (i == selectedAudioPos) {
+                dataSet.get(i).setSelected(true);
+            }
+            notifyItemChanged(i);
+        }
+        AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+    }
+
+    int getCurrentlySelectedItemIndex() {
+        if(dataSet != null) {
+            if (dataSet.size() > 0) {
+                for (int i = 0; i < dataSet.size(); i++) {
+                    if (dataSet.get(i).isSelected()) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    Audio getAudioAtIndex(int index) {
+        return dataSet.get(index);
     }
 
     @Override
@@ -75,8 +102,8 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    Controller c = new Controller();
-                    if (c.getUser().getRecyclerViewPermission()) {
+                    Controller controller = new Controller();
+                    if (controller.getUser().getRecyclerViewPermission()) {
                         itemTouchHelper.startDrag(holder);
                     }
                 }
@@ -85,7 +112,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         });
 
         holder.itemView.setBackgroundResource(R.color.recyclerViewPrimary); // Sets all items to primary background color, representing none being selected.
-        if(dataSet.get(position).getSelected()) { // If isSelected returns true, highlight the item.
+        if(dataSet.get(position).isSelected()) { // If isSelected returns true, highlight the item.
             holder.itemView.setBackgroundResource(R.color.recyclerViewAccent);
         }
         Controller controller = new Controller();
@@ -103,7 +130,6 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
     @Override
     public void onViewMoved(int fromPosition, int toPosition) {
-
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
                 Collections.swap(dataSet, i, i + 1);
@@ -120,7 +146,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
     public void onViewSwiped(int position) {
         Controller controller = new Controller();
         if (controller.getUser().getRecyclerViewPermission()) {
-            if (dataSet.get(position).getSelected()) {
+            if (dataSet.get(position).isSelected()) {
                 ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                 activePlaylistController.releaseSelectedAudio();
             }
@@ -143,7 +169,6 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         private TextView itemSubmitter;
         private ImageView albumArt;
         private View itemHandle;
-        private View itemPanel;
 
         private ViewHolder(View itemView) {
             super(itemView);
@@ -160,7 +185,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             itemHandle = itemView.findViewById(R.id.item_handle);
             itemHandle.setOnClickListener(this);
 
-            itemPanel = itemView.findViewById(R.id.item_panel);
+            View itemPanel = itemView.findViewById(R.id.item_panel);
             itemPanel.setOnClickListener(this);
         }
 
@@ -169,9 +194,11 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             Controller controller = new Controller();
             ActivePlaylistController activePlaylistController = new ActivePlaylistController();
             if (controller.getUser().getRecyclerViewPermission()) {
-                setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
-                activePlaylistController.playSelectedItem(dataSet.get(getAdapterPosition()));
-                activePlaylistController.togglePlayButtonState();
+                if (getAdapterPosition() >= 0) {
+                    setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
+                    activePlaylistController.playSelectedAudio(getAudioAtIndex(getCurrentlySelectedItemIndex()));
+                    activePlaylistController.togglePlayButtonState();
+                }
             }
         }
     }

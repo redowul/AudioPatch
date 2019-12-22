@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/toolbar_bottom"
-        android:layout_below="@id/toolbar_top"
+        android:overScrollMode="never"
         android:background="@color/recyclerViewPrimary" />
 
     <android.support.v7.widget.Toolbar

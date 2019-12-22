@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.R;
 
@@ -74,7 +75,7 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
             ActivePlaylistController activePlaylistController = new ActivePlaylistController();
             Audio item = dataSet.get(this.getAdapterPosition());
             if(dataSet.get(0).getAlbumArt() != null) { item.setAlbumArt(dataSet.get(0).getAlbumArt()); }
-            ActivePlaylistAdapter activePlaylistAdapter = activePlaylistController.getActivePlaylistAdapter();
+            ActivePlaylistAdapter activePlaylistAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
             activePlaylistAdapter.addItem(item);
             activePlaylistAdapter.notifyDataSetChanged();
             DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
