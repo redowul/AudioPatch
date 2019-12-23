@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
@@ -23,22 +24,21 @@ public class ActivePlaylistController {
     public void determineButtonSelected(String buttonIdString, View view) {
         switch (buttonIdString) {
             case "remove":
-              //  removeItem();                           // TODO Removes an item from the RecyclerView (Remove this function later. Exists only for bug-testing purposes)
+                //  removeItem();                           // TODO Removes an item from the RecyclerView (Remove this function later. Exists only for bug-testing purposes)
                 break;
             case "back_button":
                 playPreviousItem();                   // Moves current selection to the previous available item in the RecyclerView. Selects the last item in the list if pressed at index 0.
                 break;
             case "play_button":
-                if(mediaPlayer == null) { // mediaPlayer is null
-                    if(AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+                if (mediaPlayer == null) { // mediaPlayer is null
+                    if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
                         mediaPlayer = new MediaPlayer();
                         playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(0));
                         AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0); // Set item at clicked position's isClicked to true
                         ((Button) view).setBackgroundResource(R.drawable.ic_pause_24dp);
                     }
-                }
-                else { // mediaPlayer is not null
-                    if(AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+                } else { // mediaPlayer is not null
+                    if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
                         if (mediaPlayer.isPlaying()) {
                             mediaPlayer.pause();                                // Pause audio in mediaPlayer
                             ((Button) view).setBackgroundResource(R.drawable.ic_play_24dp);
@@ -46,14 +46,15 @@ public class ActivePlaylistController {
                             mediaPlayer.start();                                // Play audio in mediaPlayer
                             ((Button) view).setBackgroundResource(R.drawable.ic_pause_24dp);
                         }
-                    }
-                    else { mediaPlayer = null; } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
+                    } else {
+                        mediaPlayer = null;
+                    } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
                 }
                 // TODO Determine which methods should be called in the logic here.
-                    // - If mediaPlayer is null, playSelectedItem() should be invoked
-                    // - If mediaPlayer is not null (and audio is playing), the audio should be paused and the play button should be changed to a pause button.
-                    // - Meaning if the mediaPlayer is not null and no audio is playing, we should just un-pause the audio.
-                    // - The mediaPlayer will thus handle itself when a piece of audio ends, independent of this button.
+                // - If mediaPlayer is null, playSelectedItem() should be invoked
+                // - If mediaPlayer is not null (and audio is playing), the audio should be paused and the play button should be changed to a pause button.
+                // - Meaning if the mediaPlayer is not null and no audio is playing, we should just un-pause the audio.
+                // - The mediaPlayer will thus handle itself when a piece of audio ends, independent of this button.
                 break;
             case "next_button":
                 playNextItem();                       // Moves current selection to the next available item in the RecyclerView. Selects index 0 when called after reaching the end of the list.
@@ -62,7 +63,7 @@ public class ActivePlaylistController {
                 addItem();
                 break;
             case "toggle_recyclerview_permission":      // TODO Toggles recyclerview permissions (Remove this function later. Exists only for bug-testing purposes)
-             //   toggleRecyclerViewItemClickability();
+                //   toggleRecyclerViewItemClickability();
                 break;
         }
     }
@@ -126,33 +127,24 @@ public class ActivePlaylistController {
         ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
         int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
 
-        if(currentlySelectedItemIndex >= 0) {
+        if (currentlySelectedItemIndex >= 0) {
             AudioController audioController = new AudioController();
             String time = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
-
-            for(int i = 0; i < time.length(); i++) {
-                if(time.charAt(i) == ':') {
-                    int seconds = Integer.valueOf(time.substring(i + 1)); // get all characters after ':'
-                    if(seconds < 2) {
-                        // go to previous song
-                        if (currentlySelectedItemIndex > 0) {
-                            activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex - 1);
-                            playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex - 1));
-                            togglePlayButtonState();
-                        }
-                        else {
-                            break; // song is first item in the list, so restart and play it
-                        }
-                        return;
-                    }
-                    else { // restart current song
-                        break;
-                    }
+            int minutes = Integer.valueOf(time.substring(0, time.indexOf(':')));
+            int seconds = Integer.valueOf(time.substring(time.indexOf(':') + 1)); // get all characters after ':'
+            if (seconds < 2 && minutes == 0) {
+                // go to previous song
+                if (currentlySelectedItemIndex > 0) {
+                    activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex - 1);
+                    playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex - 1));
+                    togglePlayButtonState();
                 }
             }
-            activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex);
-            playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex));
-            togglePlayButtonState();
+            else {
+                activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex);
+                playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex));
+                togglePlayButtonState();
+            }
         }
         //}
     }
@@ -163,20 +155,19 @@ public class ActivePlaylistController {
         //Controller controller = new Controller();
         //if (controller.getUser().getRecyclerViewPermission()) {  // Checks the global user state to see if the user has permission to alter the RecyclerView
         //TODO set permission up properly
-            ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-            int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+        ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
+        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
 
-            if(currentlySelectedItemIndex >= 0) {
-                if(currentlySelectedItemIndex == activePlaylistAdapter.getItemCount() - 1) { // the selected item is the last item in the list
-                    activePlaylistAdapter.setSelectedAudio(0); // set the next audio to the first audio in the list
-                    playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(0));
-                }
-                else {
-                    activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex + 1);
-                    playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex + 1));
-                }
-                togglePlayButtonState();
+        if (currentlySelectedItemIndex >= 0) {
+            if (currentlySelectedItemIndex == activePlaylistAdapter.getItemCount() - 1) { // the selected item is the last item in the list
+                activePlaylistAdapter.setSelectedAudio(0); // set the next audio to the first audio in the list
+                playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(0));
+            } else {
+                activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex + 1);
+                playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex + 1));
             }
+            togglePlayButtonState();
+        }
         //}
     }
 
@@ -197,7 +188,7 @@ public class ActivePlaylistController {
         MainActivity mainActivity = new MainActivity();
         Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
         playButton.setBackgroundResource(R.drawable.ic_play_24dp);
-        if(mediaPlayer.isPlaying()) {
+        if (mediaPlayer.isPlaying()) {
             playButton.setBackgroundResource(R.drawable.ic_pause_24dp);
         }
     }
@@ -210,7 +201,7 @@ public class ActivePlaylistController {
         //}
     }
 
-    void releaseSelectedAudio(){
+    void releaseSelectedAudio() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             togglePlayButtonState();
