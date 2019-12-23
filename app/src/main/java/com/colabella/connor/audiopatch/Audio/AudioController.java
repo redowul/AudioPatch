@@ -46,6 +46,31 @@ public class AudioController {
         retrieveAudioTask.execute(context); // Handles album cover retrieval on a secondary thread
     }
 
+    public String milliSecondsToTimer(long milliseconds) {
+        String finalTimerString = "";
+        String secondsString;
+
+        // Convert total duration into time
+        int hours = (int) (milliseconds / (1000 * 60 * 60));
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = hours + ":";
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
+    }
+
     private List<List<List<Audio>>> sortAudioByArtist(List<List<List<Audio>>> artistList, List<Audio> album) {
         if (artistList.size() > 0) {
             for (int i = 0; i < artistList.size(); i++) {
@@ -98,7 +123,8 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                     String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                    duration = milliSecondsToTimer(valueOf(duration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
+                    AudioController audioController = new AudioController();
+                    duration = audioController.milliSecondsToTimer(valueOf(duration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
 
                     Audio item = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
                     AudioSingleton.getInstance().getAudioList().add(item);
@@ -189,30 +215,5 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
             metaRetriever.release();
         }
         return null;
-    }
-
-    private String milliSecondsToTimer(long milliseconds) {
-        String finalTimerString = "";
-        String secondsString;
-
-        // Convert total duration into time
-        int hours = (int) (milliseconds / (1000 * 60 * 60));
-        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
-        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-        // Add hours if there
-        if (hours > 0) {
-            finalTimerString = hours + ":";
-        }
-
-        // Prepending 0 to seconds if it is one digit
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        } else {
-            secondsString = "" + seconds;
-        }
-        finalTimerString = finalTimerString + minutes + ":" + secondsString;
-
-        // return timer string
-        return finalTimerString;
     }
 }

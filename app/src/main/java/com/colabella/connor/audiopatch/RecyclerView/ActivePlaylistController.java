@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.Controller;
 import com.colabella.connor.audiopatch.MainActivity;
@@ -25,7 +26,7 @@ public class ActivePlaylistController {
               //  removeItem();                           // TODO Removes an item from the RecyclerView (Remove this function later. Exists only for bug-testing purposes)
                 break;
             case "back_button":
-            //    selectPreviousItem();                   // Moves current selection to the previous available item in the RecyclerView. Selects the last item in the list if pressed at index 0.
+                playPreviousItem();                   // Moves current selection to the previous available item in the RecyclerView. Selects the last item in the list if pressed at index 0.
                 break;
             case "play_button":
                 if(mediaPlayer == null) { // mediaPlayer is null
@@ -115,34 +116,46 @@ public class ActivePlaylistController {
         }
     }
 
-/*
+
     // Selects the previous item in the list, if one is available, and plays the audio.
     // When at index 0 of audioList it will loop around and play the last item in the audioList.
-    private void selectPreviousItem() {
-        Controller controller = new Controller();
-        AudioController audioController = new AudioController();
-        RecyclerViewAdapter recyclerViewAdapter = audioController.getRecyclerViewAdapter();
+    private void playPreviousItem() {
+        //Controller controller = new Controller();
+        //if (controller.getUser().getRecyclerViewPermission()) {  // Checks the global user state to see if the user has permission to alter the RecyclerView
+        //TODO set permission up properly
+        ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
+        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
 
-        if (controller.getUser().getRecyclerViewPermission()) {             // Checks the global user state to see if the user has permission to alter the RecyclerView
-            List<Audio> audioList = audioController.getAudioList();
-            for (int index = 0; index < audioList.size(); index++) {        // Iterates over the audio list to find the currently selected item
-                if (audioList.get(index).getSelected()) {                   // Proceed if an item's selected boolean is true
-                    if (index - 1 >= 0) {                                   // Proceed if the next index is less than the list size (an item in a list of size 1 has an index of 0)
-                        audioController.setSelectedAudio(index - 1);        // Method to sets the next index as selected.
-                        recyclerViewAdapter.notifyDataSetChanged();
-                        playSelectedItem();                                 // Play the newly selected item
-                        break;
-                    } else {                                                // We've reached the end of the list, so select the first item (index 0) instead.
-                        audioController.setSelectedAudio(audioList.size() - 1);
-                        recyclerViewAdapter.notifyDataSetChanged();
-                        playSelectedItem();                                 // Play the newly selected item
+        if(currentlySelectedItemIndex >= 0) {
+            AudioController audioController = new AudioController();
+            String time = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
+
+            for(int i = 0; i < time.length(); i++) {
+                if(time.charAt(i) == ':') {
+                    int seconds = Integer.valueOf(time.substring(i + 1)); // get all characters after ':'
+                    if(seconds < 2) {
+                        // go to previous song
+                        if (currentlySelectedItemIndex > 0) {
+                            activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex - 1);
+                            playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex - 1));
+                            togglePlayButtonState();
+                        }
+                        else {
+                            break; // song is first item in the list, so restart and play it
+                        }
+                        return;
+                    }
+                    else { // restart current song
                         break;
                     }
                 }
             }
+            activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex);
+            playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex));
+            togglePlayButtonState();
         }
+        //}
     }
-    */
 
     // Selects the next available item in the RecyclerView if one is already selected to move from.
     // If the selected item is the last in the list, it selects the item at the top of the list instead (index 0).
