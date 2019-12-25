@@ -40,11 +40,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return instance;
     }
 
-    /*private static Context applicationContext;
-    private static Button playButton;
-    private NavigationView navigationView;
-     */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+       // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
+        //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -84,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeRecyclerView(){
-        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         ActivePlaylistAdapter recyclerViewAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
 
@@ -162,6 +159,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController(getPackageManager(), getPackageName(), this);
         nearbyConnectionsController.clickedDrawerFragment(menuItem);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        switch (menuItem.getItemId()) {
+
+            case R.id.nav_advertise:
+            case R.id.nav_discover: {
+                //drawer.closeDrawer(GravityCompat.START);
+                Toast.makeText(instance, "You may now close the drawer.", Toast.LENGTH_SHORT).show();
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                break;
+            }
+        }
         return true;
     }
 

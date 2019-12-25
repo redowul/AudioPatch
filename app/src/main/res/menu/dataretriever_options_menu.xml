@@ -4,33 +4,33 @@
         android:id="@+id/sort"
         android:orderInCategory="100"
         android:title="Sort by">
-        <menu>
-            <item
-                android:id="@+id/sortMenu_alphabetical"
-                android:title="A to Z" />
+    <menu>
+        <!--<item
+            android:id="@+id/sortMenu_alphabetical"
+            android:title="A to Z" />
 
-            <item
-                android:id="@+id/sortMenu_omegapsical"
-                android:title="Z to A" />
+        <item
+            android:id="@+id/sortMenu_omegapsical"
+            android:title="Z to A" />
 
-            <item
-                android:id="@+id/sortMenu_artist"
-                android:title="Artist" />
+        <item
+            android:id="@+id/sortMenu_artist"
+            android:title="Artist" />
 
-            <item
-                android:id="@+id/sortMenu_album"
-                android:title="Album" />
+        <item
+            android:id="@+id/sortMenu_album"
+            android:title="Album" />
 
-            <item
-                android:id="@+id/sortMenu_shortestDuration"
-                android:title="Shortest Duration" />
+        <item
+            android:id="@+id/sortMenu_shortestDuration"
+            android:title="Shortest Duration" />
 
-            <item
-                android:id="@+id/sortMenu_longestDuration"
-                android:title="Longest Duration" />
-            <item
-                android:id="@+id/sortMenu_totalAlbums"
-                android:title="Total Albums" />
+        <item
+            android:id="@+id/sortMenu_longestDuration"
+            android:title="Longest Duration" />
+        <item
+            android:id="@+id/sortMenu_totalAlbums"
+            android:title="Total Albums" />-->
         </menu>
 
     </item>

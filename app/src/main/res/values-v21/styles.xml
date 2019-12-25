@@ -1,8 +1,36 @@
 <resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/recyclerViewDark</item>
+        <item name="colorAccent">@color/colorPrimaryAccent</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:itemBackground">@color/recyclerViewPrimary</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
+    </style>
+
+    <style name="NavigationView">
+        <item name="android:textColorSecondary">@color/iconColor</item>
+    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">@color/recyclerViewDark</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_background</item>
+        <item name="android:itemBackground">@color/recyclerViewDark</item>
+        <item name="android:colorBackground">@color/recyclerViewPrimary</item>
+        <item name="android:textColorSecondary">@color/textColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:radius">4dp</item>
     </style>
 </resources>

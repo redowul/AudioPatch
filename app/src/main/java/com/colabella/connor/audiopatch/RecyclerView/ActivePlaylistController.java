@@ -1,20 +1,19 @@
 package com.colabella.connor.audiopatch.RecyclerView;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.widget.Button;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
-import com.colabella.connor.audiopatch.Controller;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
-
-import java.util.List;
 
 public class ActivePlaylistController {
 
@@ -100,6 +99,7 @@ public class ActivePlaylistController {
                 if (context != null && uri != null) {
                     mediaPlayer = MediaPlayer.create(context, uri);
                     mediaPlayer.start();
+                    showNotification(selectedItem);
                 }
             } else {  // MediaPlayer is not null
                 if (mediaPlayer.isPlaying()) {
@@ -110,6 +110,7 @@ public class ActivePlaylistController {
                 mediaPlayer = MediaPlayer.create(context, uri);
                 try {
                     mediaPlayer.start();
+                    showNotification(selectedItem);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -117,6 +118,45 @@ public class ActivePlaylistController {
         }
     }
 
+    private void showNotification(Audio audio){
+        MainActivity mainActivity = new MainActivity();
+        Context context = mainActivity.getInstance();
+
+        String title = audio.getTitle();
+        String album = audio.getAlbum();
+        String artist = audio.getArtist();
+        Bitmap albumArt = audio.getAlbumArt();
+
+        /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("YOUR_CHANNEL_ID",
+                    "YOUR_CHANNEL_NAME",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+
+        }*/
+
+        if(albumArt != null) {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "id")
+                    .setSmallIcon(R.drawable.audiopatchlogotransparent)
+                    .setLargeIcon(albumArt)
+                    .setContentTitle(title)
+                    .setContentText(artist + " - " + album)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.notify(0, builder.build());
+        }
+        else {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "id")
+                    .setSmallIcon(R.drawable.audiopatchlogotransparent)
+                    .setContentTitle(title)
+                    .setContentText(artist + " - " + album)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.notify(0, builder.build());
+        }
+    }
 
     // Selects the previous item in the list, if one is available, and plays the audio.
     // When at index 0 of audioList it will loop around and play the last item in the audioList.

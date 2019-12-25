@@ -10,7 +10,7 @@
     android:layout_margin="4dp"
     card_view:cardPreventCornerOverlap="false">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/recyclerViewDark"
@@ -24,8 +24,7 @@
         android:id="@+id/item_album_art"
         android:layout_width="@dimen/recyclerView_albumArt_item_size"
         android:layout_height="@dimen/recyclerView_albumArt_item_size"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp" />
+        android:layout_marginEnd="16dp" />
 
     <TextView
         android:id="@+id/item_duration"
@@ -39,7 +38,6 @@
         android:layout_marginRight="2dp"
         android:layout_marginBottom="0dp"
         android:layout_toEndOf="@id/item_artist"
-        android:layout_toRightOf="@id/item_artist"
         android:orientation="horizontal"
         android:singleLine="true"
         android:text="@string/timestamp"
@@ -50,13 +48,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/item_album_art"
-        android:layout_toRightOf="@id/item_album_art"
         android:ellipsize="end"
-        android:paddingTop="4dp"
+        android:paddingTop="0dp"
         android:paddingStart="0dp"
-        android:paddingLeft="0dp"
         android:paddingEnd="15dp"
-        android:paddingRight="15dp"
         android:singleLine="true"
         android:text="@string/title"
         android:textSize="16sp"/>
@@ -68,10 +63,8 @@
         android:layout_below="@+id/item_title"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
         android:layout_marginBottom="0dp"
         android:layout_toEndOf="@id/item_album_art"
-        android:layout_toRightOf="@id/item_album_art"
         android:ellipsize="end"
         android:orientation="horizontal"
         android:singleLine="true"
