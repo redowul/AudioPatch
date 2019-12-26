@@ -37,4 +37,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.android.gms:play-services-nearby:15.0.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.github.claucookie.miniequalizer:library:1.0.0'
 }

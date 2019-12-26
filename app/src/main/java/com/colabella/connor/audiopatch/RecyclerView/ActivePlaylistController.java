@@ -15,9 +15,15 @@ import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 
+import es.claucookie.miniequalizerlibrary.EqualizerView;
+
 public class ActivePlaylistController {
 
     private static MediaPlayer mediaPlayer;
+
+    MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
 
     // Determines which button on the bottom toolbar was pressed
     public void determineButtonSelected(String buttonIdString, View view) {
@@ -54,6 +60,7 @@ public class ActivePlaylistController {
                 // - If mediaPlayer is not null (and audio is playing), the audio should be paused and the play button should be changed to a pause button.
                 // - Meaning if the mediaPlayer is not null and no audio is playing, we should just un-pause the audio.
                 // - The mediaPlayer will thus handle itself when a piece of audio ends, independent of this button.
+                AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                 break;
             case "next_button":
                 playNextItem();                       // Moves current selection to the next available item in the RecyclerView. Selects index 0 when called after reaching the end of the list.

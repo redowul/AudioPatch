@@ -34,6 +34,8 @@
 
     <TextView
         android:id="@+id/audio_title"
+        android:layout_toLeftOf="@id/equalizer"
+        android:layout_toStartOf="@id/equalizer"
         android:textStyle="bold"
         android:layout_toRightOf="@id/album_art"
         android:layout_toEndOf="@id/album_art"
@@ -127,6 +129,8 @@
 
     <TextView
         android:id="@+id/submitter"
+        android:layout_toLeftOf="@id/equalizer"
+        android:layout_toStartOf="@id/equalizer"
         android:layout_toRightOf="@id/submitter_intro_text"
         android:layout_toEndOf="@id/submitter_intro_text"
         android:layout_below="@+id/artist"
@@ -143,4 +147,18 @@
         android:singleLine="true"
         android:text="@string/submitter">
     </TextView>
+
+    <es.claucookie.miniequalizerlibrary.EqualizerView
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/equalizer"
+        android:visibility="gone"
+        custom:foregroundColor="@color/colorPrimary"
+        custom:animDuration="3500"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 </RelativeLayout>
