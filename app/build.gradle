@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -38,4 +40,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-nearby:15.0.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.github.claucookie.miniequalizer:library:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.qhutch.bottomsheetlayout:bottomsheetlayout:0.1.9'
+}
+repositories {
+    mavenCentral()
 }

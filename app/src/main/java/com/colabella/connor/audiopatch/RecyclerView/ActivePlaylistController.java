@@ -2,18 +2,21 @@ package com.colabella.connor.audiopatch.RecyclerView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
 import es.claucookie.miniequalizerlibrary.EqualizerView;
 
@@ -97,15 +100,41 @@ public class ActivePlaylistController {
         if (selectedItem != null) {                                  // audioToPlay can return null if there's nothing in the audioList, so this avoids a null pointer exception.
             MainActivity mainActivity = new MainActivity();
             Context context = mainActivity.getInstance();
+            ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
+            ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
 
             String audioToPlayStringified = selectedItem.getData();  // Convert Audio to String
             Uri uri = Uri.parse(audioToPlayStringified);             // Convert to Uri by parsing the String
+
+            if(selectedItem.getAlbumArt() != null) {
+                Bitmap blurredAlbumCover = mainActivity.blur(mainActivity.getInstance(), selectedItem.getAlbumArt());
+                bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet
+                bottomSheetCapstoneAlbumCover.setImageBitmap(selectedItem.getAlbumArt()); // Set background of the bottom sheet capstone image
+
+                BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
+                if(layout.isExpended()) {
+                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
+                }
+            }
+            else {
+                Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
+                bottomSheetCapstoneAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet capstone image; this one is not blurred
+
+                blurredAlbumCover = mainActivity.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
+                bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet
+
+                BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
+                if(layout.isExpended()) {
+                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
+                }
+            }
 
             if (mediaPlayer == null) {
                 mediaPlayer = new MediaPlayer();
                 if (context != null && uri != null) {
                     mediaPlayer = MediaPlayer.create(context, uri);
                     mediaPlayer.start();
+
                     showNotification(selectedItem);
                 }
             } else {  // MediaPlayer is not null

@@ -2,7 +2,6 @@
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ndroid="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -44,13 +43,6 @@
             android:layout_marginRight="36dp"
             android:onClick="showPopup"/>
     </RelativeLayout>
-
-    <!--<android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_tops"
-        android:layout_gravity="end"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </android.support.v7.widget.Toolbar>-->
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"

@@ -1,6 +1,7 @@
 package com.colabella.connor.audiopatch.RecyclerView;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.Controller;
+import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -152,6 +155,25 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
     @Override
     public int getItemCount() {
+        // resets the background images within the bottom sheet when the active playlist size is reduced to 0
+        if (dataSet.size() == 0) {
+            MainActivity mainActivity = new MainActivity();
+            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
+
+            ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
+            bottomSheetCapstoneAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet capstone image; this one isn't blurred yet
+
+            blurredAlbumCover = mainActivity.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
+
+            ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
+            bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet
+
+            BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
+            if(layout.isExpended()) {
+                bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
+            }
+        }
+
         return dataSet.size();
     }
 

@@ -69,9 +69,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                     String selectedAlbumTitle = dataSet.get(position).get(0).getAlbum();
                     bundle.putString("albumKey", selectedAlbumTitle);
                     songSelectionFragment.setArguments(bundle);
-
-                    DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                    //dataRetrievalActivity.hideSoftKeyboard(dataRetrievalActivity.getInstance()); //TODO undo this?
                 }
             });
         }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryAccent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
@@ -13,82 +13,127 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/toolbar_bottom"
         android:overScrollMode="never"
         android:background="@color/recyclerViewPrimary" />
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_bottom"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/remove"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:gravity="start"
-            android:onClick="onBottomToolbarItemClick"
-            android:text="Remove" />
+        <com.qhutch.bottomsheetlayout.BottomSheetLayout
+            android:id="@+id/bottom_sheet_layout"
+            android:background="@color/recyclerViewDark"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="bottom"
+            app:collapsedHeight="56dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/bottom_sheet_album_cover"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:adjustViewBounds="true"
+                android:alpha="0.6"
+                android:scaleType="centerCrop"
+                app:layout_anchor="@+id/bottom_sheet_layout"
+                app:layout_anchorGravity="center" />
 
-            <Button
-                android:id="@+id/back_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:background="@drawable/ic_skip_previous_24dp"
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/bottom_sheet_layout_capstone"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/recyclerViewDark"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:elevation="0dp">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/bottom_sheet_current_album_cover_small"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/audiopatchlogosquareblurrable" />
+            </android.support.design.widget.AppBarLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:onClick="onBottomToolbarItemClick"
-                android:visibility="visible" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/play_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/ic_play_24dp"
-                android:onClick="onBottomToolbarItemClick" />
+                <Button
+                    android:id="@+id/remove"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="start"
+                    android:onClick="onBottomToolbarItemClick"
+                    android:text="Remove" />
 
-            <Button
-                android:id="@+id/next_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:background="@drawable/ic_skip_next_24dp"
-                android:onClick="onBottomToolbarItemClick"
-                android:visibility="visible" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/back_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/ic_skip_previous_24dp"
+                    android:gravity="center"
+                    android:onClick="onBottomToolbarItemClick"
+                    android:visibility="visible" />
 
-        <Button
-            android:id="@+id/add_audio_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/ic_playlist_add_24dp"
-            android:onClick="onBottomToolbarItemClick"
-            android:visibility="visible"
-            tools:context=".ActivePlaylistController" />
+                <Button
+                    android:id="@+id/play_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/ic_play_24dp"
+                    android:onClick="onBottomToolbarItemClick" />
 
-    </android.support.v7.widget.Toolbar>
+                <Button
+                    android:id="@+id/next_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/ic_skip_next_24dp"
+                    android:onClick="onBottomToolbarItemClick"
+                    android:visibility="visible" />
 
+                <Button
+                    android:id="@+id/add_audio_button"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/ic_playlist_add_24dp"
+                    android:onClick="onBottomToolbarItemClick"
+                    android:visibility="visible"
+                    tools:context=".ActivePlaylistController" />
+            </LinearLayout>
+
+
+        </com.qhutch.bottomsheetlayout.BottomSheetLayout>
+
+
+
+        <!--  <android.support.design.widget.AppBarLayout
+              android:id="@+id/toolbar_bottom"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_alignParentBottom="true"
+              android:background="?attr/colorPrimary"
+              android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+              app:popupTheme="@style/AppTheme.PopupOverlay"
+              android:layout_gravity="bottom">
+
+          </android.support.design.widget.AppBarLayout>-->
+
+    </android.support.design.widget.CoordinatorLayout>
+    
 </RelativeLayout>
-
