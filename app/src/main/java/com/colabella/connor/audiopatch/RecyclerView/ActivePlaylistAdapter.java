@@ -45,6 +45,14 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         dataSet.add(item);
     }
 
+    void clearSelectedItem() {
+        for (int i = 0; i < getItemCount(); i++) {
+            dataSet.get(i).setSelected(false);
+            notifyItemChanged(i);
+        }
+        AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+    }
+
     void setSelectedAudio(int selectedAudioPos) {
         for (int i = 0; i < getItemCount(); i++) {
             dataSet.get(i).setSelected(false);
@@ -161,6 +169,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
 
             ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
+            bottomSheetCapstoneAlbumCover.setImageBitmap(null);
             bottomSheetCapstoneAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet capstone image; this one isn't blurred yet
 
             blurredAlbumCover = mainActivity.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image

@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -41,6 +42,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.colabella.connor.audiopatch.Audio.AudioController;
@@ -119,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    private float bottomSheetY;
     private void initializeBottomSheet() {
         Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.audiopatchlogosquareblurrable);
         icon = blur(this, icon); // blur the image
@@ -132,59 +136,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screenW = displayMetrics.widthPixels;
         BottomSheetLayout layout = findViewById(R.id.bottom_sheet_layout);
-        layout.getLayoutParams().height = screenW; // set height of the bottom sheet to the same as the height of the screen
+        layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen
 
-        //layout.setMinimumHeight(width);
+        if(!layout.isExpended()) {
+            Button expandBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
+            expandBottomSheetButton.setOnClickListener(view -> {
+                layout.expand();
+            });
+        }
+
         layout.setOnProgressListener(progress -> {
-            System.out.println(layout.getBottom() + ", " + layout.getTop());
-            System.out.println(bottomSheetY + ", " + layout.getY());
-            System.out.println(layout.getHeight());
-            /*if(bottomSheetY == -1) {
-                bottomSheetY = layout.getY();
-            }
-            if (bottomSheetY < layout.getY()) { // closing the sheet
-                System.out.println("Closing the sheet");
-            }
-            else if (bottomSheetY > layout.getY()){ // opening the sheet
-                System.out.println("Opening the sheet");
-            }
-            bottomSheetY = layout.getY(); // higher number means bottom sheet is lower.*/
-
             AppBarLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone);
             double minY = layout.getBottom();
             double maxY = layout.getTop();
             double currentY = layout.getY();
 
-           // double adjustedMinY = 0; // get height of bottom_sheet_layout_capstone
-
-            System.out.println(bottomSheetLayoutCapstone.getHeight() + " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahdhhzherhah");
-
             double adjustedMinY = bottomSheetLayoutCapstone.getHeight();
             double adjustedMaxY = maxY - minY;
             double currentAdjustedY = maxY - currentY;
 
-            System.out.println("Max: " + maxY);
-            System.out.println("Min: " + minY);
-            System.out.println("Current: " + currentY);
-            System.out.println("Adjusted Max: " + adjustedMaxY);
-            System.out.println("Adjusted Min: " + adjustedMinY);
-            System.out.println("Current Adjusted: " + currentAdjustedY);
-
             double percentage = (currentAdjustedY / adjustedMaxY) * 100;
             int alpha = (int) ((percentage / 100) * 255);
 
-            System.out.println("percentage: " + percentage);
-            System.out.println("alpha: " + alpha);
-
             ImageView bottomSheetLayoutCapstoneAlbumCover = findViewById(R.id.bottom_sheet_current_album_cover_small);
+            Button expandBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
             bottomSheetLayoutCapstone.getBackground().setAlpha(alpha); // set the alpha of the appbar itself
-            bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(alpha); // set the alpha of the background of the image view
-            bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
+            expandBottomSheetButton.getBackground().setAlpha(alpha);
 
-            System.out.println("Calculation : " + adjustedMinY + ", " + (minY - currentY));
+            if(bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
+                bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
+                //bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(0);
+            }
+            else {
+                //bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(alpha); // set the alpha of the background of the image view
+            }
+
             if(adjustedMinY == minY - currentY) {
+                if(bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
+                    bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(255); // set the alpha of the bitmap overlain on top of the image view
+                    expandBottomSheetButton.getBackground().setAlpha(255); // set the expand bottom sheet button to be completely visible
+//                    bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(0);
+                }
+                else {
+//                    bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(255); // set the alpha of the background of the image view
+                }
                 bottomSheetLayoutCapstone.getBackground().setAlpha(255);
-                bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(255);
             }
         });
     }

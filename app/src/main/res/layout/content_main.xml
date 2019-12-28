@@ -13,8 +13,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="never"
-        android:background="@color/recyclerViewPrimary" />
+        android:background="@color/recyclerViewPrimary"
+        android:overScrollMode="never" />
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_content"
@@ -23,11 +23,11 @@
 
         <com.qhutch.bottomsheetlayout.BottomSheetLayout
             android:id="@+id/bottom_sheet_layout"
-            android:background="@color/recyclerViewDark"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_gravity="bottom"
-            app:collapsedHeight="56dp">
+            android:background="@color/recyclerViewDark"
+            app:collapsedHeight="56dp"
+            android:layout_gravity="bottom">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/bottom_sheet_album_cover"
@@ -48,63 +48,126 @@
                 app:contentInsetStart="0dp"
                 app:elevation="0dp">
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/bottom_sheet_current_album_cover_small"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:background="@drawable/audiopatchlogosquareblurrable" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/bottom_sheet_current_album_cover_small"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/bottom_sheet_audio_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_toStartOf="@id/expand_bottom_sheet_button"
+                        android:layout_toLeftOf="@id/expand_bottom_sheet_button"
+                        android:layout_toEndOf="@id/bottom_sheet_current_album_cover_small"
+                        android:layout_toRightOf="@id/bottom_sheet_current_album_cover_small"
+                        android:orientation="horizontal"
+                        android:singleLine="true"
+                        android:text="@string/title"
+                        android:textSize="16sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/bottom_sheet_artist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/bottom_sheet_audio_title"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_toStartOf="@id/expand_bottom_sheet_button"
+                        android:layout_toLeftOf="@id/expand_bottom_sheet_button"
+                        android:layout_toEndOf="@id/bottom_sheet_current_album_cover_small"
+                        android:layout_toRightOf="@id/bottom_sheet_current_album_cover_small"
+                        android:orientation="horizontal"
+                        android:singleLine="true"
+                        android:text="@string/artist"
+                        android:textSize="14sp">
+                    </TextView>
+
+                    <Button
+                        android:id="@+id/expand_bottom_sheet_button"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/arrow_drop_up_24dp"
+                        android:gravity="end" />
+                </RelativeLayout>
+
             </android.support.design.widget.AppBarLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/audio_control"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/remove"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:gravity="start"
-                    android:onClick="onBottomToolbarItemClick"
-                    android:text="Remove" />
-
-                <Button
                     android:id="@+id/back_button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_toStartOf="@id/play_button"
+                    android:layout_toLeftOf="@id/play_button"
                     android:background="@drawable/ic_skip_previous_24dp"
-                    android:gravity="center"
                     android:onClick="onBottomToolbarItemClick"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:layout_centerInParent="true"/>
 
                 <Button
                     android:id="@+id/play_button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
                     android:background="@drawable/ic_play_24dp"
-                    android:onClick="onBottomToolbarItemClick" />
+                    android:onClick="onBottomToolbarItemClick"
+                    android:layout_centerInParent="true"/>
 
                 <Button
                     android:id="@+id/next_button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_toEndOf="@id/play_button"
+                    android:layout_toRightOf="@id/play_button"
                     android:background="@drawable/ic_skip_next_24dp"
                     android:onClick="onBottomToolbarItemClick"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:layout_centerInParent="true"/>
 
-                <Button
+                <TextView
+                    android:id="@+id/bottom_sheet_submitter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/play_button"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:singleLine="true"
+                    android:text="@string/submitter"
+                    android:textSize="14sp"
+                    android:layout_centerInParent="true">
+
+                </TextView>
+
+                <!--<Button
                     android:id="@+id/add_audio_button"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
@@ -114,12 +177,10 @@
                     android:background="@drawable/ic_playlist_add_24dp"
                     android:onClick="onBottomToolbarItemClick"
                     android:visibility="visible"
-                    tools:context=".ActivePlaylistController" />
-            </LinearLayout>
-
+                    tools:context=".ActivePlaylistController" />-->
+            </RelativeLayout>
 
         </com.qhutch.bottomsheetlayout.BottomSheetLayout>
-
 
 
         <!--  <android.support.design.widget.AppBarLayout
@@ -135,5 +196,6 @@
           </android.support.design.widget.AppBarLayout>-->
 
     </android.support.design.widget.CoordinatorLayout>
-    
+
+
 </RelativeLayout>

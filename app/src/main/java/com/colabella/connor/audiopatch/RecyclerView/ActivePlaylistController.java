@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
@@ -110,10 +111,15 @@ public class ActivePlaylistController {
                 Bitmap blurredAlbumCover = mainActivity.blur(mainActivity.getInstance(), selectedItem.getAlbumArt());
                 bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet
                 bottomSheetCapstoneAlbumCover.setImageBitmap(selectedItem.getAlbumArt()); // Set background of the bottom sheet capstone image
+                bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
 
                 BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
-                if(layout.isExpended()) {
-                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
+                AppBarLayout bottomSheetLayoutCapstone = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout_capstone);
+                double minY = layout.getBottom();
+                double currentY = layout.getY();
+                double adjustedMinY = bottomSheetLayoutCapstone.getHeight();
+                if(adjustedMinY == minY - currentY) {
+                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(255);
                 }
             }
             else {
@@ -131,13 +137,41 @@ public class ActivePlaylistController {
 
             if (mediaPlayer == null) {
                 mediaPlayer = new MediaPlayer();
-                if (context != null && uri != null) {
-                    mediaPlayer = MediaPlayer.create(context, uri);
-                    mediaPlayer.start();
-
-                    showNotification(selectedItem);
+            }
+            if (context != null && uri != null) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
                 }
-            } else {  // MediaPlayer is not null
+                mediaPlayer = MediaPlayer.create(context, uri);
+                mediaPlayer.start();
+                mediaPlayer.setOnCompletionListener(mp -> {
+                    ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
+                    if (activePlaylistAdapter.getCurrentlySelectedItemIndex() == activePlaylistAdapter.getItemCount() - 1) {
+                        if (activePlaylistAdapter.getItemCount() > 1) {
+                            activePlaylistAdapter.setSelectedAudio(0);
+                            int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+                            Audio currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex);
+                            playSelectedAudio(currentlySelectedItem);
+                        }
+                        else {
+                            activePlaylistAdapter.clearSelectedItem();
+                            activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getItemCount() - 1);
+                            togglePlayButtonState();
+                        }
+                    } else {
+                        activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
+                        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+                        Audio currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex);
+                        playSelectedAudio(currentlySelectedItem);
+                    }
+                });
+                showNotification(selectedItem);
+            }
+           // }
+
+            /*else {  // MediaPlayer is not null
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                 }
@@ -146,11 +180,25 @@ public class ActivePlaylistController {
                 mediaPlayer = MediaPlayer.create(context, uri);
                 try {
                     mediaPlayer.start();
+                   /* mediaPlayer.setOnCompletionListener(mp -> {
+                        ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
+                        if(activePlaylistAdapter.getCurrentlySelectedItemIndex() == activePlaylistAdapter.getItemCount() - 1) {
+                            activePlaylistAdapter.clearSelectedItem();
+                            activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getItemCount() - 1);
+                            togglePlayButtonState();
+                        }
+                        else {
+                            activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
+                            int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+                            Audio currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex);
+                            playSelectedAudio(currentlySelectedItem);
+                        }
+                    });
                     showNotification(selectedItem);
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-            }
+            }*/
         }
     }
 
