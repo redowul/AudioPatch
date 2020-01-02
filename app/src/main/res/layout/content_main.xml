@@ -29,6 +29,8 @@
             app:collapsedHeight="56dp"
             android:layout_gravity="bottom">
 
+            <!--android:layout_gravity="bottom"-->
+
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/bottom_sheet_album_cover"
                 android:layout_width="fill_parent"
@@ -49,6 +51,7 @@
                 app:elevation="0dp">
 
                 <RelativeLayout
+                    android:id="@+id/bottom_sheet_capstone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
@@ -58,12 +61,12 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/bottom_sheet_audio_title"
+                        android:id="@+id/bottom_sheet_capstone_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginLeft="8dp"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="4dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp"
                         android:layout_marginBottom="0dp"
@@ -74,18 +77,18 @@
                         android:orientation="horizontal"
                         android:singleLine="true"
                         android:text="@string/title"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textStyle="bold">
                     </TextView>
 
                     <TextView
-                        android:id="@+id/bottom_sheet_artist"
+                        android:id="@+id/bottom_sheet_capstone_artist"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/bottom_sheet_audio_title"
+                        android:layout_below="@+id/bottom_sheet_capstone_title"
                         android:layout_marginStart="8dp"
                         android:layout_marginLeft="8dp"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="0dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp"
                         android:layout_toStartOf="@id/expand_bottom_sheet_button"
@@ -95,7 +98,7 @@
                         android:orientation="horizontal"
                         android:singleLine="true"
                         android:text="@string/artist"
-                        android:textSize="14sp">
+                        android:textSize="16sp">
                     </TextView>
 
                     <Button
@@ -118,10 +121,64 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/bottom_sheet_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/bottom_sheet_artist"
+                    android:orientation="horizontal"
+                    android:singleLine="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/title"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:textSize="24sp"
+                    android:layout_centerInParent="true"
+                    android:textStyle="bold">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/bottom_sheet_artist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/bottom_sheet_submitter"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:singleLine="true"
+                    android:text="@string/artist"
+                    android:textSize="18sp"
+                    android:layout_centerInParent="true">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/bottom_sheet_submitter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/play_button"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:singleLine="true"
+                    android:text="@string/submitter"
+                    android:textSize="16sp"
+                    android:layout_centerInParent="true">
+                </TextView>
+
                 <Button
                     android:id="@+id/back_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:layout_marginRight="24dp"
                     android:layout_marginEnd="24dp"
                     android:layout_toStartOf="@id/play_button"
@@ -133,8 +190,8 @@
 
                 <Button
                     android:id="@+id/play_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:layout_gravity="center"
                     android:background="@drawable/ic_play_24dp"
                     android:onClick="onBottomToolbarItemClick"
@@ -142,8 +199,8 @@
 
                 <Button
                     android:id="@+id/next_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:layout_toEndOf="@id/play_button"
@@ -152,20 +209,6 @@
                     android:onClick="onBottomToolbarItemClick"
                     android:visibility="visible"
                     android:layout_centerInParent="true"/>
-
-                <TextView
-                    android:id="@+id/bottom_sheet_submitter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/play_button"
-                    android:layout_marginTop="12dp"
-                    android:orientation="horizontal"
-                    android:singleLine="true"
-                    android:text="@string/submitter"
-                    android:textSize="14sp"
-                    android:layout_centerInParent="true">
-
-                </TextView>
 
                 <!--<Button
                     android:id="@+id/add_audio_button"

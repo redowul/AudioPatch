@@ -72,11 +72,10 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
 
         @Override
         public void onClick(View view) {
-            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
             Audio item = dataSet.get(this.getAdapterPosition());
             if(dataSet.get(0).getAlbumArt() != null) { item.setAlbumArt(dataSet.get(0).getAlbumArt()); }
             ActivePlaylistAdapter activePlaylistAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
-            activePlaylistAdapter.addItem(item);
+            activePlaylistAdapter.addItem(Audio.copy(item));
             activePlaylistAdapter.notifyDataSetChanged();
             DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
             dataRetrievalActivity.endActivity();

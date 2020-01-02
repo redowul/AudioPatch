@@ -1,38 +1,22 @@
 package com.colabella.connor.audiopatch;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.Layout;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -42,12 +26,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
@@ -55,7 +38,6 @@ import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistController;
 import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,38 +61,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
-       // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
+        // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
         //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-       initializeRecyclerView();
-       initializeBottomSheet();
+        initializeRecyclerView();
+        initializeBottomSheet();
 
-       AudioController audioController = new AudioController();
-       audioController.getAudioFilesFromDeviceStorage();
+        //TODO place this automatic loader inside an 'if' that triggers only when permissions authorize it
 
-       NavigationView navigationView = findViewById(R.id.nav_view);
-       navigationView.setNavigationItemSelectedListener(this);
-       String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
-       String textColor = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.textColor) & 0x00ffffff);
-       ColorStateList colorStateList = new ColorStateList(
-               new int[][]{
-                       new int[]{-android.R.attr.state_checked}, // unchecked
-                       new int[]{android.R.attr.state_checked}  // checked
-               },
-               new int[]{
-                       Color.parseColor(textColor),
-                       Color.parseColor(colorPrimary)
-               });
-       navigationView.setItemTextColor(colorStateList);
-       navigationView.setItemIconTintList(colorStateList);
-       navigationView.getMenu().getItem(0).setChecked(true);
+        // Ensures the data from the device storage is only retrieved once, when the list that data is stored in is empty
+        if (AudioSingleton.getInstance().getAudioList() != null) {
+            if (AudioSingleton.getInstance().getAudioList().size() == 0) {
+                AudioController audioController = new AudioController();
+                audioController.getAudioFilesFromDeviceStorage();
+            }
+        }
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
+        String textColor = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.textColor) & 0x00ffffff);
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, // unchecked
+                        new int[]{android.R.attr.state_checked}  // checked
+                },
+                new int[]{
+                        Color.parseColor(textColor),
+                        Color.parseColor(colorPrimary)
+                });
+        navigationView.setItemTextColor(colorStateList);
+        navigationView.setItemIconTintList(colorStateList);
+        navigationView.getMenu().getItem(0).setChecked(true);
+
+        if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+            Audio selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+
+            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+            activePlaylistController.alterBottomSheet(selectedItem);
+            activePlaylistController.togglePlayButtonState();
+        }
     }
 
-    private void initializeRecyclerView(){
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    private void initializeRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         ActivePlaylistAdapter recyclerViewAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
 
@@ -125,8 +127,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeBottomSheet() {
+        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+
         Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.audiopatchlogosquareblurrable);
-        icon = blur(this, icon); // blur the image
+        icon = activePlaylistController.blur(this, icon); // blur the image
 
         // Set background of the bottom sheet
         ImageView bottomSheetAlbumCover = findViewById(R.id.bottom_sheet_album_cover);
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         BottomSheetLayout layout = findViewById(R.id.bottom_sheet_layout);
         layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen
 
-        if(!layout.isExpended()) {
+        if (!layout.isExpended()) {
             Button expandBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
             expandBottomSheetButton.setOnClickListener(view -> {
                 layout.expand();
@@ -163,49 +167,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bottomSheetLayoutCapstone.getBackground().setAlpha(alpha); // set the alpha of the appbar itself
             expandBottomSheetButton.getBackground().setAlpha(alpha);
 
-            if(bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
-                bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
-                //bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(0);
-            }
-            else {
-                //bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(alpha); // set the alpha of the background of the image view
+            TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);
+            TextView bottomSheetCapstoneArtist = findViewById(R.id.bottom_sheet_capstone_artist);
+
+            if (bottomSheetCapstoneTitle.getVisibility() == View.VISIBLE && bottomSheetCapstoneArtist.getVisibility() == View.VISIBLE) {
+                bottomSheetCapstoneTitle.setTextColor(Color.argb(alpha, 255, 255, 255));
+                bottomSheetCapstoneArtist.setTextColor(Color.argb(alpha, 255, 255, 255));
             }
 
-            if(adjustedMinY == minY - currentY) {
-                if(bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
+            if (bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
+                bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
+            }
+
+            if (adjustedMinY == minY - currentY) {
+                if (bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
                     bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(255); // set the alpha of the bitmap overlain on top of the image view
                     expandBottomSheetButton.getBackground().setAlpha(255); // set the expand bottom sheet button to be completely visible
-//                    bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(0);
-                }
-                else {
-//                    bottomSheetLayoutCapstoneAlbumCover.getBackground().setAlpha(255); // set the alpha of the background of the image view
                 }
                 bottomSheetLayoutCapstone.getBackground().setAlpha(255);
             }
         });
-    }
-
-    //TODO move this method to another class
-    private static final float BITMAP_SCALE = 0.4f;
-    private static final float BLUR_RADIUS = 7.5f;
-    @SuppressLint("NewApi")
-    public Bitmap blur(Context context, Bitmap image) {
-        int width = Math.round(image.getWidth() * BITMAP_SCALE);
-        int height = Math.round(image.getHeight() * BITMAP_SCALE);
-
-        Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
-        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
-
-        RenderScript rs = RenderScript.create(context);
-        @SuppressLint({"NewApi", "LocalSuppress"}) ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-        Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
-        Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
-        theIntrinsic.setRadius(BLUR_RADIUS);
-        theIntrinsic.setInput(tmpIn);
-        theIntrinsic.forEach(tmpOut);
-        tmpOut.copyTo(outputBitmap);
-
-        return outputBitmap;
     }
 
     @Override
@@ -242,17 +223,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return false;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    //TODO Move this method to Controller.
-    public void toggleBottomToolbarVisibility(View view) {
-       /* Toolbar toolbarBottom = findViewById(R.id.toolbar_bottom);
-        if(toolbarBottom.getVisibility() == View.VISIBLE) {
-            toolbarBottom.setVisibility(View.GONE);
-        }
-        else {
-            toolbarBottom.setVisibility(View.VISIBLE);
-        }*/
     }
 
     // Handles all button clicks that occur in context_main.xml.
@@ -323,8 +293,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Since the permission was granted, we want to go straight back to the process we were starting before requesting the permission.
                     //TODO Trigger DataRetriever
-                }
-                else {
+                } else {
                     // permission denied
                     Toast.makeText(MainActivity.this, "Permission denied to read your external storage", Toast.LENGTH_SHORT).show();
                     //closeNow();
@@ -335,10 +304,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController();
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(nearbyConnectionsController.getIsAdvertising()) { nearbyConnectionsController.advertise(); }
-                    else if(nearbyConnectionsController.getIsDiscovering()) { nearbyConnectionsController.discover(); }
-                }
-                else {  // permission denied
+                    if (nearbyConnectionsController.getIsAdvertising()) {
+                        nearbyConnectionsController.advertise();
+                    } else if (nearbyConnectionsController.getIsDiscovering()) {
+                        nearbyConnectionsController.discover();
+                    }
+                } else {  // permission denied
                     nearbyConnectionsController.setIsAdvertising(false);
                     nearbyConnectionsController.setIsDiscovering(false);
                     Toast.makeText(MainActivity.this, "Permission denied to access your device's location.", Toast.LENGTH_SHORT).show();
@@ -359,8 +330,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }*/
         }
     }
-
-    // Return static variables
-    //public Context getStaticApplicationContext(){ return applicationContext; }
-    //public Button getPlayButton(){ return playButton; }
 }

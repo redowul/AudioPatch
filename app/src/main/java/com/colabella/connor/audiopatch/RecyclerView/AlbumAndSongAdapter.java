@@ -124,7 +124,7 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         }
 
                         ActivePlaylistAdapter activePlaylistAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
-                        activePlaylistAdapter.addItem(item);
+                        activePlaylistAdapter.addItem(Audio.copy(item));
                         activePlaylistAdapter.notifyDataSetChanged();
                         DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
                         dataRetrievalActivity.endActivity();

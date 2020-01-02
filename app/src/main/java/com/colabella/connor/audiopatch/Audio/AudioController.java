@@ -42,7 +42,6 @@ public class AudioController {
         RetrieveAudioTask retrieveAudioTask = new RetrieveAudioTask();
         MainActivity mainActivity = new MainActivity();
         Context context = mainActivity.getInstance();
-        //Context context = mainActivity.getStaticApplicationContext();
         retrieveAudioTask.execute(context); // Handles album cover retrieval on a secondary thread
     }
 

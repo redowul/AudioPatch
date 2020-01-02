@@ -233,4 +233,10 @@ public class Audio {
             return list2.compareTo(list1);
         }
     };
+
+    // Creates a new instance of the given object. Used when adding instances of a song to the active playlist. This ensures two copies in the active playlist don't share the same object reference
+    // Without this, selecting one item would set all copies within the active playlist to selected as well, since they all shared the same object reference. No longer!
+    public static Audio copy(Audio o) { // o means 'original'
+        return new Audio(o.getData(), o.getTitle(), o.getAlbumArt(), o.getArtist(), o.getAlbum(), o.getDuration(), o.getSubmitter(), o.isSelected());
+    }
 }

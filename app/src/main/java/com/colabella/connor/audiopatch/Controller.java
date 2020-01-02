@@ -1,5 +1,9 @@
 package com.colabella.connor.audiopatch;
 
+import android.support.design.widget.AppBarLayout;
+import android.view.View;
+import android.widget.Toolbar;
+
 import com.colabella.connor.audiopatch.NearbyConnections.User;
 
 public class Controller {
