@@ -2,6 +2,8 @@ package com.colabella.connor.audiopatch.RecyclerView;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -10,20 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.Controller;
+import com.colabella.connor.audiopatch.Equalizer;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import es.claucookie.miniequalizerlibrary.EqualizerView;
 
 public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract {
     // private static ActivePlaylistAdapter instance;
@@ -138,30 +138,29 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
             holder.itemView.setBackgroundResource(R.color.recyclerViewPrimary); // Sets all items to primary background color, representing none being selected.
 
-            EqualizerView equalizer = holder.itemView.findViewById(R.id.equalizer);
+            holder.equalizer = holder.itemView.findViewById(R.id.equalizer);
 
             if (dataSet.get(position).isSelected()) { // If isSelected returns true, highlight the item.
-                equalizer.setVisibility(View.VISIBLE);
-                equalizer.stopBars();
+                holder.equalizer.setVisibility(View.VISIBLE);
                 holder.itemView.setBackgroundResource(R.color.recyclerViewDark);
                 ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                 if (activePlaylistController.getMediaPlayer() != null) {
                     if (activePlaylistController.getMediaPlayer().isPlaying()) {
-                        equalizer.animateBars();
+                        holder.equalizer.animateBars();
                     }
                     else {
-                        if(equalizer.isAnimating()) {
-                            equalizer.stopBars();
+                        if(holder.equalizer.isAnimating()) {
+                            holder.equalizer.stopBars();
                         }
                     }
                 } else {
-                    if(equalizer.isAnimating()) {
-                        equalizer.stopBars();
+                    if(holder.equalizer.isAnimating()) {
+                        holder.equalizer.stopBars();
                     }
                 }
             } else {
-                equalizer.setVisibility(View.GONE);
-                equalizer.stopBars();
+                holder.equalizer.setVisibility(View.GONE);
+                holder.equalizer.stopBars();
             }
             Controller controller = new Controller();
             if (controller.getUser().getRecyclerViewPermission()) {
@@ -187,24 +186,23 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
         Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
         Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
+        Button expandButton = mainActivity.getInstance().findViewById(R.id.expand_bottom_sheet_button);
 
         // resets the background images within the bottom sheet when the active playlist size is reduced to 0
         if (dataSet.size() == 0) {
-            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
-
+            BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
             ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
             bottomSheetCapstoneAlbumCover.setImageBitmap(null);
-            bottomSheetCapstoneAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet capstone image; this one isn't blurred yet
-
-            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-            blurredAlbumCover = activePlaylistController.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
-
-            ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
-            bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet
-
-            BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
             if(layout.isExpended()) {
-                bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
+                layout.collapse();
+            }
+            else {
+                Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
+
+                ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                blurredAlbumCover = activePlaylistController.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
+                ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
+                bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet
             }
 
             TextView bottomSheetCapstoneTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_title);
@@ -225,6 +223,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             nextButton.setVisibility(View.GONE);
         }
         else {
+            expandButton.setVisibility(View.VISIBLE);
             backButton.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
             nextButton.setVisibility(View.VISIBLE);
@@ -274,7 +273,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         private TextView itemSubmitter;
         private ImageView albumArt;
         private View itemHandle;
-        private EqualizerView equalizer;
+        private Equalizer equalizer;
 
         private ViewHolder(View itemView) {
             super(itemView);

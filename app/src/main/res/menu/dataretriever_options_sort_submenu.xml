@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sortMenu_alphabetical"
+        android:title="A to Z" />
+
+    <item
+        android:id="@+id/sortMenu_omegapsical"
+        android:title="Z to A" />
+
+    <item
+        android:id="@+id/sortMenu_artist"
+        android:title="@string/artist" />
+
+    <item
+        android:id="@+id/sortMenu_album"
+        android:title="@string/album" />
+
+    <item
+        android:id="@+id/sortMenu_shortestDuration"
+        android:title="Shortest Duration" />
+
+    <item
+        android:id="@+id/sortMenu_longestDuration"
+        android:title="Longest Duration" />
+    <item
+        android:id="@+id/sortMenu_totalAlbums"
+        android:title="Total Albums" />
+</menu>

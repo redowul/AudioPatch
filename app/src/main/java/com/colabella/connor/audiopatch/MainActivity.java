@@ -6,6 +6,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -185,7 +187,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     expandBottomSheetButton.getBackground().setAlpha(255); // set the expand bottom sheet button to be completely visible
                 }
                 bottomSheetLayoutCapstone.getBackground().setAlpha(255);
+
+                ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
+                if (activePlaylistAdapter.getItemCount() == 0) {
+                    Bitmap blurredAlbumCover = BitmapFactory.decodeResource(getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
+                    blurredAlbumCover = activePlaylistController.blur(getInstance(), blurredAlbumCover); // blur the image
+                    bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet capstone image; this one isn't blurred yet
+                }
             }
+
         });
     }
 
