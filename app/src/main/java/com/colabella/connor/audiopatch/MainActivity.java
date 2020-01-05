@@ -11,6 +11,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,6 +22,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -42,6 +47,8 @@ import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -152,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         layout.setOnProgressListener(progress -> {
+
             AppBarLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone);
             double minY = layout.getBottom();
             double maxY = layout.getTop();
@@ -194,8 +202,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     blurredAlbumCover = activePlaylistController.blur(getInstance(), blurredAlbumCover); // blur the image
                     bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet capstone image; this one isn't blurred yet
                 }
-            }
 
+                /*if(activePlaylistAdapter.getItemCount() == 0) {
+                    layout.setVisibility(View.GONE);
+                }
+                else {
+                    layout.setVisibility(View.VISIBLE);
+                }*/
+            }
         });
     }
 

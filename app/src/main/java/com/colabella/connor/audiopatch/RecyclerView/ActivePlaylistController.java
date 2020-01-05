@@ -256,21 +256,6 @@ public class ActivePlaylistController {
                     bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(255);
                 }
 
-                TextView bottomSheetCapstoneTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_title);
-                TextView bottomSheetCapstoneArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_artist);
-
-                TextView bottomSheetTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_title);
-                TextView bottomSheetArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_artist);
-                TextView bottomSheetSubmitter = mainActivity.getInstance().findViewById(R.id.bottom_sheet_submitter);
-
-                bottomSheetCapstoneTitle.setText(selectedItem.getTitle());
-                bottomSheetCapstoneArtist.setText(selectedItem.getArtist());
-
-                bottomSheetTitle.setText(selectedItem.getTitle());
-                bottomSheetArtist.setText(selectedItem.getArtist());
-                String submittedBy = "Submitted by " + mainActivity.getInstance().getResources().getString(R.string.submitter, selectedItem.getSubmitter());
-                bottomSheetSubmitter.setText(submittedBy);
-
             } else {
                 Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
                 bottomSheetCapstoneAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet capstone image; this one is not blurred
@@ -283,6 +268,21 @@ public class ActivePlaylistController {
                     bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
                 }
             }
+
+            TextView bottomSheetCapstoneTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_title);
+            TextView bottomSheetCapstoneArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_artist);
+
+            TextView bottomSheetTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_title);
+            TextView bottomSheetArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_artist);
+            TextView bottomSheetSubmitter = mainActivity.getInstance().findViewById(R.id.bottom_sheet_submitter);
+
+            bottomSheetCapstoneTitle.setText(selectedItem.getTitle());
+            bottomSheetCapstoneArtist.setText(selectedItem.getArtist());
+
+            bottomSheetTitle.setText(selectedItem.getTitle());
+            bottomSheetArtist.setText(selectedItem.getArtist());
+            String submittedBy = "Submitted by " + mainActivity.getInstance().getResources().getString(R.string.submitter, selectedItem.getSubmitter());
+            bottomSheetSubmitter.setText(submittedBy);
         }
     }
 

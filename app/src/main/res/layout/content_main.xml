@@ -25,11 +25,9 @@
             android:id="@+id/bottom_sheet_layout"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_gravity="bottom"
             android:background="@color/recyclerViewDark"
-            app:collapsedHeight="56dp"
-            android:layout_gravity="bottom">
-
-            <!--android:layout_gravity="bottom"-->
+            app:collapsedHeight="56dp">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/bottom_sheet_album_cover"
@@ -78,8 +76,7 @@
                         android:singleLine="true"
                         android:text="@string/title"
                         android:textSize="18sp"
-                        android:textStyle="bold">
-                    </TextView>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/bottom_sheet_capstone_artist"
@@ -98,8 +95,7 @@
                         android:orientation="horizontal"
                         android:singleLine="true"
                         android:text="@string/artist"
-                        android:textSize="16sp">
-                    </TextView>
+                        android:textSize="16sp" />
 
                     <Button
                         android:id="@+id/expand_bottom_sheet_button"
@@ -126,105 +122,89 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/bottom_sheet_artist"
-                    android:orientation="horizontal"
-                    android:singleLine="true"
+                    android:layout_centerInParent="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/title"
                     android:layout_marginTop="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_marginBottom="0dp"
+                    android:orientation="horizontal"
+                    android:singleLine="true"
+                    android:text="@string/title"
                     android:textSize="24sp"
-                    android:layout_centerInParent="true"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/bottom_sheet_artist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/bottom_sheet_submitter"
-                    android:orientation="horizontal"
+                    android:layout_centerInParent="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginTop="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_marginBottom="0dp"
+                    android:orientation="horizontal"
                     android:singleLine="true"
                     android:text="@string/artist"
-                    android:textSize="18sp"
-                    android:layout_centerInParent="true">
-                </TextView>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/bottom_sheet_submitter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/play_button"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal"
+                    android:layout_centerInParent="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal"
                     android:singleLine="true"
                     android:text="@string/submitter"
-                    android:textSize="16sp"
-                    android:layout_centerInParent="true">
-                </TextView>
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/back_button"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginRight="24dp"
+                    android:layout_centerInParent="true"
                     android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
                     android:layout_toStartOf="@id/play_button"
                     android:layout_toLeftOf="@id/play_button"
                     android:background="@drawable/ic_skip_previous_24dp"
                     android:onClick="onBottomToolbarItemClick"
-                    android:visibility="visible"
-                    android:layout_centerInParent="true"/>
+                    android:visibility="visible" />
 
                 <Button
                     android:id="@+id/play_button"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:background="@drawable/ic_play_24dp"
-                    android:onClick="onBottomToolbarItemClick"
-                    android:layout_centerInParent="true"/>
+                    android:onClick="onBottomToolbarItemClick" />
 
                 <Button
                     android:id="@+id/next_button"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
+                    android:layout_centerInParent="true"
                     android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:layout_toEndOf="@id/play_button"
                     android:layout_toRightOf="@id/play_button"
                     android:background="@drawable/ic_skip_next_24dp"
                     android:onClick="onBottomToolbarItemClick"
-                    android:visibility="visible"
-                    android:layout_centerInParent="true"/>
-
-                <!--<Button
-                    android:id="@+id/add_audio_button"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="@drawable/ic_playlist_add_24dp"
-                    android:onClick="onBottomToolbarItemClick"
-                    android:visibility="visible"
-                    tools:context=".ActivePlaylistController" />-->
+                    android:visibility="visible" />
             </RelativeLayout>
 
         </com.qhutch.bottomsheetlayout.BottomSheetLayout>
-
 
         <!--  <android.support.design.widget.AppBarLayout
               android:id="@+id/toolbar_bottom"

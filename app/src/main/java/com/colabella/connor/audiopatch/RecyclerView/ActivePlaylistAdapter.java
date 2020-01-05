@@ -2,8 +2,6 @@ package com.colabella.connor.audiopatch.RecyclerView;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -12,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
@@ -189,8 +186,8 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         Button expandButton = mainActivity.getInstance().findViewById(R.id.expand_bottom_sheet_button);
 
         // resets the background images within the bottom sheet when the active playlist size is reduced to 0
+        BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
         if (dataSet.size() == 0) {
-            BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
             ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
             bottomSheetCapstoneAlbumCover.setImageBitmap(null);
             if(layout.isExpended()) {
