@@ -183,7 +183,6 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
         Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
         Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
-        Button expandButton = mainActivity.getInstance().findViewById(R.id.expand_bottom_sheet_button);
 
         // resets the background images within the bottom sheet when the active playlist size is reduced to 0
         BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
@@ -220,7 +219,6 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             nextButton.setVisibility(View.GONE);
         }
         else {
-            expandButton.setVisibility(View.VISIBLE);
             backButton.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
             nextButton.setVisibility(View.VISIBLE);

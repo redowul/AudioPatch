@@ -25,7 +25,7 @@
             android:paddingEnd="0dp"
             android:paddingRight="0dp"
             android:singleLine="true"
-            android:text="@string/hashtag"
+            android:text="@string/hash_tag"
             android:textSize="18sp" />
     </RelativeLayout>
 

@@ -8,6 +8,30 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+  <!--  <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:choiceMode="singleChoice"
+        android:divider="@color/recyclerViewAccent"
+        android:background="@color/colorPrimary"
+        android:layout_gravity="start"
+        android:dividerHeight="1dp">
+
+        <ImageView
+            android:id="@+id/drawer_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/audiopatchheader">
+        </ImageView>
+ <android.support.v7.widget.RecyclerView
+     android:id="@+id/drawer_recycler_view"
+     android:layout_below="@+id/drawer_header"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:layout_alignParentBottom="true"
+     android:background="@color/recyclerViewDark"/>
+</RelativeLayout>-->
+
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
@@ -26,4 +50,31 @@
         app:itemIconTint="@color/iconColor"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
+
+    <!--<android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:headerLayout="@layout/nav_header_main"
+        android:background="@color/recyclerViewDark"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"/>
+
+    android:layout_width="wrap_content"
+       android:layout_height="match_parent"
+       android:layout_gravity="start"
+       android:fitsSystemWindows="true"
+       app:headerLayout="@layout/nav_header_main"
+       app:menu="@menu/activity_main_drawer"
+       app:itemTextColor="@color/textColor"
+       app:itemIconTint="@color/iconColor"
+       android:theme="@style/NavigationView"
+        app:itemBackground="@drawable/drawer_selected_item" -->
+
+    <!--
+    app:itemTextColor="@color/textColor"
+    app:itemIconTint="@color/iconColor"
+    android:theme="@style/NavigationView"
+    android:background="@color/recyclerViewDark"
+  app:itemBackground="@drawable/drawer_selected_item"-->
 </android.support.v4.widget.DrawerLayout>

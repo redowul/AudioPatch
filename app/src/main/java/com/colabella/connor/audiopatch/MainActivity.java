@@ -34,9 +34,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
@@ -45,12 +47,13 @@ import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistController;
 import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity /*implements NavigationView.OnNavigationItemSelectedListener*/ {
 
     private static MainActivity instance;
 
@@ -68,17 +71,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
         // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
         //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
         initializeRecyclerView();
         initializeBottomSheet();
+        initializeNavigationView(toolbar);
 
         //TODO place this automatic loader inside an 'if' that triggers only when permissions authorize it
 
@@ -90,23 +88,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
-        String textColor = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.textColor) & 0x00ffffff);
-        ColorStateList colorStateList = new ColorStateList(
-                new int[][]{
-                        new int[]{-android.R.attr.state_checked}, // unchecked
-                        new int[]{android.R.attr.state_checked}  // checked
-                },
-                new int[]{
-                        Color.parseColor(textColor),
-                        Color.parseColor(colorPrimary)
-                });
-        navigationView.setItemTextColor(colorStateList);
-        navigationView.setItemIconTintList(colorStateList);
-        navigationView.getMenu().getItem(0).setChecked(true);
-
         if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
             Audio selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
 
@@ -116,9 +97,82 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void initializeNavigationView(Toolbar toolbar) {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
+        String textColor = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.textColor) & 0x00ffffff);
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][] {
+                        new int[]{-android.R.attr.state_checked}, // unchecked
+                        new int[]{android.R.attr.state_checked},  // checked
+                },
+                new int[] {
+                        Color.parseColor(textColor),
+                        Color.parseColor(colorPrimary),
+                });
+        navigationView.setItemTextColor(colorStateList);
+        navigationView.setItemIconTintList(colorStateList);
+        navigationView.getMenu().getItem(0).setChecked(true);
+
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.nav_home: {
+                    System.out.println("Test 1");
+                    menuItem.setChecked(true);
+                }
+                break;
+                case R.id.nav_downloads: {
+                    System.out.println("Test 1 2");
+                    menuItem.setChecked(true);
+                }
+                break;
+                case R.id.nav_history: {
+                    System.out.println("Test 1 2 3");
+                    menuItem.setChecked(true);
+                }
+                break;
+                case R.id.nav_settings: {
+                    System.out.println("Test 1 2 3 4");
+                    menuItem.setChecked(true);
+                }
+                break;
+                case R.id.nav_about: {
+                    System.out.println("Test 1 2 3 4 5");
+                    menuItem.setChecked(true);
+                }
+                break;
+                case R.id.nav_advertise: {
+                    if (!menuItem.isChecked()) {
+                        MenuItem item = navigationView.getMenu().findItem(R.id.nav_discover);
+                        item.setChecked(false);
+                        System.out.println("Test 1 2 3 4 5 6");
+                        menuItem.setChecked(true);
+                    } else {
+                        menuItem.setChecked(false);
+                    }
+                }
+                break;
+                case R.id.nav_discover: {
+                    if (!menuItem.isChecked()) {
+                        MenuItem item = navigationView.getMenu().findItem(R.id.nav_advertise);
+                        item.setChecked(false);
+                        System.out.println("Test 1 2 3 4 5 6 7");
+                        menuItem.setChecked(true);
+                    } else {
+                        menuItem.setChecked(false);
+                    }
+                    //drawer.closeDrawer(GravityCompat.START);
+                    //Toast.makeText(instance, "You may now close the drawer.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+            return true;
+        });
     }
 
     private void initializeRecyclerView() {
@@ -151,19 +205,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         BottomSheetLayout layout = findViewById(R.id.bottom_sheet_layout);
         layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen
 
-        if (!layout.isExpended()) {
-            Button expandBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
-            expandBottomSheetButton.setOnClickListener(view -> {
-                layout.expand();
-            });
-        }
-
         layout.setOnProgressListener(progress -> {
 
             AppBarLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone);
             double minY = layout.getBottom();
             double maxY = layout.getTop();
             double currentY = layout.getY();
+
+            System.out.println(layout.getY() + "; " + maxY);
 
             double adjustedMinY = bottomSheetLayoutCapstone.getHeight();
             double adjustedMaxY = maxY - minY;
@@ -174,8 +223,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             ImageView bottomSheetLayoutCapstoneAlbumCover = findViewById(R.id.bottom_sheet_current_album_cover_small);
             Button expandBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
+
             bottomSheetLayoutCapstone.getBackground().setAlpha(alpha); // set the alpha of the appbar itself
             expandBottomSheetButton.getBackground().setAlpha(alpha);
+
+            ImageView closeBottomSheetButton = findViewById(R.id.close_bottom_sheet_button);
+            closeBottomSheetButton.getBackground().setAlpha(255 - alpha);
 
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);
             TextView bottomSheetCapstoneArtist = findViewById(R.id.bottom_sheet_capstone_artist);
@@ -189,10 +242,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
             }
 
-            if (adjustedMinY == minY - currentY) {
+            if (currentY == maxY) { // bottom sheet expanded state
+                expandBottomSheetButton.getBackground().setAlpha(255); // set button to visible
+                expandBottomSheetButton.setOnClickListener(view -> layout.collapse()); // close the sheet if pressed
+                expandBottomSheetButton.setSelected(true); // show button as down arrow
+            } else {
+                expandBottomSheetButton.setOnClickListener(view -> layout.expand()); // open the sheet if pressed
+                expandBottomSheetButton.setSelected(false); // show button as up arrow
+            }
+
+            if (adjustedMinY == minY - currentY) { // bottom sheet collapsed state
                 if (bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
                     bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(255); // set the alpha of the bitmap overlain on top of the image view
                     expandBottomSheetButton.getBackground().setAlpha(255); // set the expand bottom sheet button to be completely visible
+                    closeBottomSheetButton.getBackground().setAlpha(0);
                 }
                 bottomSheetLayoutCapstone.getBackground().setAlpha(255);
 
@@ -202,13 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     blurredAlbumCover = activePlaylistController.blur(getInstance(), blurredAlbumCover); // blur the image
                     bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet capstone image; this one isn't blurred yet
                 }
-
-                /*if(activePlaylistAdapter.getItemCount() == 0) {
-                    layout.setVisibility(View.GONE);
-                }
-                else {
-                    layout.setVisibility(View.VISIBLE);
-                }*/
             }
         });
     }
@@ -261,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MainActivity.this.startActivity(myIntent);
     }
 
-    @Override
+    /*@Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController(getPackageManager(), getPackageName(), this);
         nearbyConnectionsController.clickedDrawerFragment(menuItem);
@@ -272,13 +328,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_advertise:
             case R.id.nav_discover: {
                 //drawer.closeDrawer(GravityCompat.START);
-                Toast.makeText(instance, "You may now close the drawer.", Toast.LENGTH_SHORT).show();
-                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                //Toast.makeText(instance, "You may now close the drawer.", Toast.LENGTH_SHORT).show();
+                //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 break;
             }
         }
         return true;
-    }
+    }*/
 
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();

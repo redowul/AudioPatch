@@ -8,6 +8,7 @@
         <item name="android:itemBackground">@color/recyclerViewPrimary</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:overScrollMode">never</item>
     </style>
 
     <style name="NavigationView">

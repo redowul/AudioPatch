@@ -101,17 +101,11 @@ public class ActivePlaylistController {
                 mediaPlayer.start();
                 mediaPlayer.setOnCompletionListener(mp -> {
                     ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-                    if (activePlaylistAdapter.getCurrentlySelectedItemIndex() == activePlaylistAdapter.getItemCount() - 1) {
-                        if (activePlaylistAdapter.getItemCount() > 1) {
-                            activePlaylistAdapter.setSelectedAudio(0);
-                            int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
-                            Audio currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex);
-                            playSelectedAudio(currentlySelectedItem);
-                        } else {
-                            activePlaylistAdapter.clearSelectedItem();
-                            activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getItemCount() - 1);
-                            togglePlayButtonState();
-                        }
+                    if (activePlaylistAdapter.getCurrentlySelectedItemIndex() == activePlaylistAdapter.getItemCount() - 1) { // if song played was last in the list
+                        activePlaylistAdapter.setSelectedAudio(0);
+                        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+                        Audio currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex);
+                        playSelectedAudio(currentlySelectedItem);
                     } else {
                         activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
                         int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
