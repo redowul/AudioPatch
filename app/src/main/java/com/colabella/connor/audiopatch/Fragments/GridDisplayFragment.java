@@ -54,7 +54,7 @@ public class GridDisplayFragment extends Fragment {
             }
             break;
             case 2: { // Display Albums & Songs
-                String artist = bundle.getString("string");
+                String artist = bundle.getString("selectedArtist");
                 final List<List<Audio>> albumList = audioController.getAlbumsByArtist(artist); // List of all albums by selected artist
                 List<Audio> songList = new ArrayList<>();
 

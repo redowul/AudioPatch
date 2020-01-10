@@ -25,8 +25,6 @@ import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
-import es.claucookie.miniequalizerlibrary.EqualizerView;
-
 public class ActivePlaylistController {
 
     /**
@@ -50,8 +48,16 @@ public class ActivePlaylistController {
                 if (mediaPlayer == null) { // mediaPlayer is null
                     if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
                         mediaPlayer = new MediaPlayer();
-                        playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(0));
-                        AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0); // Set item at clicked position's isClicked to true
+                        boolean isItemSelected = AudioSingleton.getInstance().getActivePlaylistAdapter().isItemSelected();
+                        if(isItemSelected) {
+                            int selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getCurrentlySelectedItemIndex();
+                            playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(selectedItem));
+                        }
+                        else {
+                            AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0);
+                            playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
+                        }
+                       // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(selectedItem); // Set item at clicked position's isClicked to true
                         view.setBackgroundResource(R.drawable.ic_pause_24dp);
                     }
                 } else { // mediaPlayer is not null
@@ -85,8 +91,8 @@ public class ActivePlaylistController {
             Context context = mainActivity.getInstance();
             alterBottomSheet(selectedItem); // applies song data to bottom sheet
 
-            String audioToPlayStringified = selectedItem.getData();  // Convert Audio to String
-            Uri uri = Uri.parse(audioToPlayStringified);             // Convert to Uri by parsing the String
+            String audioToPlayString = selectedItem.getData();  // Convert Audio to String
+            Uri uri = Uri.parse(audioToPlayString);             // Convert to Uri by parsing the String
 
             if (mediaPlayer == null) {
                 mediaPlayer = new MediaPlayer();
@@ -206,7 +212,7 @@ public class ActivePlaylistController {
      */
 
     @SuppressLint("NewApi")
-    public Bitmap blur(Context context, Bitmap image) {
+    Bitmap blur(Context context, Bitmap image) {
         float BITMAP_SCALE = 0.4f;
         float BLUR_RADIUS = 7.5f;
 
@@ -241,14 +247,14 @@ public class ActivePlaylistController {
                 bottomSheetCapstoneAlbumCover.setImageBitmap(selectedItem.getAlbumArt()); // Set background of the bottom sheet capstone image
                 bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
 
-                BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
-                AppBarLayout bottomSheetLayoutCapstone = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout_capstone);
-                double maxY = layout.getBottom();
+                //BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
+               // AppBarLayout bottomSheetLayoutCapstone = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout_capstone);
+                /*double maxY = layout.getBottom();
                 double currentY = layout.getY();
-                double adjustedmaxY = bottomSheetLayoutCapstone.getHeight();
-                if (adjustedmaxY == maxY - currentY) {
+                double adjustedMaxY = bottomSheetLayoutCapstone.getHeight();
+                if (adjustedMaxY == maxY - currentY) {
                     bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(255);
-                }
+                }*/
 
             } else {
                 Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
@@ -277,7 +283,53 @@ public class ActivePlaylistController {
             bottomSheetArtist.setText(selectedItem.getArtist());
             String submittedBy = "Submitted by " + mainActivity.getInstance().getResources().getString(R.string.submitter, selectedItem.getSubmitter());
             bottomSheetSubmitter.setText(submittedBy);
+
+            Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
+            Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
+            Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
+            backButton.setVisibility(View.VISIBLE);
+            playButton.setVisibility(View.VISIBLE);
+            nextButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    // resets the background images within the bottom sheet when the active playlist size is reduced to 0
+    public void resetBottomSheet() {
+        MainActivity mainActivity = new MainActivity();
+        BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
+        ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
+        bottomSheetCapstoneAlbumCover.setImageBitmap(null);
+        if(layout.isExpended()) {
+            layout.collapse();
+        }
+        else {
+            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
+
+            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+            blurredAlbumCover = activePlaylistController.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
+            ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
+            bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet
+        }
+
+        TextView bottomSheetCapstoneTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_title);
+        TextView bottomSheetCapstoneArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_artist);
+
+        TextView bottomSheetTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_title);
+        TextView bottomSheetArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_artist);
+        TextView bottomSheetSubmitter = mainActivity.getInstance().findViewById(R.id.bottom_sheet_submitter);
+
+        bottomSheetCapstoneTitle.setText("");
+        bottomSheetCapstoneArtist.setText("");
+        bottomSheetTitle.setText("");
+        bottomSheetArtist.setText("");
+        bottomSheetSubmitter.setText("");
+
+        Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
+        Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
+        Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
+        backButton.setVisibility(View.GONE);
+        playButton.setVisibility(View.GONE);
+        nextButton.setVisibility(View.GONE);
     }
 
     /**

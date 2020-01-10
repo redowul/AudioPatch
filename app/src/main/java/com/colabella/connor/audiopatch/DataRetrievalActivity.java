@@ -26,6 +26,7 @@ import com.colabella.connor.audiopatch.Fragments.SongListFragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class DataRetrievalActivity extends AppCompatActivity {
 
@@ -322,6 +323,6 @@ public class DataRetrievalActivity extends AppCompatActivity {
     public void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(activity.getCurrentFocus()).getWindowToken(), 0);
     }
 }

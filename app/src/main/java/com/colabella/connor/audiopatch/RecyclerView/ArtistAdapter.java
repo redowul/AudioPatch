@@ -24,6 +24,7 @@ import com.colabella.connor.audiopatch.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private static List<List<List<Audio>>> dataSet = new ArrayList<>();
@@ -58,7 +59,17 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         String artist = dataSet.get(position).get(0).get(0).getArtist();
         holder.itemArtist.setText(artist);
 
-        Bitmap albumArt = dataSet.get(position).get(0).get(0).getAlbumArt();
+        Random r = new Random();
+        Bitmap albumArt;
+        if(albumCount > 1) {
+            final List<List<Audio>> albumList = audioController.getAlbumsByArtist(artist);
+            int randomNumber = r.nextInt(albumCount);
+            albumArt = albumList.get(randomNumber).get(0).getAlbumArt();
+        }
+        else {
+            albumArt = dataSet.get(position).get(0).get(0).getAlbumArt();
+        }
+
         if (albumArt != null) {
             holder.albumArt.setImageBitmap(albumArt);
         }
@@ -66,26 +77,22 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
             holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppCompatActivity activity = (AppCompatActivity) v.getContext();
+        holder.itemView.setOnClickListener(view -> {
+            AppCompatActivity activity = (AppCompatActivity) view.getContext();
 
-                Bundle bundle = new Bundle();
+            Bundle bundle = new Bundle();
+            bundle.putInt("key", 2);
+            String selectedArtist = dataSet.get(position).get(0).get(0).getArtist();
+            bundle.putString("selectedArtist", selectedArtist);
 
-                bundle.putInt("key", 2);
-                String artist = dataSet.get(position).get(0).get(0).getArtist();
-                bundle.putString("string", artist);
+            Fragment gridDisplayFragment = new GridDisplayFragment();
+            gridDisplayFragment.setArguments(bundle);
 
-                Fragment gridDisplayFragment = new GridDisplayFragment();
-                gridDisplayFragment.setArguments(bundle);
-
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out); // Sets fade in/out animations for transitioning between album selection and song selection screens
-                fragmentTransaction.add(R.id.fragment_container, gridDisplayFragment, "FromArtists").addToBackStack("SelectedAlbum");
-                fragmentTransaction.commit();
-            }
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out); // Sets fade in/out animations for transitioning between album selection and song selection screens
+            fragmentTransaction.add(R.id.fragment_container, gridDisplayFragment, "FromArtists").addToBackStack("SelectedAlbum");
+            fragmentTransaction.commit();
         });
     }
 

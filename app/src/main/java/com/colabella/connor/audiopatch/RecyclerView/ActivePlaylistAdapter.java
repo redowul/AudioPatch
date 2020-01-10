@@ -65,7 +65,6 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             dataSet.get(i).setSelected(false);
             if (i == selectedAudioPos) {
                 dataSet.get(i).setSelected(true);
-                System.out.println("Item at index " + i + " is selected");
             }
             notifyItemChanged(i);
         }
@@ -83,6 +82,19 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             }
         }
         return -1;
+    }
+
+    public boolean isItemSelected() {
+        if (dataSet != null) {
+            if (dataSet.size() > 0) {
+                for (int i = 0; i < dataSet.size(); i++) {
+                    if (dataSet.get(i).isSelected()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     Audio getAudioAtIndex(int index) {
@@ -179,51 +191,10 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
     @Override
     public int getItemCount() {
-        MainActivity mainActivity = new MainActivity();
-        Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
-        Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
-        Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
-
-        // resets the background images within the bottom sheet when the active playlist size is reduced to 0
-        BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
-        if (dataSet.size() == 0) {
-            ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
-            bottomSheetCapstoneAlbumCover.setImageBitmap(null);
-            if(layout.isExpended()) {
-                layout.collapse();
-            }
-            else {
-                Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
-
-                ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-                blurredAlbumCover = activePlaylistController.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
-                ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
-                bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet
-            }
-
-            TextView bottomSheetCapstoneTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_title);
-            TextView bottomSheetCapstoneArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_artist);
-
-            TextView bottomSheetTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_title);
-            TextView bottomSheetArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_artist);
-            TextView bottomSheetSubmitter = mainActivity.getInstance().findViewById(R.id.bottom_sheet_submitter);
-
-            bottomSheetCapstoneTitle.setText("");
-            bottomSheetCapstoneArtist.setText("");
-            bottomSheetTitle.setText("");
-            bottomSheetArtist.setText("");
-            bottomSheetSubmitter.setText("");
-
-            backButton.setVisibility(View.GONE);
-            playButton.setVisibility(View.GONE);
-            nextButton.setVisibility(View.GONE);
+        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+        if(dataSet.size() == 0) {
+            activePlaylistController.resetBottomSheet();
         }
-        else {
-            backButton.setVisibility(View.VISIBLE);
-            playButton.setVisibility(View.VISIBLE);
-            nextButton.setVisibility(View.VISIBLE);
-        }
-
         return dataSet.size();
     }
 
@@ -248,6 +219,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             if (dataSet.get(position).isSelected()) {
                 ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                 activePlaylistController.releaseSelectedAudio();
+                activePlaylistController.resetBottomSheet();
             }
             dataSet.remove(position);
             notifyItemRemoved(position);

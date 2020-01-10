@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar_top" />
 
-    <android.support.v7.widget.Toolbar
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_top"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -35,7 +35,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <Button
-                android:id="@+id/add_audio_button2"
+                android:id="@+id/add_audio_button"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end"
@@ -43,6 +43,15 @@
                 android:layout_marginRight="24dp"
                 android:background="@drawable/ic_playlist_add_24dp"
                 android:onClick="selectAudioFromStorage" />
+
+            <Button
+                android:id="@+id/open_drawer_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="start"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:background="@drawable/ic_menu" />
 
         </android.support.v7.widget.Toolbar>
     </RelativeLayout>

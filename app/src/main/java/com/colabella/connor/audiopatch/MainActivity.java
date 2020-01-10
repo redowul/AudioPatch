@@ -2,45 +2,24 @@ package com.colabella.connor.audiopatch;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.MotionEvent;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
+import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,8 +35,6 @@ import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 public class MainActivity extends AppCompatActivity /*implements NavigationView.OnNavigationItemSelectedListener*/ {
 
@@ -77,7 +54,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
+    // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
         //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 
         initializeRecyclerView();
@@ -85,7 +62,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
 
         ImageView header = findViewById(R.id.drawer_header);
         header.setImageResource(R.drawable.audiopatch_header_transparent);
-        //initializeNavigationView(toolbar);
+        initializeNavigationView(toolbar);
 
         //TODO place this automatic loader inside an 'if' that triggers only when permissions authorize it
 
@@ -107,6 +84,11 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
     }
 
     private void initializeNavigationView(Toolbar toolbar) {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        Button openDrawerButton = findViewById(R.id.open_drawer_button);
+        openDrawerButton.setOnClickListener(view -> drawer.openDrawer(GravityCompat.START)); // close the sheet if pressed
+
+
     /*    DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -203,14 +185,6 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
     }
 
     private void initializeBottomSheet() {
-        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-
-        // Set initial bottom sheet background image
-        Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.audiopatchlogosquareblurrable);
-        icon = activePlaylistController.blur(this, icon); // blur the image
-        ImageView bottomSheetAlbumCover = findViewById(R.id.bottom_sheet_album_cover);
-        bottomSheetAlbumCover.setImageBitmap(icon);
-
         // For calculating the width of the screen
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -240,7 +214,6 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             bottomSheetLayoutCapstone.getBackground().setAlpha(alpha); // sets the transparency of the capstone
 
             /* Bottom Sheet Capstone Text blocks */
-
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);
             TextView bottomSheetCapstoneArtist = findViewById(R.id.bottom_sheet_capstone_artist);
             if (bottomSheetCapstoneTitle.getVisibility() == View.VISIBLE && bottomSheetCapstoneArtist.getVisibility() == View.VISIBLE) {
@@ -249,14 +222,12 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             }
 
             /* Bottom Sheet Capstone album cover */
-
             ImageView bottomSheetLayoutCapstoneAlbumCover = findViewById(R.id.bottom_sheet_current_album_cover_small);
             if (bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
                 bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
             }
 
             /* Bottom Sheet button (expansion/collapse control) */
-
             Button expandCollapseBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
             expandCollapseBottomSheetButton.setRotation(degreesOfRotation);
             if (percentage == 0) { // bottom sheet expanded state
@@ -266,13 +237,12 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             }
 
             /* Bottom Sheet collapsed state; this if statement is here so that we aren't constantly blurring the image as the bottom sheet moves */
-
             if (percentage == 100) {
                 ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-                if (activePlaylistAdapter.getItemCount() == 0) {
-                    Bitmap blurredAlbumCover = BitmapFactory.decodeResource(getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
-                    blurredAlbumCover = activePlaylistController.blur(getInstance(), blurredAlbumCover); // blur the image
-                    bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet capstone image; this one isn't blurred yet
+                boolean isItemSelected = activePlaylistAdapter.isItemSelected();
+                if(!isItemSelected) {
+                    ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                    activePlaylistController.resetBottomSheet();
                 }
             }
         });
@@ -291,7 +261,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_items, menu);
+        //getMenuInflater().inflate(R.menu.menu_items, menu);
         return true;
     }
 
