@@ -6,8 +6,10 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -33,6 +35,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -76,7 +82,10 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
 
         initializeRecyclerView();
         initializeBottomSheet();
-        initializeNavigationView(toolbar);
+
+        ImageView header = findViewById(R.id.drawer_header);
+        header.setImageResource(R.drawable.audiopatch_header_transparent);
+        //initializeNavigationView(toolbar);
 
         //TODO place this automatic loader inside an 'if' that triggers only when permissions authorize it
 
@@ -98,7 +107,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
     }
 
     private void initializeNavigationView(Toolbar toolbar) {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+    /*    DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -173,6 +182,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             }
             return true;
         });
+     */
     }
 
     private void initializeRecyclerView() {
@@ -208,27 +218,25 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         layout.setOnProgressListener(progress -> {
 
             AppBarLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone);
-            double minY = layout.getBottom();
-            double maxY = layout.getTop();
-            double currentY = layout.getY();
 
-            System.out.println(layout.getY() + "; " + maxY);
+            double capstoneMaxY = bottomSheetLayoutCapstone.getBottom(); // bottom Y value of the capstone
+            double minY = layout.getTop(); // upper Y value of the layout
+            double maxY = layout.getBottom() - capstoneMaxY; // bottom Y value of the layout - the bottom Y value of the capstone
+            double currentY = layout.getY(); // current Y value
 
-            double adjustedMinY = bottomSheetLayoutCapstone.getHeight();
-            double adjustedMaxY = maxY - minY;
-            double currentAdjustedY = maxY - currentY;
+            double adjustedMinY = minY - maxY;
+            double currentAdjustedY = minY - currentY;
 
-            double percentage = (currentAdjustedY / adjustedMaxY) * 100;
+            double percentage = (currentAdjustedY / adjustedMinY) * 100; // used for calculating the percentage needed for rotation and transparency
             int alpha = (int) ((percentage / 100) * 255);
+            int degreesOfRotation = (int) (((percentage / 100) * 180) + 180);
 
             ImageView bottomSheetLayoutCapstoneAlbumCover = findViewById(R.id.bottom_sheet_current_album_cover_small);
             Button expandBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
 
             bottomSheetLayoutCapstone.getBackground().setAlpha(alpha); // set the alpha of the appbar itself
-            expandBottomSheetButton.getBackground().setAlpha(alpha);
 
-            ImageView closeBottomSheetButton = findViewById(R.id.close_bottom_sheet_button);
-            closeBottomSheetButton.getBackground().setAlpha(255 - alpha);
+            expandBottomSheetButton.setRotation(degreesOfRotation);
 
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);
             TextView bottomSheetCapstoneArtist = findViewById(R.id.bottom_sheet_capstone_artist);
@@ -242,8 +250,9 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
                 bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
             }
 
-            if (currentY == maxY) { // bottom sheet expanded state
-                expandBottomSheetButton.getBackground().setAlpha(255); // set button to visible
+            if (currentY == minY) { // bottom sheet expanded state
+                expandBottomSheetButton.setRotation(360);
+                //expandBottomSheetButton.getBackground().setAlpha(255); // set button to visible
                 expandBottomSheetButton.setOnClickListener(view -> layout.collapse()); // close the sheet if pressed
                 expandBottomSheetButton.setSelected(true); // show button as down arrow
             } else {
@@ -251,11 +260,14 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
                 expandBottomSheetButton.setSelected(false); // show button as up arrow
             }
 
-            if (adjustedMinY == minY - currentY) { // bottom sheet collapsed state
+            if (percentage == 100) { // bottom sheet collapsed state
                 if (bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
-                    bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(255); // set the alpha of the bitmap overlain on top of the image view
-                    expandBottomSheetButton.getBackground().setAlpha(255); // set the expand bottom sheet button to be completely visible
-                    closeBottomSheetButton.getBackground().setAlpha(0);
+                    //bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(255); // set the alpha of the bitmap overlain on top of the image view
+
+
+                    //expandBottomSheetButton.getBackground().setAlpha(255); // set the expand bottom sheet button to be completely visible
+                    expandBottomSheetButton.setRotation(0);
+
                 }
                 bottomSheetLayoutCapstone.getBackground().setAlpha(255);
 

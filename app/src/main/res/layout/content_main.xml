@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
@@ -14,9 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/recyclerViewPrimary"
-        android:overScrollMode="never" />
+        android:overScrollMode="never"
+        android:layout_marginBottom="56dp"/>
 
-    <android.support.design.widget.CoordinatorLayout
+    <include layout="@layout/bottom_sheet_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+   <!-- <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -214,20 +218,5 @@
             </RelativeLayout>
 
         </com.qhutch.bottomsheetlayout.BottomSheetLayout>
-
-        <!--  <android.support.design.widget.AppBarLayout
-              android:id="@+id/toolbar_bottom"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_alignParentBottom="true"
-              android:background="?attr/colorPrimary"
-              android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-              app:popupTheme="@style/AppTheme.PopupOverlay"
-              android:layout_gravity="bottom">
-
-          </android.support.design.widget.AppBarLayout>-->
-
-    </android.support.design.widget.CoordinatorLayout>
-
-
+    </android.support.design.widget.CoordinatorLayout>-->
 </RelativeLayout>

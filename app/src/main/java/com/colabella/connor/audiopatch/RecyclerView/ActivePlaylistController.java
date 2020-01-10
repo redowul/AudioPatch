@@ -243,10 +243,10 @@ public class ActivePlaylistController {
 
                 BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
                 AppBarLayout bottomSheetLayoutCapstone = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout_capstone);
-                double minY = layout.getBottom();
+                double maxY = layout.getBottom();
                 double currentY = layout.getY();
-                double adjustedMinY = bottomSheetLayoutCapstone.getHeight();
-                if (adjustedMinY == minY - currentY) {
+                double adjustedmaxY = bottomSheetLayoutCapstone.getHeight();
+                if (adjustedmaxY == maxY - currentY) {
                     bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(255);
                 }
 

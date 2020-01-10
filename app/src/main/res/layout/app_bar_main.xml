@@ -14,28 +14,36 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/content_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar_top" />
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_top"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:layout_anchor="@+id/appBarLayout"
-        app:layout_anchorGravity="center"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:id="@+id/toolbar_top"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_anchor="@+id/appBarLayout"
+            app:layout_anchorGravity="center"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-        <Button
-            android:id="@+id/add_audio_button2"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
-            android:background="@drawable/ic_playlist_add_24dp"
-            android:onClick="selectAudioFromStorage" />
+            <Button
+                android:id="@+id/add_audio_button2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/ic_playlist_add_24dp"
+                android:onClick="selectAudioFromStorage" />
 
-    </android.support.v7.widget.Toolbar>
-
+        </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
