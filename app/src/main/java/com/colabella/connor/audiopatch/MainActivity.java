@@ -185,6 +185,9 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
      */
     }
 
+    //TODO move these to their own class, no need for them to take up space here
+    /** Initialization methods **/
+
     private void initializeRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         ActivePlaylistAdapter recyclerViewAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
@@ -202,75 +205,69 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
     private void initializeBottomSheet() {
         ActivePlaylistController activePlaylistController = new ActivePlaylistController();
 
+        // Set initial bottom sheet background image
         Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.audiopatchlogosquareblurrable);
         icon = activePlaylistController.blur(this, icon); // blur the image
-
-        // Set background of the bottom sheet
         ImageView bottomSheetAlbumCover = findViewById(R.id.bottom_sheet_album_cover);
         bottomSheetAlbumCover.setImageBitmap(icon);
 
+        // For calculating the width of the screen
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenW = displayMetrics.widthPixels;
+        int screenW = displayMetrics.widthPixels; // get width of screen in pixels
         BottomSheetLayout layout = findViewById(R.id.bottom_sheet_layout);
-        layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen
+        layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen. (Dynamic, screenW value depends on the size of device)
 
         layout.setOnProgressListener(progress -> {
-
-            AppBarLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone);
+            AppBarLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
 
             double capstoneMaxY = bottomSheetLayoutCapstone.getBottom(); // bottom Y value of the capstone
             double minY = layout.getTop(); // upper Y value of the layout
-            double maxY = layout.getBottom() - capstoneMaxY; // bottom Y value of the layout - the bottom Y value of the capstone
-            double currentY = layout.getY(); // current Y value
 
-            double adjustedMinY = minY - maxY;
-            double currentAdjustedY = minY - currentY;
+            // bottom Y value of the layout minus the bottom Y value of the capstone
+            double maxY = layout.getBottom() - capstoneMaxY; // (accounts for the difference of ~30% caused by the capstone blocking the bottom sheet from resting flush on the bottom of the screen)
+            double currentY = layout.getY(); // current Y value of the top of the sheet
 
-            double percentage = (currentAdjustedY / adjustedMinY) * 100; // used for calculating the percentage needed for rotation and transparency
-            int alpha = (int) ((percentage / 100) * 255);
-            int degreesOfRotation = (int) (((percentage / 100) * 180) + 180);
+            // used for calculating our percentage value below; MinY, maxY, and currentY are values relative to the entire screen, but we only want to know the Y value relative to the bottom sheet
+            // therefore we subtract the minimum Y value from the maximum Y value to get the difference, which is the total size of the bottom sheet
+            double bottomSheetSize = maxY - minY;
+            double currentAdjustedY = currentY - minY; // Y position relative to the top and bottom Y values of the bottom sheet, not the entire screen
 
-            ImageView bottomSheetLayoutCapstoneAlbumCover = findViewById(R.id.bottom_sheet_current_album_cover_small);
-            Button expandBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
+            double percentage = (currentAdjustedY / bottomSheetSize) * 100; // used for calculating the percentage needed for rotation and transparency
+            int alpha = (int) ((percentage / 100) * 255); // calculates level of transparency to be applied
+            int degreesOfRotation = (int) (((percentage / 100) * 180) + 180); // used for calculating degrees of rotation to be applied to our expandCollapseBottomSheetButton
 
-            bottomSheetLayoutCapstone.getBackground().setAlpha(alpha); // set the alpha of the appbar itself
+            bottomSheetLayoutCapstone.getBackground().setAlpha(alpha); // sets the transparency of the capstone
 
-            expandBottomSheetButton.setRotation(degreesOfRotation);
+            /* Bottom Sheet Capstone Text blocks */
 
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);
             TextView bottomSheetCapstoneArtist = findViewById(R.id.bottom_sheet_capstone_artist);
-
             if (bottomSheetCapstoneTitle.getVisibility() == View.VISIBLE && bottomSheetCapstoneArtist.getVisibility() == View.VISIBLE) {
-                bottomSheetCapstoneTitle.setTextColor(Color.argb(alpha, 255, 255, 255));
-                bottomSheetCapstoneArtist.setTextColor(Color.argb(alpha, 255, 255, 255));
+                bottomSheetCapstoneTitle.setTextColor(Color.argb(alpha, 255, 255, 255));  // transparency of capstone song title
+                bottomSheetCapstoneArtist.setTextColor(Color.argb(alpha, 255, 255, 255)); // transparency of capstone artist title
             }
 
+            /* Bottom Sheet Capstone album cover */
+
+            ImageView bottomSheetLayoutCapstoneAlbumCover = findViewById(R.id.bottom_sheet_current_album_cover_small);
             if (bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
                 bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
             }
 
-            if (currentY == minY) { // bottom sheet expanded state
-                expandBottomSheetButton.setRotation(360);
-                //expandBottomSheetButton.getBackground().setAlpha(255); // set button to visible
-                expandBottomSheetButton.setOnClickListener(view -> layout.collapse()); // close the sheet if pressed
-                expandBottomSheetButton.setSelected(true); // show button as down arrow
+            /* Bottom Sheet button (expansion/collapse control) */
+
+            Button expandCollapseBottomSheetButton = findViewById(R.id.expand_bottom_sheet_button);
+            expandCollapseBottomSheetButton.setRotation(degreesOfRotation);
+            if (percentage == 0) { // bottom sheet expanded state
+                expandCollapseBottomSheetButton.setOnClickListener(view -> layout.collapse()); // close the sheet if pressed
             } else {
-                expandBottomSheetButton.setOnClickListener(view -> layout.expand()); // open the sheet if pressed
-                expandBottomSheetButton.setSelected(false); // show button as up arrow
+                expandCollapseBottomSheetButton.setOnClickListener(view -> layout.expand()); // open the sheet if pressed
             }
 
-            if (percentage == 100) { // bottom sheet collapsed state
-                if (bottomSheetLayoutCapstoneAlbumCover.getDrawable() != null) {
-                    //bottomSheetLayoutCapstoneAlbumCover.getDrawable().setAlpha(255); // set the alpha of the bitmap overlain on top of the image view
+            /* Bottom Sheet collapsed state; this if statement is here so that we aren't constantly blurring the image as the bottom sheet moves */
 
-
-                    //expandBottomSheetButton.getBackground().setAlpha(255); // set the expand bottom sheet button to be completely visible
-                    expandBottomSheetButton.setRotation(0);
-
-                }
-                bottomSheetLayoutCapstone.getBackground().setAlpha(255);
-
+            if (percentage == 100) {
                 ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
                 if (activePlaylistAdapter.getItemCount() == 0) {
                     Bitmap blurredAlbumCover = BitmapFactory.decodeResource(getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
