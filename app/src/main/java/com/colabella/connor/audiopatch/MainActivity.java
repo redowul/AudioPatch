@@ -2,6 +2,8 @@ package com.colabella.connor.audiopatch;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -21,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -193,7 +196,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen. (Dynamic, screenW value depends on the size of device)
 
         layout.setOnProgressListener(progress -> {
-            AppBarLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
+            RelativeLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
 
             double capstoneMaxY = bottomSheetLayoutCapstone.getBottom(); // bottom Y value of the capstone
             double minY = layout.getTop(); // upper Y value of the layout
@@ -211,7 +214,8 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             int alpha = (int) ((percentage / 100) * 255); // calculates level of transparency to be applied
             int degreesOfRotation = (int) (((percentage / 100) * 180) + 180); // used for calculating degrees of rotation to be applied to our expandCollapseBottomSheetButton
 
-            bottomSheetLayoutCapstone.getBackground().setAlpha(alpha); // sets the transparency of the capstone
+            float capstoneAlpha = (float) (percentage * .01); // range between 0.0 and 1.0 used for setting the transparency of the relativeLayout
+            bottomSheetLayoutCapstone.setAlpha(capstoneAlpha); // sets the transparency of the capstone
 
             /* Bottom Sheet Capstone Text blocks */
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);

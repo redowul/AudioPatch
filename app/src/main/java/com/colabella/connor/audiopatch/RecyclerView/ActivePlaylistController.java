@@ -180,8 +180,10 @@ public class ActivePlaylistController {
         MainActivity mainActivity = new MainActivity();
         Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
         playButton.setBackgroundResource(R.drawable.ic_play_24dp);
-        if (mediaPlayer.isPlaying()) {
-            playButton.setBackgroundResource(R.drawable.ic_pause_24dp);
+        if(mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                playButton.setBackgroundResource(R.drawable.ic_pause_24dp);
+            }
         }
     }
 
