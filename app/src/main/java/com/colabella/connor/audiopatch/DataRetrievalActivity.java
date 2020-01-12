@@ -13,6 +13,7 @@ import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.SearchView;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -148,7 +149,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
         inflater.inflate(R.menu.dataretriever_options_sort_submenu, menuBuilder);
         final MenuPopupHelper optionsMenu = new MenuPopupHelper(wrapper, menuBuilder, view);
         optionsMenu.setGravity(Gravity.END);
-        optionsMenu.show(100, 50);
+        optionsMenu.show(100, 10);
         ViewPager viewPager = findViewById(R.id.viewpager);
 
         if (viewPager != null) {
@@ -252,6 +253,13 @@ public class DataRetrievalActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.dataretriever_options_menu, menu);
+        return true;
+    }
+
     @SuppressLint({"NewApi", "RestrictedApi"})
     public void showPopup(final View view) {
         Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
@@ -262,7 +270,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
         inflater.inflate(R.menu.dataretriever_options_menu, menuBuilder);
         final MenuPopupHelper optionsMenu = new MenuPopupHelper(wrapper, menuBuilder, view);
         optionsMenu.setGravity(Gravity.END);
-        optionsMenu.show(100, 50);
+        optionsMenu.show(100, 10);
 
         // Inflate the menu; this adds items to the action bar if it is present.
         menuBuilder.setCallback(new MenuBuilder.Callback() {

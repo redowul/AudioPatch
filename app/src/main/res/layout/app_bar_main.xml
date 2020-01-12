@@ -19,7 +19,7 @@
         android:layout_height="wrap_content">
 
         <include
-            layout="@layout/content_main"
+            layout="@layout/activity_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar_top" />

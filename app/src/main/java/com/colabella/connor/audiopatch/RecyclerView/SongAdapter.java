@@ -46,7 +46,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 holder.albumArt.setImageBitmap(albumArt);
             }
             else {
-                holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare);
+                holder.albumArt.setImageResource(R.drawable.audiopatch_logo_square);
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

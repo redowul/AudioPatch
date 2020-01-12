@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
@@ -17,7 +16,7 @@ import com.colabella.connor.audiopatch.Controller;
 import com.colabella.connor.audiopatch.Equalizer;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
-import com.qhutch.bottomsheetlayout.BottomSheetLayout;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,14 +45,6 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             activePlaylistController.alterBottomSheet(item);
             setSelectedAudio(0);
         }
-    }
-
-    void clearSelectedItem() {
-        for (int i = 0; i < getItemCount(); i++) {
-            dataSet.get(i).setSelected(false);
-            notifyItemChanged(i);
-        }
-        AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
     }
 
     public Audio getSelectedAudio() {
@@ -103,7 +94,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
     @Override
     public ActivePlaylistAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.active_playlist_item, parent, false);
         return new ActivePlaylistAdapter.ViewHolder(view);
     }
 
@@ -129,7 +120,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             if (albumArt != null) {
                 holder.albumArt.setImageBitmap(albumArt);
             } else {
-                holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare);
+                holder.albumArt.setImageResource(R.drawable.audiopatch_logo_square);
             }
 
             holder.itemHandle.setOnTouchListener(new View.OnTouchListener() {
@@ -180,7 +171,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         }
         else {
             MainActivity mainActivity = new MainActivity();
-            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
+            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
 
             ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
             bottomSheetCapstoneAlbumCover.setImageBitmap(null);

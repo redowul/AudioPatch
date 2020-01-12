@@ -29,7 +29,7 @@
     <string name="submitter">%1$s</string>
     <string name="timestamp">0:00</string>
     <string name="nav_header_title">AudioPatch</string>
-    <string name="nav_header_subtitle">connor.colabella@allebeloc.com</string>
+    <string name="nav_header_subtitle">connor.colabella@redowul.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="options_clear_queue">Clear Queue</string>
     <string name="action_addAudio">Add to playlist</string>

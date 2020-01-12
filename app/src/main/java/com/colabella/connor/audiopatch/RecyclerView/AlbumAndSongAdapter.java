@@ -64,7 +64,7 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                 Bitmap albumArt = albumDataSet.get(position).get(0).getAlbumArt();
                 if (albumArt != null) { viewHolder.albumArt.setImageBitmap(albumArt); }
-                else { viewHolder.albumArt.setImageResource(R.drawable.audiopatchlogosquare); }
+                else { viewHolder.albumArt.setImageResource(R.drawable.audiopatch_logo_square); }
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -109,7 +109,7 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 }
                 if (albumArt != null) { viewHolder.albumArt.setImageBitmap(albumArt); }
-                else { viewHolder.albumArt.setImageResource(R.drawable.audiopatchlogosquare); }
+                else { viewHolder.albumArt.setImageResource(R.drawable.audiopatch_logo_square); }
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

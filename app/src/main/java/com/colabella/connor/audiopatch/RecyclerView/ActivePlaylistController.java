@@ -10,12 +10,12 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
@@ -247,19 +247,29 @@ public class ActivePlaylistController {
                 Bitmap blurredAlbumCover = blur(mainActivity.getInstance(), selectedItem.getAlbumArt());
                 bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet
                 bottomSheetCapstoneAlbumCover.setImageBitmap(selectedItem.getAlbumArt()); // Set background of the bottom sheet capstone image
-                bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
 
-                //BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
-               // AppBarLayout bottomSheetLayoutCapstone = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout_capstone);
-                /*double maxY = layout.getBottom();
-                double currentY = layout.getY();
-                double adjustedMaxY = bottomSheetLayoutCapstone.getHeight();
-                if (adjustedMaxY == maxY - currentY) {
+                BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
+                RelativeLayout bottomSheetLayoutCapstone = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
+                double capstoneMaxY = bottomSheetLayoutCapstone.getBottom(); // bottom Y value of the capstone
+                double minY = layout.getTop(); // upper Y value of the layout
+
+                // bottom Y value of the layout minus the bottom Y value of the capstone
+                double maxY = layout.getBottom() - capstoneMaxY; // (accounts for the difference of ~30% caused by the capstone blocking the bottom sheet from resting flush on the bottom of the screen)
+                double currentY = layout.getY(); // current Y value of the top of the sheet
+
+                // used for calculating our percentage value below; MinY, maxY, and currentY are values relative to the entire screen, but we only want to know the Y value relative to the bottom sheet
+                // therefore we subtract the minimum Y value from the maximum Y value to get the difference, which is the total size of the bottom sheet
+                double bottomSheetSize = maxY - minY;
+                double currentAdjustedY = currentY - minY; // Y position relative to the top and bottom Y values of the bottom sheet, not the entire screen
+                double percentage = (currentAdjustedY / bottomSheetSize) * 100; // used for calculating the percentage needed for rotation and transparency
+
+                if(percentage == 0) { // Bottom Sheet expanded state
+                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
+                } else if(percentage == 100) {   // Bottom Sheet collapsed state
                     bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(255);
-                }*/
-
+                }
             } else {
-                Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
+                Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
                 bottomSheetCapstoneAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet capstone image; this one is not blurred
 
                 blurredAlbumCover = blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
@@ -305,7 +315,7 @@ public class ActivePlaylistController {
             layout.collapse();
         }
         else {
-            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatchlogosquareblurrable); // getting the resource, it isn't blurred yet
+            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
 
             ActivePlaylistController activePlaylistController = new ActivePlaylistController();
             blurredAlbumCover = activePlaylistController.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
@@ -357,7 +367,7 @@ public class ActivePlaylistController {
 
         if (albumArt != null) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "id")
-                    .setSmallIcon(R.drawable.audiopatchlogotransparent)
+                    .setSmallIcon(R.drawable.audiopatch_logo_transparent)
                     .setLargeIcon(albumArt)
                     .setContentTitle(title)
                     .setContentText(artist + " - " + album)
@@ -367,7 +377,7 @@ public class ActivePlaylistController {
             notificationManager.notify(0, builder.build());
         } else {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "id")
-                    .setSmallIcon(R.drawable.audiopatchlogotransparent)
+                    .setSmallIcon(R.drawable.audiopatch_logo_transparent)
                     .setContentTitle(title)
                     .setContentText(artist + " - " + album)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);

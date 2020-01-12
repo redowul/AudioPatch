@@ -7,9 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,7 +14,6 @@ import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.R;
-import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumListViewAdapter;
 
 import java.util.ArrayList;
@@ -46,7 +42,7 @@ public class SongSelectionFragment extends Fragment {
             ImageView imageView = view.findViewById(R.id.album_art);
             Bitmap albumArt = selectedAlbum.get(0).getAlbumArt(); // If selectedAlbum != null, alBumArt = selectedAlbum.getAlbumArt(). Else set albumArt to null.
             if (albumArt != null) { imageView.setImageBitmap(albumArt); }
-            else { imageView.setImageResource(R.drawable.audiopatchlogosquare); }
+            else { imageView.setImageResource(R.drawable.audiopatch_logo_square); }
 
             AlbumListViewAdapter audioListViewRecyclerViewAdapter = new AlbumListViewAdapter(selectedAlbum);
 

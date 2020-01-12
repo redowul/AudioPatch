@@ -1,45 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:context=".MainActivity"
+    tools:showIn="@layout/app_bar_main">
 
-
-    <include
-        layout="@layout/app_bar_main"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-   <RelativeLayout
-        android:theme="@style/NavigationView"
-        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:choiceMode="singleChoice"
-        android:divider="@color/recyclerViewAccent"
-        android:background="@color/colorPrimary"
-        android:layout_gravity="start"
-        android:dividerHeight="1dp">
+        android:background="@color/recyclerViewPrimary"
+        android:overScrollMode="never"
+        android:layout_marginBottom="56dp"/>
 
-        <ImageView
-            android:id="@+id/drawer_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/audiopatch_header_transparent">
-        </ImageView>
-
- <android.support.v7.widget.RecyclerView
-     android:id="@+id/drawer_recycler_view"
-     android:layout_below="@+id/drawer_header"
-     android:layout_width="wrap_content"
-     android:layout_height="match_parent"
-     android:layout_alignLeft="@+id/drawer_header"
-     android:layout_alignStart="@+id/drawer_header"
-     android:layout_alignRight="@+id/drawer_header"
-     android:layout_alignEnd="@+id/drawer_header"
-     android:layout_alignParentBottom="true"
-     android:background="@color/recyclerViewDark"/>
+    <include layout="@layout/bottom_sheet_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>
-</android.support.v4.widget.DrawerLayout>

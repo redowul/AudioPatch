@@ -2,11 +2,8 @@ package com.colabella.connor.audiopatch;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -50,7 +47,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_drawer);
         instance = this;
 
         Toolbar toolbar = findViewById(R.id.toolbar_top);
@@ -65,7 +62,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
 
         ImageView header = findViewById(R.id.drawer_header);
         header.setImageResource(R.drawable.audiopatch_header_transparent);
-        initializeNavigationView(toolbar);
+        initializeNavigationView();
 
         //TODO place this automatic loader inside an 'if' that triggers only when permissions authorize it
 
@@ -86,7 +83,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         }
     }
 
-    private void initializeNavigationView(Toolbar toolbar) {
+    private void initializeNavigationView() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         Button openDrawerButton = findViewById(R.id.open_drawer_button);
         openDrawerButton.setOnClickListener(view -> drawer.openDrawer(GravityCompat.START)); // close the sheet if pressed
@@ -260,32 +257,6 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_items, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.options_clear_queue) {
-          /*  RecyclerViewController recyclerViewController = new RecyclerViewController();
-            recyclerViewController.clearAudioList();
-            Button playButton = findViewById(R.id.play_button);
-            playButton.setBackgroundResource(R.drawable.ic_play_24dp);
-            */
-            return false;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // Handles all button clicks that occur in context_main.xml.

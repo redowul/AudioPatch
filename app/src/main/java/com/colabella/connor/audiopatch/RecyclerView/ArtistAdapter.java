@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioController;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
-import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.Fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
@@ -74,7 +72,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
             holder.albumArt.setImageBitmap(albumArt);
         }
         else {
-            holder.albumArt.setImageResource(R.drawable.audiopatchlogosquare);
+            holder.albumArt.setImageResource(R.drawable.audiopatch_logo_square);
         }
 
         holder.itemView.setOnClickListener(view -> {

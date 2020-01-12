@@ -13,10 +13,11 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_scrollFlags="scroll|enterAlways">
+
     <android.support.v7.widget.SearchView
         android:id="@+id/searchView"
         android:paddingTop="8dp"
@@ -30,7 +31,8 @@
         app:searchIcon="@drawable/ic_search_24dp"
         android:focusable="false">
     </android.support.v7.widget.SearchView>
-        <Button
+
+       <Button
             android:id="@+id/menu_button"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -58,3 +60,4 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>
+
