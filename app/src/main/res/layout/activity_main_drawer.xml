@@ -7,39 +7,39 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-   <RelativeLayout
-        android:theme="@style/NavigationView"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/colorPrimary"
         android:choiceMode="singleChoice"
         android:divider="@color/recyclerViewAccent"
-        android:background="@color/colorPrimary"
-        android:layout_gravity="start"
-        android:dividerHeight="1dp">
+        android:dividerHeight="1dp"
+        android:theme="@style/NavigationView">
 
         <ImageView
             android:id="@+id/drawer_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/audiopatch_header_transparent">
+
         </ImageView>
 
- <android.support.v7.widget.RecyclerView
-     android:id="@+id/drawer_recycler_view"
-     android:layout_below="@+id/drawer_header"
-     android:layout_width="wrap_content"
-     android:layout_height="match_parent"
-     android:layout_alignLeft="@+id/drawer_header"
-     android:layout_alignStart="@+id/drawer_header"
-     android:layout_alignRight="@+id/drawer_header"
-     android:layout_alignEnd="@+id/drawer_header"
-     android:layout_alignParentBottom="true"
-     android:background="@color/recyclerViewDark"/>
-</RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/drawer_recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/drawer_header"
+            android:layout_alignStart="@+id/drawer_header"
+            android:layout_alignLeft="@+id/drawer_header"
+            android:layout_alignEnd="@+id/drawer_header"
+            android:layout_alignRight="@+id/drawer_header"
+            android:layout_alignParentBottom="true"
+            android:background="@color/recyclerViewDark" />
+    </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

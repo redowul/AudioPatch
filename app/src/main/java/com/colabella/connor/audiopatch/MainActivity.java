@@ -30,6 +30,7 @@ import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistController;
+import com.colabella.connor.audiopatch.RecyclerView.MainDrawerAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
@@ -88,6 +89,12 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         Button openDrawerButton = findViewById(R.id.open_drawer_button);
         openDrawerButton.setOnClickListener(view -> drawer.openDrawer(GravityCompat.START)); // close the sheet if pressed
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        RecyclerView recyclerView = findViewById(R.id.drawer_recycler_view);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        MainDrawerAdapter mainDrawerAdapter = new MainDrawerAdapter();
+        recyclerView.setAdapter(mainDrawerAdapter);
 
     /*    DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -169,7 +176,6 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
 
     //TODO move these to their own class, no need for them to take up space here
     /** Initialization methods **/
-
     private void initializeRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         ActivePlaylistAdapter recyclerViewAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
