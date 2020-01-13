@@ -141,8 +141,8 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             holder.equalizer = holder.itemView.findViewById(R.id.equalizer);
 
             if (dataSet.get(position).isSelected()) { // If isSelected returns true, highlight the item.
-                holder.equalizer.setVisibility(View.VISIBLE);
-                holder.itemView.setBackgroundResource(R.color.recyclerViewDark);
+                    holder.equalizer.setVisibility(View.VISIBLE);
+                    holder.itemView.setBackgroundResource(R.color.recyclerViewDark);
                 ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                 if (activePlaylistController.getMediaPlayer() != null) {
                     if (activePlaylistController.getMediaPlayer().isPlaying()) {
@@ -221,13 +221,11 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         this.itemTouchHelper = touchHelper;
     }
 
-    /******** View Holder Class*/
+    /******** View Holder Class */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView itemTitle;
         private TextView itemArtist;
-        //private TextView itemInterpunct;
         private TextView itemDuration;
-        //private TextView itemSubmitterIntroText;
         private TextView itemSubmitter;
         private ImageView albumArt;
         private View itemHandle;
@@ -236,18 +234,12 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         private ViewHolder(View itemView) {
             super(itemView);
             itemTitle = itemView.findViewById(R.id.audio_title);
-            //title.setOnClickListener(this);
-
             itemArtist = itemView.findViewById(R.id.artist);
-            //itemInterpunct = itemView.findViewById(R.id.interpunct);
             itemDuration = itemView.findViewById(R.id.audio_duration);
-            //itemSubmitterIntroText = itemView.findViewById(R.id.submitter_intro_text);
             itemSubmitter = itemView.findViewById(R.id.submitter);
             albumArt = itemView.findViewById(R.id.album_art);
-
             itemHandle = itemView.findViewById(R.id.item_handle);
             itemHandle.setOnClickListener(this);
-
             equalizer = itemView.findViewById(R.id.equalizer);
 
             View itemPanel = itemView.findViewById(R.id.item_panel);

@@ -3,6 +3,7 @@ package com.colabella.connor.audiopatch;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -94,6 +96,9 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         recyclerView.setLayoutManager(linearLayoutManager);
 
         MainDrawerAdapter mainDrawerAdapter = new MainDrawerAdapter();
+        mainDrawerAdapter.addItem("Home", true);
+        mainDrawerAdapter.addItem("Settings", false);
+        mainDrawerAdapter.addItem("About", false);
         recyclerView.setAdapter(mainDrawerAdapter);
 
     /*    DrawerLayout drawer = findViewById(R.id.drawer_layout);

@@ -7,7 +7,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home_24dp"
+            android:icon="@drawable/home_36dp"
             android:title="@string/home" />
 
         <item
@@ -23,11 +23,11 @@
 
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_24dp"
+            android:icon="@drawable/settings_36dp"
             android:title="@string/settings" />
         <item
             android:id="@+id/nav_about"
-            android:icon="@drawable/ic_info_outline_24dp"
+            android:icon="@drawable/info_outline_36dp"
             android:title="@string/about" />
     </group>
 
@@ -36,12 +36,12 @@
             <menu>
                 <item
                     android:id="@+id/nav_advertise"
-                    android:icon="@drawable/ic_bluetooth_searching_24dp"
+                    android:icon="@drawable/bluetooth_searching_36dp"
                     android:title="@string/host" />
                 <item
                     android:id="@+id/nav_discover"
                     app:itemTextColor="@color/colorPrimary"
-                    android:icon="@drawable/ic_bluetooth_connected_24dp"
+                    android:icon="@drawable/bluetooth_connected_36dp"
                     android:title="@string/join"/>
             </menu>
         </item>

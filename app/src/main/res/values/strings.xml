@@ -33,4 +33,5 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="options_clear_queue">Clear Queue</string>
     <string name="action_addAudio">Add to playlist</string>
+    <string name="item">Item</string>
 </resources>
