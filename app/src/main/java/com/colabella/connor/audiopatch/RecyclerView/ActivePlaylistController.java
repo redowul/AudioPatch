@@ -35,7 +35,7 @@ public class ActivePlaylistController {
 
     private static MediaPlayer mediaPlayer;
 
-    MediaPlayer getMediaPlayer() { return mediaPlayer; }
+    public MediaPlayer getMediaPlayer() { return mediaPlayer; }
 
     // Determines which button on the bottom toolbar was pressed
     public void determineButtonSelected(String buttonIdString, View view) {

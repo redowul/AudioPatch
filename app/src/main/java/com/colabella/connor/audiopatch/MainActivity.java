@@ -1,11 +1,9 @@
 package com.colabella.connor.audiopatch;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -13,24 +11,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +39,7 @@ import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity /*implements NavigationView.OnNavigationItemSelectedListener*/ {
+public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
 
@@ -66,7 +57,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-    // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
+        // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
         //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 
         initializeRecyclerView();
@@ -189,7 +180,10 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
     }
 
     //TODO move these to their own class, no need for them to take up space here
-    /** Initialization methods **/
+
+    /**
+     * Initialization methods
+     **/
     private void initializeRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         ActivePlaylistAdapter recyclerViewAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
@@ -213,11 +207,58 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         BottomSheetLayout layout = findViewById(R.id.bottom_sheet_layout);
         layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen. (Dynamic, screenW value depends on the size of device)
 
+        SeekBar seekBar = findViewById(R.id.bottom_sheet_seekbar);
+        seekBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    int progress;
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                        progress = progressValue;
+                        System.out.println(progressValue);
+                        //seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
+                        //text_view.setText("Covered : " + progress + " / " + seekBar.getMax());
+                        //milliSecondsToTimer((long) progress);
+                        //Toast.makeText(MainActivity.this, "SeekBar in progress", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        //progress = seekBar.getProgress();
+                        System.out.println(progress);
+                        //Toast.makeText(MainActivity.this, "SeekBar in StartTracking", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        //progress = seekBar.getProgress();
+                        System.out.println(progress);
+
+                        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                        MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
+                        mediaPlayer.seekTo(progress);
+
+                        //text_view.setText("Covered : " + progress + " / " + seekBar.getMax());
+                        /*text_view.setText(milliSecondsToTimer((long) progress));
+                        if(player != null) {
+                            //TODO clean this up
+                            player.seekTo(progress);
+                            //player.start();
+                            //player.pause();
+                            //player.seekTo(progress);
+
+                        //}
+                        //Toast.makeText(MainActivity.this, "SeekBar in StopTracking", Toast.LENGTH_LONG).show();
+
+                         */
+                    }
+                }
+        );
+
         layout.setOnProgressListener(progress -> {
             RelativeLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
 
             double capstoneMaxY = bottomSheetLayoutCapstone.getBottom(); // bottom Y value of the capstone
-            double capstoneMinY = bottomSheetLayoutCapstone.getTop(); // bottom Y value of the capstone
             double minY = layout.getTop(); // upper Y value of the layout
 
             // bottom Y value of the layout minus the bottom Y value of the capstone
@@ -236,10 +277,13 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             float capstoneAlpha = (float) (percentage * .01); // range between 0.0 and 1.0 used for setting the transparency of the relativeLayout
             bottomSheetLayoutCapstone.setAlpha(capstoneAlpha); // sets the transparency of the capstone
 
-            SeekBar bottomSheetCapstoneSeekBar = findViewById(R.id.bottom_sheet_capstone_seekbar); // sets transparency of capstone seekbar
-            bottomSheetCapstoneSeekBar.setAlpha(capstoneAlpha);
+            SeekBar bottomSheetCapstoneSeekBar = findViewById(R.id.bottom_sheet_capstone_seekbar);
+            bottomSheetCapstoneSeekBar.setAlpha(capstoneAlpha); // sets transparency of capstone seekbar
 
-            SeekBar seekBar = findViewById(R.id.bottom_sheet_seekbar);
+            //seekBar = findViewById(R.id.bottom_sheet_seekbar); // The draggable seekbar displayed below the capstone
+
+            // Sets the location of the seekbar on the screen.
+            // Note that placement is handled manually here, and that the seekbar's view is NOT located inside the bottom sheet.
             seekBar.setY((int) (currentY + (bottomSheetSize * .70)));
 
             /* Bottom Sheet Capstone Text blocks */
@@ -269,7 +313,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             if (percentage == 100) {
                 ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
                 boolean isItemSelected = activePlaylistAdapter.isItemSelected();
-                if(!isItemSelected) {
+                if (!isItemSelected) {
                     ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                     activePlaylistController.resetBottomSheet();
                 }

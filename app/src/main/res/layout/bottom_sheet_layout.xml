@@ -217,7 +217,8 @@
             android:layout_marginRight="36dp"
             android:theme="@style/ProgressBar"
             android:thumb="@drawable/bottom_sheet_seekbar_thumb"
-            android:progressDrawable="@drawable/bottom_sheet_seekbar_style"/>
+            android:progressDrawable="@drawable/bottom_sheet_seekbar_style"
+            android:alpha=".80"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
