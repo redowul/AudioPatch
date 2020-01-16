@@ -11,21 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--<SeekBar
-            android:layout_width="fill_parent"
-            android:layout_height="7dp"
-            android:id="@+id/bottom_sheet_capstone_seekbar"
-            android:layout_gravity="center_vertical"
-            android:thumb="@color/recyclerViewAccent"
-            android:layout_marginLeft="56dp"
-            android:layout_marginStart="56dp"
-            android:paddingStart="0dp"
-            android:paddingBottom="5dp"
-            android:paddingEnd="0dp"
-            android:splitTrack="false"
-            android:progressDrawable="@drawable/seekbar_style"
-            tools:targetApi="lollipop" />-->
-
         <com.qhutch.bottomsheetlayout.BottomSheetLayout
             android:id="@+id/bottom_sheet_layout"
             android:layout_width="match_parent"
@@ -39,7 +24,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:adjustViewBounds="true"
-                android:alpha="0.6"
+                android:alpha="0.4"
                 android:scaleType="centerCrop"
                 app:layout_anchor="@+id/bottom_sheet_layout"
                 app:layout_anchorGravity="center" />
@@ -59,9 +44,9 @@
                 app:elevation="0dp">
 
                 <SeekBar
+                    android:id="@+id/bottom_sheet_capstone_seekbar"
                     android:layout_width="fill_parent"
                     android:layout_height="8dp"
-                    android:id="@+id/bottom_sheet_capstone_seekbar"
                     android:layout_gravity="center_vertical"
                     android:thumb="@color/recyclerViewAccent"
                     android:layout_marginLeft="56dp"
@@ -69,7 +54,7 @@
                     android:paddingStart="0dp"
                     android:paddingBottom="5dp"
                     android:paddingEnd="0dp"
-                    android:progressDrawable="@drawable/seekbar_style" />
+                    android:progressDrawable="@drawable/capstone_seekbar_style" />
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/bottom_sheet_current_album_cover_small"
@@ -129,19 +114,17 @@
                 android:id="@+id/audio_control"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/bottom_sheet_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/bottom_sheet_artist"
                     android:layout_centerInParent="true"
+                    android:layout_alignParentTop="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginTop="0dp"
+                    android:layout_marginTop="56dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="0dp"
@@ -155,8 +138,8 @@
                     android:id="@+id/bottom_sheet_artist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/bottom_sheet_submitter"
                     android:layout_centerInParent="true"
+                    android:layout_below="@+id/bottom_sheet_title"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="0dp"
@@ -172,15 +155,15 @@
                     android:id="@+id/bottom_sheet_submitter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/play_button"
                     android:layout_centerInParent="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="0dp"
                     android:orientation="horizontal"
                     android:singleLine="true"
+                    android:layout_below="@+id/bottom_sheet_artist"
                     android:text="@string/submitter"
                     android:textSize="16sp" />
 
@@ -188,37 +171,54 @@
                     android:id="@+id/back_button"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_centerInParent="true"
                     android:layout_marginEnd="24dp"
                     android:layout_marginRight="24dp"
                     android:layout_toStartOf="@id/play_button"
                     android:layout_toLeftOf="@id/play_button"
                     android:background="@drawable/ic_skip_previous_24dp"
                     android:onClick="onBottomToolbarItemClick"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:layout_marginTop="48dp"
+                    android:layout_below="@+id/bottom_sheet_submitter" />
 
                 <Button
                     android:id="@+id/play_button"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
                     android:background="@drawable/ic_play_24dp"
-                    android:onClick="onBottomToolbarItemClick" />
+                    android:onClick="onBottomToolbarItemClick"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="48dp"
+                    android:layout_below="@+id/bottom_sheet_submitter" />
 
                 <Button
                     android:id="@+id/next_button"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_centerInParent="true"
                     android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:layout_toEndOf="@id/play_button"
                     android:layout_toRightOf="@id/play_button"
                     android:background="@drawable/ic_skip_next_24dp"
                     android:onClick="onBottomToolbarItemClick"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:layout_marginTop="48dp"
+                    android:layout_below="@+id/bottom_sheet_submitter" />
             </RelativeLayout>
         </com.qhutch.bottomsheetlayout.BottomSheetLayout>
+
+        <SeekBar
+            android:id="@+id/bottom_sheet_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="48dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginRight="36dp"
+            android:theme="@style/ProgressBar"
+            android:thumb="@drawable/bottom_sheet_seekbar_thumb"
+            android:progressDrawable="@drawable/bottom_sheet_seekbar_style"/>
+
     </android.support.design.widget.CoordinatorLayout>
+
 </RelativeLayout>

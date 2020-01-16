@@ -1,9 +1,11 @@
 package com.colabella.connor.audiopatch;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -11,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -19,12 +22,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -211,6 +217,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             RelativeLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
 
             double capstoneMaxY = bottomSheetLayoutCapstone.getBottom(); // bottom Y value of the capstone
+            double capstoneMinY = bottomSheetLayoutCapstone.getTop(); // bottom Y value of the capstone
             double minY = layout.getTop(); // upper Y value of the layout
 
             // bottom Y value of the layout minus the bottom Y value of the capstone
@@ -229,9 +236,11 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
             float capstoneAlpha = (float) (percentage * .01); // range between 0.0 and 1.0 used for setting the transparency of the relativeLayout
             bottomSheetLayoutCapstone.setAlpha(capstoneAlpha); // sets the transparency of the capstone
 
-            SeekBar seekBar = findViewById(R.id.bottom_sheet_capstone_seekbar); // sets transparency of capstone seekbar
-            //seekBar.getThumb().mutate().setAlpha(0);
-            seekBar.setAlpha(capstoneAlpha);
+            SeekBar bottomSheetCapstoneSeekBar = findViewById(R.id.bottom_sheet_capstone_seekbar); // sets transparency of capstone seekbar
+            bottomSheetCapstoneSeekBar.setAlpha(capstoneAlpha);
+
+            SeekBar seekBar = findViewById(R.id.bottom_sheet_seekbar);
+            seekBar.setY((int) (currentY + (bottomSheetSize * .70)));
 
             /* Bottom Sheet Capstone Text blocks */
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);
@@ -266,16 +275,6 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
                 }
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     // Handles all button clicks that occur in context_main.xml.

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
@@ -28,12 +27,6 @@ import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
-import org.w3c.dom.Text;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 public class ActivePlaylistController {
 
     /**
@@ -42,9 +35,7 @@ public class ActivePlaylistController {
 
     private static MediaPlayer mediaPlayer;
 
-    MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
-    }
+    MediaPlayer getMediaPlayer() { return mediaPlayer; }
 
     // Determines which button on the bottom toolbar was pressed
     public void determineButtonSelected(String buttonIdString, View view) {
@@ -83,6 +74,7 @@ public class ActivePlaylistController {
                     } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
                 }
                 AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                initializeSeekBar();
                 break;
             }
             case "next_button": {
@@ -128,9 +120,9 @@ public class ActivePlaylistController {
                         playSelectedAudio(currentlySelectedItem);
                     }
                 });
-                initializeSeekBar();
                 showNotification(selectedItem);
             }
+            initializeSeekBar();
         }
     }
 
@@ -296,17 +288,14 @@ public class ActivePlaylistController {
             Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
             Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
             Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
+            SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
             backButton.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
             nextButton.setVisibility(View.VISIBLE);
+            bottomSheetSeekBar.setVisibility(View.VISIBLE);
 
-            SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
-            seekBar.setVisibility(View.VISIBLE);
-
-            /*SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.seekbar);
-            TextView progress = mainActivity.getInstance().findViewById(R.id.seekbar_progress);
-            seekBar.setVisibility(View.VISIBLE);
-            progress.setVisibility(View.VISIBLE);*/
+            SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+            capstoneSeekBar.setVisibility(View.VISIBLE);
         }
     }
 
@@ -344,13 +333,16 @@ public class ActivePlaylistController {
         Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
         Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
         Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
+        SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
         backButton.setVisibility(View.GONE);
         playButton.setVisibility(View.GONE);
         nextButton.setVisibility(View.GONE);
+        bottomSheetSeekBar.setProgress(0);
+        bottomSheetSeekBar.setVisibility(View.GONE);
 
-        SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
-        seekBar.setProgress(0);
-        seekBar.setVisibility(View.GONE);
+        SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+        capstoneSeekBar.setProgress(0);
+        capstoneSeekBar.setVisibility(View.GONE);
     }
 
     /**
@@ -424,9 +416,13 @@ public class ActivePlaylistController {
                     int duration = mediaPlayer.getDuration();
 
                     MainActivity mainActivity = new MainActivity();
-                    SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
-                    seekBar.setMax(duration);
-                    seekBar.setProgress(currentPosition);
+                    SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+                    capstoneSeekBar.setMax(duration);
+                    capstoneSeekBar.setProgress(currentPosition);
+
+                    SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                    bottomSheetSeekBar.setMax(duration);
+                    bottomSheetSeekBar.setProgress(currentPosition);
 
                     Handler seekBarHandler = new Handler();
                     seekBarHandler .postDelayed(this, 100); //Looping the thread after 0.1 seconds }
