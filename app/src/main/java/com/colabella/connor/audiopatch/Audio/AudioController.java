@@ -29,15 +29,6 @@ public class AudioController {
         return albumsBySelectedArtist;
     }
 
-    public List<List<Audio>> getArtistByArtistName (String artistName) { // returns artist if the artist's name exists in the master artist list
-        for (List<List<Audio>> artist : AudioSingleton.getInstance().getArtistList()) {
-            if (artist.get(0).get(0).getArtist().equalsIgnoreCase(artistName)) {
-                return artist;
-            }
-        }
-        return null;
-    }
-
     public void getAudioFilesFromDeviceStorage() {
         RetrieveAudioTask retrieveAudioTask = new RetrieveAudioTask();
         MainActivity mainActivity = new MainActivity();
@@ -68,33 +59,6 @@ public class AudioController {
 
         // return timer string
         return finalTimerString;
-    }
-
-    private List<List<List<Audio>>> sortAudioByArtist(List<List<List<Audio>>> artistList, List<Audio> album) {
-        if (artistList.size() > 0) {
-            for (int i = 0; i < artistList.size(); i++) {
-                if (artistList.size() > 0) {
-                    if (artistList.get(i).get(0).get(0).getArtist().equals(album.get(0).getArtist())) {
-                        artistList.get(i).add(album);
-                        break;
-                    } else if (i == artistList.size() - 1) {
-                        List<List<Audio>> artist = new ArrayList<>();
-                        artist.add(album);
-                        artistList.add(artist);
-                        break;
-                    }
-                } else {
-                    List<List<Audio>> artist = new ArrayList<>();
-                    artist.add(album);
-                    artistList.add(artist);
-                }
-            }
-        } else {
-            List<List<Audio>> artist = new ArrayList<>();
-            artist.add(album);
-            artistList.add(artist);
-        }
-        return artistList;
     }
 }
 

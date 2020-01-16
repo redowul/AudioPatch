@@ -4,7 +4,7 @@
     <color name="colorPrimaryAccent">#5b9b93</color>
     <color name="recyclerViewDark">#1c222b</color>
     <color name="recyclerViewPrimary">#2e343f</color>
-    <color name="recyclerViewAccent">#495260</color>
+    <color name="recyclerViewAccent">#424a57</color>
     <color name="iconColor">#d2d2d2</color>
     <color name="textColor">#FFFFFF</color>
 </resources>

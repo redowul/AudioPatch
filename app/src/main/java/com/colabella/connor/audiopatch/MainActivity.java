@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -195,6 +198,7 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initializeBottomSheet() {
         // For calculating the width of the screen
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -224,6 +228,10 @@ public class MainActivity extends AppCompatActivity /*implements NavigationView.
 
             float capstoneAlpha = (float) (percentage * .01); // range between 0.0 and 1.0 used for setting the transparency of the relativeLayout
             bottomSheetLayoutCapstone.setAlpha(capstoneAlpha); // sets the transparency of the capstone
+
+            SeekBar seekBar = findViewById(R.id.bottom_sheet_capstone_seekbar); // sets transparency of capstone seekbar
+            //seekBar.getThumb().mutate().setAlpha(0);
+            seekBar.setAlpha(capstoneAlpha);
 
             /* Bottom Sheet Capstone Text blocks */
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);

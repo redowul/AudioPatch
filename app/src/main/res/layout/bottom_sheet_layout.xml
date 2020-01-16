@@ -11,6 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!--<SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="7dp"
+            android:id="@+id/bottom_sheet_capstone_seekbar"
+            android:layout_gravity="center_vertical"
+            android:thumb="@color/recyclerViewAccent"
+            android:layout_marginLeft="56dp"
+            android:layout_marginStart="56dp"
+            android:paddingStart="0dp"
+            android:paddingBottom="5dp"
+            android:paddingEnd="0dp"
+            android:splitTrack="false"
+            android:progressDrawable="@drawable/seekbar_style"
+            tools:targetApi="lollipop" />-->
+
         <com.qhutch.bottomsheetlayout.BottomSheetLayout
             android:id="@+id/bottom_sheet_layout"
             android:layout_width="match_parent"
@@ -29,12 +44,12 @@
                 app:layout_anchor="@+id/bottom_sheet_layout"
                 app:layout_anchorGravity="center" />
 
-                <RelativeLayout
-                    android:id="@+id/bottom_sheet_layout_capstone"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@color/recyclerViewDark">
-                </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/bottom_sheet_layout_capstone"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/recyclerViewDark">
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -42,6 +57,19 @@
                 app:contentInsetLeft="0dp"
                 app:contentInsetStart="0dp"
                 app:elevation="0dp">
+
+                <SeekBar
+                    android:layout_width="fill_parent"
+                    android:layout_height="8dp"
+                    android:id="@+id/bottom_sheet_capstone_seekbar"
+                    android:layout_gravity="center_vertical"
+                    android:thumb="@color/recyclerViewAccent"
+                    android:layout_marginLeft="56dp"
+                    android:layout_marginStart="56dp"
+                    android:paddingStart="0dp"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="0dp"
+                    android:progressDrawable="@drawable/seekbar_style" />
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/bottom_sheet_current_album_cover_small"
@@ -54,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="6dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="0dp"
@@ -95,7 +123,7 @@
                     android:layout_alignParentRight="true"
                     android:background="@drawable/arrow_drop_up_24dp"
                     android:gravity="end" />
-                </RelativeLayout>
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/audio_control"

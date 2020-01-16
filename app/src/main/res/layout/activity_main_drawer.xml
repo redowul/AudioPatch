@@ -25,8 +25,8 @@
         <ImageView
             android:id="@+id/drawer_header"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:background="@drawable/audiopatch_header_transparent">
         </ImageView>
 
         <android.support.v7.widget.RecyclerView

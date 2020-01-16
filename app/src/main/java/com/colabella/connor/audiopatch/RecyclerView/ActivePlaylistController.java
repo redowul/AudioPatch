@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
@@ -24,6 +27,12 @@ import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
+
+import org.w3c.dom.Text;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ActivePlaylistController {
 
@@ -119,6 +128,7 @@ public class ActivePlaylistController {
                         playSelectedAudio(currentlySelectedItem);
                     }
                 });
+                initializeSeekBar();
                 showNotification(selectedItem);
             }
         }
@@ -195,19 +205,6 @@ public class ActivePlaylistController {
             mediaPlayer = null;
         }
     }
-
-    /*
-    private void toggleRecyclerViewItemClickability() {
-        Controller controller = new Controller();
-        AudioController audioController = new AudioController();
-
-        RecyclerViewAdapter recyclerViewAdapter = audioController.getRecyclerViewAdapter();
-        User user = controller.getUser();             // Get an instance of the global user state
-        user.toggleRecyclerViewPermission();          // Toggle the state of our user's RecyclerView permission
-        controller.setUser(user);                     // Set the global user state equal to that of our instance
-        recyclerViewAdapter.notifyDataSetChanged();
-    }
-    */
 
     /**
      * Methods related to the Bottom Sheet
@@ -302,6 +299,14 @@ public class ActivePlaylistController {
             backButton.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
             nextButton.setVisibility(View.VISIBLE);
+
+            SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+            seekBar.setVisibility(View.VISIBLE);
+
+            /*SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.seekbar);
+            TextView progress = mainActivity.getInstance().findViewById(R.id.seekbar_progress);
+            seekBar.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.VISIBLE);*/
         }
     }
 
@@ -342,6 +347,10 @@ public class ActivePlaylistController {
         backButton.setVisibility(View.GONE);
         playButton.setVisibility(View.GONE);
         nextButton.setVisibility(View.GONE);
+
+        SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+        seekBar.setProgress(0);
+        seekBar.setVisibility(View.GONE);
     }
 
     /**
@@ -386,4 +395,43 @@ public class ActivePlaylistController {
             notificationManager.notify(0, builder.build());
         }
     }
+
+    /**
+     * Methods related to the seekbar in the bottom sheet capstone
+     */
+
+    private void initializeSeekBar() {
+        if(mediaPlayer != null) {
+            int mediaPos = mediaPlayer.getCurrentPosition();
+            int mediaMax = mediaPlayer.getDuration();
+
+            MainActivity mainActivity = new MainActivity();
+            SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+            seekBar.setMax(mediaMax); // Set the Maximum range of the
+            seekBar.setProgress(mediaPos);// set current progress to song's
+
+            Handler seekBarHandler = new Handler();
+            seekBarHandler.removeCallbacks(moveSeekBarThread);
+            seekBarHandler.postDelayed(moveSeekBarThread, 100); //call the thread after 100 milliseconds*/
+        }
+    }
+
+    private Runnable moveSeekBarThread = new Runnable() {
+        public void run() {
+            if(mediaPlayer != null) {
+                if (mediaPlayer.isPlaying()) {
+                    int currentPosition = mediaPlayer.getCurrentPosition();
+                    int duration = mediaPlayer.getDuration();
+
+                    MainActivity mainActivity = new MainActivity();
+                    SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+                    seekBar.setMax(duration);
+                    seekBar.setProgress(currentPosition);
+
+                    Handler seekBarHandler = new Handler();
+                    seekBarHandler .postDelayed(this, 100); //Looping the thread after 0.1 seconds }
+                }
+            }
+        }
+    };
 }
