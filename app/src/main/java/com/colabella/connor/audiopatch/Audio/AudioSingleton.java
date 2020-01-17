@@ -18,6 +18,7 @@ public class AudioSingleton {
     private AlbumAdapter albumAdapter;
     private ArtistAdapter artistAdapter;
     private ActivePlaylistAdapter activePlaylistAdapter;
+    private boolean isSeekBarTracked; // Handles the draggable seekbar's movement
 
     private AudioSingleton() {
         this.audioList = new ArrayList<>();
@@ -27,6 +28,7 @@ public class AudioSingleton {
         this.albumAdapter = new AlbumAdapter();
         this.artistAdapter = new ArtistAdapter();
         this.activePlaylistAdapter = new ActivePlaylistAdapter();
+        this.isSeekBarTracked = false;
     }
 
     public static AudioSingleton getInstance() {
@@ -96,6 +98,14 @@ public class AudioSingleton {
 
     public void setActivePlaylistAdapter(ActivePlaylistAdapter activePlaylistAdapter) {
         this.activePlaylistAdapter = activePlaylistAdapter;
+    }
+
+    public boolean isSeekBarTracked() {
+        return isSeekBarTracked;
+    }
+
+    public void setSeekBarTracked(boolean seekBarTracked) {
+        isSeekBarTracked = seekBarTracked;
     }
 }
 

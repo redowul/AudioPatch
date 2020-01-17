@@ -35,6 +35,50 @@ public class ActivePlaylistController {
 
     private static MediaPlayer mediaPlayer;
 
+    void initializeMediaPlayer(Audio selectedItem) {
+        if (selectedItem != null) {                                  // avoids null pointer exception.
+            MainActivity mainActivity = new MainActivity();
+            Context context = mainActivity.getInstance();
+            alterBottomSheet(selectedItem); // applies song data to bottom sheet
+
+            String audioToPlayString = selectedItem.getData();  // Convert Audio to String
+            Uri uri = Uri.parse(audioToPlayString);             // Convert to Uri by parsing the String
+
+            if (mediaPlayer == null) {
+                mediaPlayer = new MediaPlayer();
+            }
+            if (context != null && uri != null) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                }
+                mediaPlayer = MediaPlayer.create(context, uri);
+                mediaPlayer.setOnCompletionListener(mp -> {
+                    ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
+                    int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+                    Audio currentlySelectedItem;
+                    if (activePlaylistAdapter.getCurrentlySelectedItemIndex() == activePlaylistAdapter.getItemCount() - 1) { // if song played was last in the list
+                        activePlaylistAdapter.setSelectedAudio(0);
+                        currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+                        initializeMediaPlayer(currentlySelectedItem);
+                        // TODO if playlist looping is enabled
+                        //if() {
+
+                        //}
+                    } else {
+                        activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
+                        currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex + 1);
+                        initializeMediaPlayer(currentlySelectedItem);
+                    }
+                    mediaPlayer.start();
+                });
+                showNotification(selectedItem);
+            }
+            initializeSeekBar();
+        }
+    }
+
     public MediaPlayer getMediaPlayer() { return mediaPlayer; }
 
     // Determines which button on the bottom toolbar was pressed
@@ -50,12 +94,16 @@ public class ActivePlaylistController {
                         mediaPlayer = new MediaPlayer();
                         boolean isItemSelected = AudioSingleton.getInstance().getActivePlaylistAdapter().isItemSelected();
                         if(isItemSelected) {
-                            int selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getCurrentlySelectedItemIndex();
-                            playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(selectedItem));
+                            //int selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getCurrentlySelectedItemIndex();
+                            //initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
+                            mediaPlayer.start();
+                            //playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(selectedItem));
                         }
                         else {
-                            AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0);
-                            playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
+                           // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0);
+                           // initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
+                            //mediaPlayer.start();
+                            //playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
                         }
                        // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(selectedItem); // Set item at clicked position's isClicked to true
                         view.setBackgroundResource(R.drawable.ic_pause_24dp);
@@ -86,7 +134,7 @@ public class ActivePlaylistController {
 
     // This method is called whenever the selected item changes.
     // It checks the audioList for an item with a true selected boolean and then plays it.
-    void playSelectedAudio(Audio selectedItem) {
+    /*void playSelectedAudio(Audio selectedItem) {
         if (selectedItem != null) {                                  // avoids null pointer exception.
             MainActivity mainActivity = new MainActivity();
             Context context = mainActivity.getInstance();
@@ -105,7 +153,7 @@ public class ActivePlaylistController {
                     mediaPlayer.release();
                 }
                 mediaPlayer = MediaPlayer.create(context, uri);
-                mediaPlayer.start();
+                //mediaPlayer.start();
                 mediaPlayer.setOnCompletionListener(mp -> {
                     ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
                     if (activePlaylistAdapter.getCurrentlySelectedItemIndex() == activePlaylistAdapter.getItemCount() - 1) { // if song played was last in the list
@@ -125,6 +173,7 @@ public class ActivePlaylistController {
             initializeSeekBar();
         }
     }
+     */
 
     // Selects the previous item in the list, if one is available, and plays the audio.
     // When at index 0 of audioList it will loop around and play the last item in the audioList.
@@ -144,14 +193,15 @@ public class ActivePlaylistController {
                 // go to previous song
                 if (currentlySelectedItemIndex > 0) {
                     activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex - 1);
-                    playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex - 1));
+                    initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex - 1));
                     togglePlayButtonState();
                 }
             } else {
                 activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex);
-                playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex));
+                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex));
                 togglePlayButtonState();
             }
+            mediaPlayer.start();
         }
         //}
     }
@@ -168,11 +218,12 @@ public class ActivePlaylistController {
         if (currentlySelectedItemIndex >= 0) {
             if (currentlySelectedItemIndex == activePlaylistAdapter.getItemCount() - 1) { // the selected item is the last item in the list
                 activePlaylistAdapter.setSelectedAudio(0); // set the next audio to the first audio in the list
-                playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(0));
+                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(0));
             } else {
                 activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex + 1);
-                playSelectedAudio(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex + 1));
+                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex + 1));
             }
+            mediaPlayer.start();
             togglePlayButtonState();
         }
         //}
@@ -412,20 +463,22 @@ public class ActivePlaylistController {
         public void run() {
             if(mediaPlayer != null) {
                 if (mediaPlayer.isPlaying()) {
-                    int currentPosition = mediaPlayer.getCurrentPosition();
-                    int duration = mediaPlayer.getDuration();
+                    if(!AudioSingleton.getInstance().isSeekBarTracked()) {
+                        int currentPosition = mediaPlayer.getCurrentPosition();
+                        int duration = mediaPlayer.getDuration();
 
-                    MainActivity mainActivity = new MainActivity();
-                    SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
-                    capstoneSeekBar.setMax(duration);
-                    capstoneSeekBar.setProgress(currentPosition);
+                        MainActivity mainActivity = new MainActivity();
+                        SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+                        capstoneSeekBar.setMax(duration);
+                        capstoneSeekBar.setProgress(currentPosition);
 
-                    SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
-                    bottomSheetSeekBar.setMax(duration);
-                    bottomSheetSeekBar.setProgress(currentPosition);
+                        SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                        bottomSheetSeekBar.setMax(duration);
+                        bottomSheetSeekBar.setProgress(currentPosition);
+                    }
 
                     Handler seekBarHandler = new Handler();
-                    seekBarHandler .postDelayed(this, 100); //Looping the thread after 0.1 seconds }
+                    seekBarHandler.postDelayed(this, 100); //Looping the thread after 0.1 seconds }
                 }
             }
         }

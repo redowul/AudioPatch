@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -214,8 +216,10 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                        progress = progressValue;
-                        System.out.println(progressValue);
+
+                        //progress = progressValue;
+
+                        //System.out.println(progressValue);
                         //seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
                         //text_view.setText("Covered : " + progress + " / " + seekBar.getMax());
                         //milliSecondsToTimer((long) progress);
@@ -224,19 +228,22 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
+
+                        AudioSingleton.getInstance().setSeekBarTracked(true);
                         //progress = seekBar.getProgress();
-                        System.out.println(progress);
+                        //System.out.println(progress);
+                        //System.out.println("isTracked is " + isTracked);
                         //Toast.makeText(MainActivity.this, "SeekBar in StartTracking", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        //progress = seekBar.getProgress();
-                        System.out.println(progress);
+                        progress = seekBar.getProgress();
 
                         ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                         MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
                         mediaPlayer.seekTo(progress);
+                        AudioSingleton.getInstance().setSeekBarTracked(false);
 
                         //text_view.setText("Covered : " + progress + " / " + seekBar.getMax());
                         /*text_view.setText(milliSecondsToTimer((long) progress));

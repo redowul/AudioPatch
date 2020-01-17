@@ -2,6 +2,7 @@ package com.colabella.connor.audiopatch.RecyclerView;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             ActivePlaylistController activePlaylistController = new ActivePlaylistController();
             activePlaylistController.alterBottomSheet(item);
             setSelectedAudio(0);
+            activePlaylistController.initializeMediaPlayer(getSelectedAudio());
         }
     }
 
@@ -253,7 +255,9 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             if (controller.getUser().getRecyclerViewPermission()) {
                 if (getAdapterPosition() >= 0) {
                     setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
-                    activePlaylistController.playSelectedAudio(getAudioAtIndex(getCurrentlySelectedItemIndex()));
+                    activePlaylistController.initializeMediaPlayer(getAudioAtIndex(getCurrentlySelectedItemIndex()));
+                    MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
+                    mediaPlayer.start();
                     activePlaylistController.togglePlayButtonState();
                 }
             }
