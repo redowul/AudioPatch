@@ -213,27 +213,19 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress;
+                    String currentPosition;
+                    TextView seekBarPosition = findViewById(R.id.seekbar_position);
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-
-                        //progress = progressValue;
-
-                        //System.out.println(progressValue);
-                        //seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-                        //text_view.setText("Covered : " + progress + " / " + seekBar.getMax());
-                        //milliSecondsToTimer((long) progress);
-                        //Toast.makeText(MainActivity.this, "SeekBar in progress", Toast.LENGTH_LONG).show();
+                        AudioController audioController = new AudioController();
+                        currentPosition = audioController.milliSecondsToTimer(progressValue);
+                        seekBarPosition.setText(currentPosition);
                     }
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
-
                         AudioSingleton.getInstance().setSeekBarTracked(true);
-                        //progress = seekBar.getProgress();
-                        //System.out.println(progress);
-                        //System.out.println("isTracked is " + isTracked);
-                        //Toast.makeText(MainActivity.this, "SeekBar in StartTracking", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -241,23 +233,14 @@ public class MainActivity extends AppCompatActivity {
                         progress = seekBar.getProgress();
 
                         ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                        AudioController audioController = new AudioController();
                         MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
                         mediaPlayer.seekTo(progress);
+
+                        currentPosition = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
+                        seekBarPosition.setText(currentPosition);
+
                         AudioSingleton.getInstance().setSeekBarTracked(false);
-
-                        //text_view.setText("Covered : " + progress + " / " + seekBar.getMax());
-                        /*text_view.setText(milliSecondsToTimer((long) progress));
-                        if(player != null) {
-                            //TODO clean this up
-                            player.seekTo(progress);
-                            //player.start();
-                            //player.pause();
-                            //player.seekTo(progress);
-
-                        //}
-                        //Toast.makeText(MainActivity.this, "SeekBar in StopTracking", Toast.LENGTH_LONG).show();
-
-                         */
                     }
                 }
         );
@@ -292,6 +275,12 @@ public class MainActivity extends AppCompatActivity {
             // Sets the location of the seekbar on the screen.
             // Note that placement is handled manually here, and that the seekbar's view is NOT located inside the bottom sheet.
             seekBar.setY((int) (currentY + (bottomSheetSize * .70)));
+
+            TextView seekbarPosition = findViewById(R.id.seekbar_position);
+            TextView audioLength = findViewById(R.id.audio_length);
+
+            seekbarPosition.setY((int) (currentY + (bottomSheetSize * .69)));
+            audioLength.setY((int) (currentY + (bottomSheetSize * .69)));
 
             /* Bottom Sheet Capstone Text blocks */
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);

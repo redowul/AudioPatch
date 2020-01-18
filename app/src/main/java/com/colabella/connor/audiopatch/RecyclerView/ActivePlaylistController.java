@@ -44,10 +44,10 @@ public class ActivePlaylistController {
             String audioToPlayString = selectedItem.getData();  // Convert Audio to String
             Uri uri = Uri.parse(audioToPlayString);             // Convert to Uri by parsing the String
 
-            if (mediaPlayer == null) {
-                mediaPlayer = new MediaPlayer();
-            }
             if (context != null && uri != null) {
+                if (mediaPlayer == null) {
+                    mediaPlayer = new MediaPlayer();
+                }
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                     mediaPlayer.stop();
@@ -62,20 +62,28 @@ public class ActivePlaylistController {
                         activePlaylistAdapter.setSelectedAudio(0);
                         currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
                         initializeMediaPlayer(currentlySelectedItem);
-                        // TODO if playlist looping is enabled
-                        //if() {
 
-                        //}
-                    } else {
+                        SeekBar seekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                        seekbar.setProgress(0);
+                        togglePlayButtonState();
+                        // TODO if playlist looping is enabled
+                       // if() {
+
+                      //  }
+                    } else { // item isn't the last item, so we play it
                         activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
                         currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex + 1);
                         initializeMediaPlayer(currentlySelectedItem);
+                        mediaPlayer.start();
                     }
-                    mediaPlayer.start();
+                    TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
+                    audioLength.setText(selectedItem.getDuration()); // setting the duration
                 });
+                initializeSeekBar();
                 showNotification(selectedItem);
+                TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
+                audioLength.setText(selectedItem.getDuration()); // setting the duration
             }
-            initializeSeekBar();
         }
     }
 
@@ -131,49 +139,6 @@ public class ActivePlaylistController {
             }
         }
     }
-
-    // This method is called whenever the selected item changes.
-    // It checks the audioList for an item with a true selected boolean and then plays it.
-    /*void playSelectedAudio(Audio selectedItem) {
-        if (selectedItem != null) {                                  // avoids null pointer exception.
-            MainActivity mainActivity = new MainActivity();
-            Context context = mainActivity.getInstance();
-            alterBottomSheet(selectedItem); // applies song data to bottom sheet
-
-            String audioToPlayString = selectedItem.getData();  // Convert Audio to String
-            Uri uri = Uri.parse(audioToPlayString);             // Convert to Uri by parsing the String
-
-            if (mediaPlayer == null) {
-                mediaPlayer = new MediaPlayer();
-            }
-            if (context != null && uri != null) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                }
-                mediaPlayer = MediaPlayer.create(context, uri);
-                //mediaPlayer.start();
-                mediaPlayer.setOnCompletionListener(mp -> {
-                    ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-                    if (activePlaylistAdapter.getCurrentlySelectedItemIndex() == activePlaylistAdapter.getItemCount() - 1) { // if song played was last in the list
-                        activePlaylistAdapter.setSelectedAudio(0);
-                        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
-                        Audio currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex);
-                        playSelectedAudio(currentlySelectedItem);
-                    } else {
-                        activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
-                        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
-                        Audio currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex);
-                        playSelectedAudio(currentlySelectedItem);
-                    }
-                });
-                showNotification(selectedItem);
-            }
-            initializeSeekBar();
-        }
-    }
-     */
 
     // Selects the previous item in the list, if one is available, and plays the audio.
     // When at index 0 of audioList it will loop around and play the last item in the audioList.
@@ -340,10 +305,14 @@ public class ActivePlaylistController {
             Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
             Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
             SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+            TextView seekBarPosition = mainActivity.getInstance().findViewById(R.id.seekbar_position); // textView of the current position (e.g. 1:23) of the current audio file
+            TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the total duration of the current audio file
             backButton.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
             nextButton.setVisibility(View.VISIBLE);
             bottomSheetSeekBar.setVisibility(View.VISIBLE);
+            seekBarPosition.setVisibility(View.VISIBLE);
+            audioLength.setVisibility(View.VISIBLE);
 
             SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
             capstoneSeekBar.setVisibility(View.VISIBLE);
@@ -391,10 +360,61 @@ public class ActivePlaylistController {
         bottomSheetSeekBar.setProgress(0);
         bottomSheetSeekBar.setVisibility(View.GONE);
 
+        TextView seekBarPosition = mainActivity.getInstance().findViewById(R.id.seekbar_position);
+        seekBarPosition.setVisibility(View.GONE);
+        TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
+        audioLength.setText(mainActivity.getInstance().getResources().getString(R.string.timestamp)); // setting the duration
+        audioLength.setVisibility(View.GONE);
+
         SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
         capstoneSeekBar.setProgress(0);
         capstoneSeekBar.setVisibility(View.GONE);
     }
+
+    /**
+     * Methods related to the seekBars in the bottom sheet
+     */
+
+    private void initializeSeekBar() {
+        if(mediaPlayer != null) {
+            int mediaPos = mediaPlayer.getCurrentPosition();
+            int mediaMax = mediaPlayer.getDuration();
+
+            MainActivity mainActivity = new MainActivity();
+            SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+            seekBar.setMax(mediaMax); // Set the Maximum range of the
+            seekBar.setProgress(mediaPos);// set current progress to song's
+
+            Handler seekBarHandler = new Handler();
+            seekBarHandler.removeCallbacks(moveSeekBarThread);
+            seekBarHandler.postDelayed(moveSeekBarThread, 100); //call the thread after 100 milliseconds*/
+        }
+    }
+
+    private Runnable moveSeekBarThread = new Runnable() {
+        public void run() {
+            if(mediaPlayer != null) {
+                if (mediaPlayer.isPlaying()) {
+                    MainActivity mainActivity = new MainActivity();
+                    if(!AudioSingleton.getInstance().isSeekBarTracked()) {
+                        int position = mediaPlayer.getCurrentPosition();
+                        int duration = mediaPlayer.getDuration();
+
+                        SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+                        capstoneSeekBar.setMax(duration);
+                        capstoneSeekBar.setProgress(position);
+
+                        SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                        bottomSheetSeekBar.setMax(duration);
+                        bottomSheetSeekBar.setProgress(position);
+                    }
+                    
+                    Handler seekBarHandler = new Handler();
+                    seekBarHandler.postDelayed(this, 100); //Looping the thread after 0.1 seconds }
+                }
+            }
+        }
+    };
 
     /**
      * Methods related to the active playlist but do not pertain to previous categories
@@ -438,49 +458,4 @@ public class ActivePlaylistController {
             notificationManager.notify(0, builder.build());
         }
     }
-
-    /**
-     * Methods related to the seekbar in the bottom sheet capstone
-     */
-
-    private void initializeSeekBar() {
-        if(mediaPlayer != null) {
-            int mediaPos = mediaPlayer.getCurrentPosition();
-            int mediaMax = mediaPlayer.getDuration();
-
-            MainActivity mainActivity = new MainActivity();
-            SeekBar seekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
-            seekBar.setMax(mediaMax); // Set the Maximum range of the
-            seekBar.setProgress(mediaPos);// set current progress to song's
-
-            Handler seekBarHandler = new Handler();
-            seekBarHandler.removeCallbacks(moveSeekBarThread);
-            seekBarHandler.postDelayed(moveSeekBarThread, 100); //call the thread after 100 milliseconds*/
-        }
-    }
-
-    private Runnable moveSeekBarThread = new Runnable() {
-        public void run() {
-            if(mediaPlayer != null) {
-                if (mediaPlayer.isPlaying()) {
-                    if(!AudioSingleton.getInstance().isSeekBarTracked()) {
-                        int currentPosition = mediaPlayer.getCurrentPosition();
-                        int duration = mediaPlayer.getDuration();
-
-                        MainActivity mainActivity = new MainActivity();
-                        SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
-                        capstoneSeekBar.setMax(duration);
-                        capstoneSeekBar.setProgress(currentPosition);
-
-                        SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
-                        bottomSheetSeekBar.setMax(duration);
-                        bottomSheetSeekBar.setProgress(currentPosition);
-                    }
-
-                    Handler seekBarHandler = new Handler();
-                    seekBarHandler.postDelayed(this, 100); //Looping the thread after 0.1 seconds }
-                }
-            }
-        }
-    };
 }

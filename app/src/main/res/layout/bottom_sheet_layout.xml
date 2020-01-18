@@ -124,7 +124,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginTop="56dp"
+                    android:layout_marginTop="58dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="0dp"
@@ -145,7 +145,7 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginBottom="0dp"
+                    android:layout_marginBottom="2dp"
                     android:orientation="horizontal"
                     android:singleLine="true"
                     android:text="@string/artist"
@@ -207,18 +207,53 @@
             </RelativeLayout>
         </com.qhutch.bottomsheetlayout.BottomSheetLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/seekbar_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="48dp"
+            android:text="@string/timestamp">
+        </TextView>
+
         <SeekBar
             android:id="@+id/bottom_sheet_seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_toRightOf="@id/seekbar_position"
+            android:layout_toEndOf="@id/seekbar_position"
+            android:layout_toLeftOf="@id/audio_length"
+            android:layout_toStartOf="@id/audio_length"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             android:layout_marginBottom="48dp"
-            android:layout_marginLeft="36dp"
-            android:layout_marginRight="36dp"
-            android:theme="@style/ProgressBar"
-            android:thumb="@drawable/bottom_sheet_seekbar_thumb"
+            android:alpha=".80"
             android:progressDrawable="@drawable/bottom_sheet_seekbar_style"
-            android:alpha=".80"/>
+            android:theme="@style/ProgressBar"
+            android:thumb="@drawable/bottom_sheet_seekbar_thumb" />
+
+        <TextView
+            android:id="@+id/audio_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="@string/timestamp">
+        </TextView>
+        </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 
