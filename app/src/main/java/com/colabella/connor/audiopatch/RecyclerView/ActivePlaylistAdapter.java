@@ -46,6 +46,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             activePlaylistController.alterBottomSheet(item);
             setSelectedAudio(0);
             activePlaylistController.initializeMediaPlayer(getSelectedAudio());
+            activePlaylistController.initializeSeekBar();
         }
     }
 

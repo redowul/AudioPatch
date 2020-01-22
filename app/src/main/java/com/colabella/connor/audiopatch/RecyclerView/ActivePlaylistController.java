@@ -35,6 +35,8 @@ public class ActivePlaylistController {
 
     private static MediaPlayer mediaPlayer;
 
+    MediaPlayer getMediaPlayer() { return mediaPlayer; }
+
     void initializeMediaPlayer(Audio selectedItem) {
         if (selectedItem != null) {                                  // avoids null pointer exception.
             MainActivity mainActivity = new MainActivity();
@@ -48,7 +50,7 @@ public class ActivePlaylistController {
                 if (mediaPlayer == null) {
                     mediaPlayer = new MediaPlayer();
                 }
-                if (mediaPlayer.isPlaying()) {
+                else if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                     mediaPlayer.stop();
                     mediaPlayer.release();
@@ -58,7 +60,7 @@ public class ActivePlaylistController {
                     ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
                     int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
                     Audio currentlySelectedItem;
-                    if (activePlaylistAdapter.getCurrentlySelectedItemIndex() == activePlaylistAdapter.getItemCount() - 1) { // if song played was last in the list
+                    if (currentlySelectedItemIndex == activePlaylistAdapter.getItemCount() - 1) { // if song played was last in the list
                         activePlaylistAdapter.setSelectedAudio(0);
                         currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
                         initializeMediaPlayer(currentlySelectedItem);
@@ -72,22 +74,17 @@ public class ActivePlaylistController {
                       //  }
                     } else { // item isn't the last item, so we play it
                         activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
-                        currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(currentlySelectedItemIndex + 1);
+                        currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
                         initializeMediaPlayer(currentlySelectedItem);
                         mediaPlayer.start();
                     }
-                    TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
-                    audioLength.setText(selectedItem.getDuration()); // setting the duration
                 });
-                initializeSeekBar();
                 showNotification(selectedItem);
                 TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
                 audioLength.setText(selectedItem.getDuration()); // setting the duration
             }
         }
     }
-
-    public MediaPlayer getMediaPlayer() { return mediaPlayer; }
 
     // Determines which button on the bottom toolbar was pressed
     public void determineButtonSelected(String buttonIdString, View view) {
@@ -130,7 +127,7 @@ public class ActivePlaylistController {
                     } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
                 }
                 AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
-                initializeSeekBar();
+                //initializeSeekBar();
                 break;
             }
             case "next_button": {
@@ -219,7 +216,7 @@ public class ActivePlaylistController {
      */
 
     @SuppressLint("NewApi")
-    Bitmap blur(Context context, Bitmap image) {
+    private Bitmap blur(Context context, Bitmap image) {
         float BITMAP_SCALE = 0.4f;
         float BLUR_RADIUS = 7.5f;
 
@@ -267,11 +264,15 @@ public class ActivePlaylistController {
                 double bottomSheetSize = maxY - minY;
                 double currentAdjustedY = currentY - minY; // Y position relative to the top and bottom Y values of the bottom sheet, not the entire screen
                 double percentage = (currentAdjustedY / bottomSheetSize) * 100; // used for calculating the percentage needed for rotation and transparency
+                int alpha = (int) ((percentage / 100) * 255); // calculates level of transparency to be applied
 
                 if(percentage == 0) { // Bottom Sheet expanded state
                     bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
                 } else if(percentage == 100) {   // Bottom Sheet collapsed state
                     bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(255);
+                }
+                else {
+                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
                 }
             } else {
                 Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
@@ -375,7 +376,7 @@ public class ActivePlaylistController {
      * Methods related to the seekBars in the bottom sheet
      */
 
-    private void initializeSeekBar() {
+    public void initializeSeekBar() {
         if(mediaPlayer != null) {
             int mediaPos = mediaPlayer.getCurrentPosition();
             int mediaMax = mediaPlayer.getDuration();
@@ -389,6 +390,43 @@ public class ActivePlaylistController {
             seekBarHandler.removeCallbacks(moveSeekBarThread);
             seekBarHandler.postDelayed(moveSeekBarThread, 100); //call the thread after 100 milliseconds*/
         }
+    }
+
+    public void initializeBottomSeekbar(MainActivity mainActivity) {
+        SeekBar bottomSheetSeekBar = mainActivity.findViewById(R.id.bottom_sheet_seekbar);
+        bottomSheetSeekBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    int progress;
+                    String currentPosition;
+                    MainActivity mainActivity = new MainActivity();
+                    TextView seekBarPosition = mainActivity.getInstance().findViewById(R.id.seekbar_position);
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                        AudioController audioController = new AudioController();
+                        currentPosition = audioController.milliSecondsToTimer(progressValue);
+                        seekBarPosition.setText(currentPosition);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        AudioSingleton.getInstance().setSeekBarTracked(true);
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        progress = seekBar.getProgress();
+
+                        AudioController audioController = new AudioController();
+                        mediaPlayer.seekTo(progress);
+
+                        currentPosition = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
+                        seekBarPosition.setText(currentPosition);
+
+                        AudioSingleton.getInstance().setSeekBarTracked(false);
+                    }
+                }
+        );
     }
 
     private Runnable moveSeekBarThread = new Runnable() {
@@ -408,7 +446,7 @@ public class ActivePlaylistController {
                         bottomSheetSeekBar.setMax(duration);
                         bottomSheetSeekBar.setProgress(position);
                     }
-                    
+
                     Handler seekBarHandler = new Handler();
                     seekBarHandler.postDelayed(this, 100); //Looping the thread after 0.1 seconds }
                 }

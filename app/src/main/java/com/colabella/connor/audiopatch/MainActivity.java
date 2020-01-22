@@ -62,8 +62,11 @@ public class MainActivity extends AppCompatActivity {
         // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
         //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 
+        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+
         initializeRecyclerView();
         initializeBottomSheet();
+        activePlaylistController.initializeBottomSeekbar(this);
 
         ImageView header = findViewById(R.id.drawer_header);
         header.setImageResource(R.drawable.audiopatch_header_transparent);
@@ -82,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
             Audio selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
 
-            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
             activePlaylistController.alterBottomSheet(selectedItem);
             activePlaylistController.togglePlayButtonState();
         }
@@ -102,83 +104,6 @@ public class MainActivity extends AppCompatActivity {
         mainDrawerAdapter.addItem("Settings", false);
         mainDrawerAdapter.addItem("About", false);
         recyclerView.setAdapter(mainDrawerAdapter);
-
-    /*    DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        String colorPrimary = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary) & 0x00ffffff);
-        String textColor = "#" + Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.textColor) & 0x00ffffff);
-        ColorStateList colorStateList = new ColorStateList(
-                new int[][] {
-                        new int[]{-android.R.attr.state_checked}, // unchecked
-                        new int[]{android.R.attr.state_checked},  // checked
-                },
-                new int[] {
-                        Color.parseColor(textColor),
-                        Color.parseColor(colorPrimary),
-                });
-        navigationView.setItemTextColor(colorStateList);
-        navigationView.setItemIconTintList(colorStateList);
-        navigationView.getMenu().getItem(0).setChecked(true);
-
-        navigationView.setNavigationItemSelectedListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.nav_home: {
-                    System.out.println("Test 1");
-                    menuItem.setChecked(true);
-                }
-                break;
-                case R.id.nav_downloads: {
-                    System.out.println("Test 1 2");
-                    menuItem.setChecked(true);
-                }
-                break;
-                case R.id.nav_history: {
-                    System.out.println("Test 1 2 3");
-                    menuItem.setChecked(true);
-                }
-                break;
-                case R.id.nav_settings: {
-                    System.out.println("Test 1 2 3 4");
-                    menuItem.setChecked(true);
-                }
-                break;
-                case R.id.nav_about: {
-                    System.out.println("Test 1 2 3 4 5");
-                    menuItem.setChecked(true);
-                }
-                break;
-                case R.id.nav_advertise: {
-                    if (!menuItem.isChecked()) {
-                        MenuItem item = navigationView.getMenu().findItem(R.id.nav_discover);
-                        item.setChecked(false);
-                        System.out.println("Test 1 2 3 4 5 6");
-                        menuItem.setChecked(true);
-                    } else {
-                        menuItem.setChecked(false);
-                    }
-                }
-                break;
-                case R.id.nav_discover: {
-                    if (!menuItem.isChecked()) {
-                        MenuItem item = navigationView.getMenu().findItem(R.id.nav_advertise);
-                        item.setChecked(false);
-                        System.out.println("Test 1 2 3 4 5 6 7");
-                        menuItem.setChecked(true);
-                    } else {
-                        menuItem.setChecked(false);
-                    }
-                    //drawer.closeDrawer(GravityCompat.START);
-                    //Toast.makeText(instance, "You may now close the drawer.", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            }
-            return true;
-        });
-     */
     }
 
     //TODO move these to their own class, no need for them to take up space here
@@ -209,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         BottomSheetLayout layout = findViewById(R.id.bottom_sheet_layout);
         layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen. (Dynamic, screenW value depends on the size of device)
 
-        SeekBar seekBar = findViewById(R.id.bottom_sheet_seekbar);
+        /*SeekBar seekBar = findViewById(R.id.bottom_sheet_seekbar);
         seekBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress;
@@ -243,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                         AudioSingleton.getInstance().setSeekBarTracked(false);
                     }
                 }
-        );
+        );*/
 
         layout.setOnProgressListener(progress -> {
             RelativeLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
@@ -270,10 +195,9 @@ public class MainActivity extends AppCompatActivity {
             SeekBar bottomSheetCapstoneSeekBar = findViewById(R.id.bottom_sheet_capstone_seekbar);
             bottomSheetCapstoneSeekBar.setAlpha(capstoneAlpha); // sets transparency of capstone seekbar
 
-            //seekBar = findViewById(R.id.bottom_sheet_seekbar); // The draggable seekbar displayed below the capstone
-
             // Sets the location of the seekbar on the screen.
             // Note that placement is handled manually here, and that the seekbar's view is NOT located inside the bottom sheet.
+            SeekBar seekBar = findViewById(R.id.bottom_sheet_seekbar);
             seekBar.setY((int) (currentY + (bottomSheetSize * .70)));
 
             TextView seekbarPosition = findViewById(R.id.seekbar_position);
