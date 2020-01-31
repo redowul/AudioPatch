@@ -60,47 +60,38 @@ public class BottomSheetController {
             ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
             ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
 
+            BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
+            RelativeLayout bottomSheetLayoutCapstone = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
+
+            double capstoneMaxY = bottomSheetLayoutCapstone.getBottom(); // bottom Y value of the capstone
+            double minY = layout.getTop(); // upper Y value of the layout
+
+            // bottom Y value of the layout minus the bottom Y value of the capstone
+            // (accounts for the difference of ~30% caused by the capstone blocking the bottom sheet from resting flush on the bottom of the screen)
+            double maxY = layout.getBottom() - capstoneMaxY;
+            double currentY = layout.getY(); // current Y value of the top of the sheet
+
+            // used for calculating our percentage value below; MinY, maxY, and currentY are values relative to the entire screen, but we only want to know the Y value relative to the bottom sheet
+            // therefore we subtract the minimum Y value from the maximum Y value to get the difference, which is the total size of the bottom sheet
+            double bottomSheetSize = maxY - minY;
+            double currentAdjustedY = currentY - minY; // Y position relative to the top and bottom Y values of the bottom sheet, not the entire screen
+            double percentage = (currentAdjustedY / bottomSheetSize) * 100; // used for calculating the percentage needed for rotation and transparency
+            int alpha = (int) ((percentage / 100) * 255); // calculates level of transparency to be applied
+
             if (selectedItem.getAlbumArt() != null) {
                 Bitmap blurredAlbumCover = blur(mainActivity.getInstance(), selectedItem.getAlbumArt());
                 bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover); // Set background of the bottom sheet
                 bottomSheetCapstoneAlbumCover.setImageBitmap(selectedItem.getAlbumArt()); // Set background of the bottom sheet capstone image
 
-                BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
-                RelativeLayout bottomSheetLayoutCapstone = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
-                double capstoneMaxY = bottomSheetLayoutCapstone.getBottom(); // bottom Y value of the capstone
-                double minY = layout.getTop(); // upper Y value of the layout
-
-                // bottom Y value of the layout minus the bottom Y value of the capstone
-                double maxY = layout.getBottom() - capstoneMaxY; // (accounts for the difference of ~30% caused by the capstone blocking the bottom sheet from resting flush on the bottom of the screen)
-                double currentY = layout.getY(); // current Y value of the top of the sheet
-
-                // used for calculating our percentage value below; MinY, maxY, and currentY are values relative to the entire screen, but we only want to know the Y value relative to the bottom sheet
-                // therefore we subtract the minimum Y value from the maximum Y value to get the difference, which is the total size of the bottom sheet
-                double bottomSheetSize = maxY - minY;
-                double currentAdjustedY = currentY - minY; // Y position relative to the top and bottom Y values of the bottom sheet, not the entire screen
-                double percentage = (currentAdjustedY / bottomSheetSize) * 100; // used for calculating the percentage needed for rotation and transparency
-                int alpha = (int) ((percentage / 100) * 255); // calculates level of transparency to be applied
-
-                if(percentage == 0) { // Bottom Sheet expanded state
-                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
-                } else if(percentage == 100) {   // Bottom Sheet collapsed state
-                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(255);
-                }
-                else {
-                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
-                }
             } else {
-                Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
+                // getting the resource, it isn't blurred yet
+                Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable);
                 bottomSheetCapstoneAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet capstone image; this one is not blurred
 
                 blurredAlbumCover = blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
                 bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet
-
-                BottomSheetLayout layout = mainActivity.getInstance().findViewById(R.id.bottom_sheet_layout);
-                if (layout.isExpended()) {
-                    bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(0);
-                }
             }
+            bottomSheetCapstoneAlbumCover.getDrawable().setAlpha(alpha); // set the alpha of the bitmap overlain on top of the image view
 
             TextView bottomSheetCapstoneTitle = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_title);
             TextView bottomSheetCapstoneArtist = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_artist);
@@ -145,7 +136,8 @@ public class BottomSheetController {
             layout.collapse();
         }
         else {
-            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
+            // getting the resource, it isn't blurred yet
+            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable);
 
             blurredAlbumCover = blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
             ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
@@ -212,44 +204,38 @@ public class BottomSheetController {
         SeekBar bottomSheetSeekBar = mainActivity.findViewById(R.id.bottom_sheet_seekbar);
         bottomSheetSeekBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
-                    double progress;
-                    int currentPositionRaw;
-                    String currentPosition, time;
-                    boolean isSeekBarStarted;
+                    int progress, rawDuration; // progress is assigned the value of progressValue so it can be accessed by onStopTrackingTouch
+                    double currentPositionRaw; // calculated by multiplying the raw duration (in milliseconds) of the audio file by the progress percentage / 100. E.G. 1000 * (50 / 100) = 500
+                    String time; // The timestamp to be applied to the seekBarPosition textView
+
+                    // The system has two states: before the mediaPlayer has started, and after. In the former, the range is o to 100, but in the
+                    // latter it ranges from 0 to the total milliseconds of the audio file. Since 1 second of audio = 1,000 milliseconds, the range
+                    // employed in the former state is easily exceeded. This boolean thus lets us check which state we're in and adjust the scale as necessary.
+                    boolean isSeekBarStarted; // once the audio file is initialized, this boolean calculates ranges larger than 100. This is necessary for smoother progressBar movement.
                     MainActivity mainActivity = new MainActivity();
                     TextView seekBarPosition = mainActivity.getInstance().findViewById(R.id.seekbar_position);
                     ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                     AudioController audioController = new AudioController();
                     ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-                    String finalTime;
+                    SeekBar bottomSheetCapstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                        AudioController audioController = new AudioController();
-                        currentPosition = audioController.milliSecondsToTimer(progressValue);
-                        progress = seekBar.getProgress();
-
-                        currentPosition = Integer.toString(progressValue);
-                        int rawDuration = activePlaylistAdapter.getSelectedAudio().getRawDuration();
-
                         isSeekBarStarted = AudioSingleton.getInstance().isSeekBarStarted();
                         if(!isSeekBarStarted) {
-                            currentPositionRaw = (int) (rawDuration * (progress / 100));
-                            time = audioController.milliSecondsToTimer(currentPositionRaw); // calculates time before starting the song
-                            seekBarPosition.setText(time);
-                        }
-                        else {
-                            System.out.println(rawDuration / 1000 + " ; " + (int) progress / 1000);
+                            rawDuration = activePlaylistAdapter.getSelectedAudio().getRawDuration(); // length of the audio file in milliseconds
 
-                            time = audioController.milliSecondsToTimer((long) progressValue);
-                            finalTime = audioController.milliSecondsToTimer(activePlaylistAdapter.getSelectedAudio().getRawDuration());
-
-                            //int r = rawDuration / 1000;
-                            //int p = (int) progress / 1000;
-                            if(rawDuration >= progressValue) {
-                                seekBarPosition.setText(time);
-                            }
+                            // calculated milliseconds elapsed by a percentage (progressValue ranges from 0 to 100 before the mediaPlayer initializes the audio file)
+                            currentPositionRaw = (rawDuration * ((double) progressValue / 100));
+                            time = audioController.milliSecondsToTimer((int) currentPositionRaw); // calculates time before starting the song
+                        } else {
+                            // calculates time before starting the song using the length of the audio file in milliseconds as the range
+                            // e.g. a 10,000 millisecond song with a progressValue of 5,000 is halfway to completion
+                            time = audioController.milliSecondsToTimer(progressValue);
+                            progress = progressValue;
                         }
+                        seekBarPosition.setText(time); // updates timestamp
+                        bottomSheetCapstoneSeekBar.setProgress(progressValue); // sets progress of the capstone seekbar
                     }
 
                     @Override
@@ -260,12 +246,10 @@ public class BottomSheetController {
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
                         MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
-                        isSeekBarStarted = AudioSingleton.getInstance().isSeekBarStarted();
                         if(!isSeekBarStarted) {
-                            mediaPlayer.seekTo(currentPositionRaw);
-                        }
-                        else {
-                            mediaPlayer.seekTo((int) progress);
+                            mediaPlayer.seekTo((int) currentPositionRaw);
+                        } else {
+                            mediaPlayer.seekTo(progress);
                         }
                         AudioSingleton.getInstance().setSeekBarTracked(false);
                     }
@@ -275,26 +259,27 @@ public class BottomSheetController {
 
     private Runnable moveSeekBarThread = new Runnable() {
         ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-        MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
+        MediaPlayer mediaPlayer;
+        MainActivity mainActivity = new MainActivity();
+        SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+        SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
 
         public void run() {
+            mediaPlayer = activePlaylistController.getMediaPlayer();
             if(mediaPlayer != null) {
                 if (mediaPlayer.isPlaying()) {
                     if(!AudioSingleton.getInstance().isSeekBarStarted()) {
                         AudioSingleton.getInstance().setSeekBarStarted(true);
                     }
-                    MainActivity mainActivity = new MainActivity();
+
                     if(!AudioSingleton.getInstance().isSeekBarTracked()) {
-                        double position = mediaPlayer.getCurrentPosition();
+                        int position = mediaPlayer.getCurrentPosition();
                         int duration = mediaPlayer.getDuration();
 
-                        SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
                         capstoneSeekBar.setMax(duration);
-                        capstoneSeekBar.setProgress((int) position);
-
-                        SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                        capstoneSeekBar.setProgress(position);
                         bottomSheetSeekBar.setMax(duration);
-                        bottomSheetSeekBar.setProgress((int) position);
+                        bottomSheetSeekBar.setProgress(position);
                     }
                     Handler seekBarHandler = new Handler();
                     seekBarHandler.postDelayed(this, 100); // Looping the thread after 0.1 seconds
@@ -302,5 +287,4 @@ public class BottomSheetController {
             }
         }
     };
-
 }

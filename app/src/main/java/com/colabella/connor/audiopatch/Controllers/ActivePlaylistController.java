@@ -17,8 +17,6 @@ import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 
-import java.io.IOException;
-
 public class ActivePlaylistController {
 
     /**
