@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioController;
+import com.colabella.connor.audiopatch.Controllers.AudioController;
 import com.colabella.connor.audiopatch.Fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;

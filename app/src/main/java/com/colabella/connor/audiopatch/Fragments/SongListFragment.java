@@ -10,10 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.colabella.connor.audiopatch.Audio.AudioController;
+
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.R;
-import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
 
 public class SongListFragment extends Fragment {
 

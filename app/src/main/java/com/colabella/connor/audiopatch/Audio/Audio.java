@@ -2,6 +2,9 @@ package com.colabella.connor.audiopatch.Audio;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
+
+import com.colabella.connor.audiopatch.Controllers.AudioController;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,9 +17,22 @@ public class Audio {
     private String album;
     private String artist;
     private String duration;
+    private int rawDuration;
     private String submitter;
     private boolean selected;   // If the item is currently selected by the RecyclerView
     private Bitmap albumArt;
+
+    public Audio(String data, String title, Bitmap albumArt, String artist, String album, String duration, String submitter, boolean selected, int rawDuration) {
+        this.data = data;
+        this.title = title;
+        this.albumArt = albumArt;
+        this.artist = artist;
+        this.album = album;
+        this.duration = duration;
+        this.submitter = submitter;
+        this.selected = selected;
+        this.rawDuration = rawDuration;
+    }
 
     public Audio(String data, String title, Bitmap albumArt, String artist, String album, String duration, String submitter, boolean selected) {
         this.data = data;
@@ -237,6 +253,10 @@ public class Audio {
     // Creates a new instance of the given object. Used when adding instances of a song to the active playlist. This ensures two copies in the active playlist don't share the same object reference
     // Without this, selecting one item would set all copies within the active playlist to selected as well, since they all shared the same object reference. No longer!
     public static Audio copy(Audio o) { // o means 'original'
-        return new Audio(o.getData(), o.getTitle(), o.getAlbumArt(), o.getArtist(), o.getAlbum(), o.getDuration(), o.getSubmitter(), o.isSelected());
+        return new Audio(o.getData(), o.getTitle(), o.getAlbumArt(), o.getArtist(), o.getAlbum(), o.getDuration(), o.getSubmitter(), o.isSelected(), o.getRawDuration());
+    }
+
+    public int getRawDuration() {
+        return rawDuration;
     }
 }

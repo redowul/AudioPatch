@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
-import com.colabella.connor.audiopatch.Controller;
+import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
+import com.colabella.connor.audiopatch.Controllers.Controller;
+import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.Equalizer;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
@@ -35,18 +37,20 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         return instance;
     }*/
 
-    Audio getSelectedItem(int index) {
+    private Audio getSelectedItem(int index) {
         return dataSet.get(index);
     }
 
     void addItem(Audio item) {
         dataSet.add(item);
         if(dataSet.size() == 1) {
-            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-            activePlaylistController.alterBottomSheet(item);
+            BottomSheetController bottomSheetController = new BottomSheetController();
+            bottomSheetController.alterBottomSheet(item);
             setSelectedAudio(0);
+
+            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
             activePlaylistController.initializeMediaPlayer(getSelectedAudio());
-            activePlaylistController.initializeSeekBar();
+           // bottomSheetController.initializeSeekBar();
         }
     }
 
@@ -54,7 +58,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         return getSelectedItem(getCurrentlySelectedItemIndex());
     }
 
-    void setSelectedAudio(int selectedAudioPos) {
+    public void setSelectedAudio(int selectedAudioPos) {
         for (int i = 0; i < getItemCount(); i++) {
             dataSet.get(i).setSelected(false);
             if (i == selectedAudioPos) {
@@ -65,7 +69,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
     }
 
-    int getCurrentlySelectedItemIndex() {
+    public int getCurrentlySelectedItemIndex() {
         if (dataSet != null) {
             if (dataSet.size() > 0) {
                 for (int i = 0; i < dataSet.size(); i++) {
@@ -91,7 +95,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         return false;
     }
 
-    Audio getAudioAtIndex(int index) {
+    public Audio getAudioAtIndex(int index) {
         return dataSet.get(index);
     }
 
@@ -185,9 +189,9 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
     @Override
     public int getItemCount() {
-        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+        BottomSheetController bottomSheetController = new BottomSheetController();
         if(dataSet.size() == 0) {
-            activePlaylistController.resetBottomSheet();
+            bottomSheetController.resetBottomSheet();
         }
         return dataSet.size();
     }
@@ -213,7 +217,9 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             if (dataSet.get(position).isSelected()) {
                 ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                 activePlaylistController.releaseSelectedAudio();
-                activePlaylistController.resetBottomSheet();
+
+                BottomSheetController bottomSheetController = new BottomSheetController();
+                bottomSheetController.resetBottomSheet();
             }
             dataSet.remove(position);
             notifyItemRemoved(position);
@@ -257,8 +263,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
                 if (getAdapterPosition() >= 0) {
                     setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
                     activePlaylistController.initializeMediaPlayer(getAudioAtIndex(getCurrentlySelectedItemIndex()));
-                    MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
-                    mediaPlayer.start();
+                    activePlaylistController.startMediaPlayer();
                     activePlaylistController.togglePlayButtonState();
                 }
             }

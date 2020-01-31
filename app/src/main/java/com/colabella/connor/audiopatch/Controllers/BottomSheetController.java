@@ -1,18 +1,15 @@
-package com.colabella.connor.audiopatch.RecyclerView;
+package com.colabella.connor.audiopatch.Controllers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Handler;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,195 +18,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
-public class ActivePlaylistController {
-
-    /**
-     * Methods related to the Media Player
-     */
-
-    private static MediaPlayer mediaPlayer;
-
-    MediaPlayer getMediaPlayer() { return mediaPlayer; }
-
-    void initializeMediaPlayer(Audio selectedItem) {
-        if (selectedItem != null) {                                  // avoids null pointer exception.
-            MainActivity mainActivity = new MainActivity();
-            Context context = mainActivity.getInstance();
-            alterBottomSheet(selectedItem); // applies song data to bottom sheet
-
-            String audioToPlayString = selectedItem.getData();  // Convert Audio to String
-            Uri uri = Uri.parse(audioToPlayString);             // Convert to Uri by parsing the String
-
-            if (context != null && uri != null) {
-                if (mediaPlayer == null) {
-                    mediaPlayer = new MediaPlayer();
-                }
-                else if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                }
-                mediaPlayer = MediaPlayer.create(context, uri);
-                mediaPlayer.setOnCompletionListener(mp -> {
-                    ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-                    int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
-                    Audio currentlySelectedItem;
-                    if (currentlySelectedItemIndex == activePlaylistAdapter.getItemCount() - 1) { // if song played was last in the list
-                        activePlaylistAdapter.setSelectedAudio(0);
-                        currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
-                        initializeMediaPlayer(currentlySelectedItem);
-
-                        SeekBar seekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
-                        seekbar.setProgress(0);
-                        togglePlayButtonState();
-                        // TODO if playlist looping is enabled
-                       // if() {
-
-                      //  }
-                    } else { // item isn't the last item, so we play it
-                        activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
-                        currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
-                        initializeMediaPlayer(currentlySelectedItem);
-                        mediaPlayer.start();
-                    }
-                });
-                showNotification(selectedItem);
-                TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
-                audioLength.setText(selectedItem.getDuration()); // setting the duration
-            }
-        }
-    }
-
-    // Determines which button on the bottom toolbar was pressed
-    public void determineButtonSelected(String buttonIdString, View view) {
-        switch (buttonIdString) {
-            case "back_button": {
-                playPreviousItem(); // Moves current selection to the previous available item in the RecyclerView. Selects the last item in the list if pressed at index 0.
-                break;
-            }
-            case "play_button": {
-                if (mediaPlayer == null) { // mediaPlayer is null
-                    if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
-                        mediaPlayer = new MediaPlayer();
-                        boolean isItemSelected = AudioSingleton.getInstance().getActivePlaylistAdapter().isItemSelected();
-                        if(isItemSelected) {
-                            //int selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getCurrentlySelectedItemIndex();
-                            //initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
-                            mediaPlayer.start();
-                            //playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(selectedItem));
-                        }
-                        else {
-                           // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0);
-                           // initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
-                            //mediaPlayer.start();
-                            //playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
-                        }
-                       // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(selectedItem); // Set item at clicked position's isClicked to true
-                        view.setBackgroundResource(R.drawable.ic_pause_24dp);
-                    }
-                } else { // mediaPlayer is not null
-                    if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
-                        if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.pause();                                // Pause audio in mediaPlayer
-                            view.setBackgroundResource(R.drawable.ic_play_24dp);
-                        } else {
-                            mediaPlayer.start();                                // Play audio in mediaPlayer
-                            view.setBackgroundResource(R.drawable.ic_pause_24dp);
-                        }
-                    } else {
-                        mediaPlayer = null;
-                    } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
-                }
-                AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
-                //initializeSeekBar();
-                break;
-            }
-            case "next_button": {
-                playNextItem(); // Moves current selection to the next available item in the RecyclerView. Selects index 0 when called after reaching the end of the list.
-                break;
-            }
-        }
-    }
-
-    // Selects the previous item in the list, if one is available, and plays the audio.
-    // When at index 0 of audioList it will loop around and play the last item in the audioList.
-    private void playPreviousItem() {
-        //Controller controller = new Controller();
-        //if (controller.getUser().getRecyclerViewPermission()) {  // Checks the global user state to see if the user has permission to alter the RecyclerView
-        //TODO set permission up properly
-        ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
-
-        if (currentlySelectedItemIndex >= 0) {
-            AudioController audioController = new AudioController();
-            String time = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
-            int minutes = Integer.valueOf(time.substring(0, time.indexOf(':')));
-            int seconds = Integer.valueOf(time.substring(time.indexOf(':') + 1)); // get all characters after ':'
-            if (seconds < 2 && minutes == 0) {
-                // go to previous song
-                if (currentlySelectedItemIndex > 0) {
-                    activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex - 1);
-                    initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex - 1));
-                    togglePlayButtonState();
-                }
-            } else {
-                activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex);
-                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex));
-                togglePlayButtonState();
-            }
-            mediaPlayer.start();
-        }
-        //}
-    }
-
-    // Selects the next available item in the RecyclerView if one is already selected to move from.
-    // If the selected item is the last in the list, it selects the item at the top of the list instead (index 0).
-    private void playNextItem() {
-        //Controller controller = new Controller();
-        //if (controller.getUser().getRecyclerViewPermission()) {  // Checks the global user state to see if the user has permission to alter the RecyclerView
-        //TODO set permission up properly
-        ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
-
-        if (currentlySelectedItemIndex >= 0) {
-            if (currentlySelectedItemIndex == activePlaylistAdapter.getItemCount() - 1) { // the selected item is the last item in the list
-                activePlaylistAdapter.setSelectedAudio(0); // set the next audio to the first audio in the list
-                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(0));
-            } else {
-                activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex + 1);
-                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex + 1));
-            }
-            mediaPlayer.start();
-            togglePlayButtonState();
-        }
-        //}
-    }
-
-    public void togglePlayButtonState() {
-        MainActivity mainActivity = new MainActivity();
-        Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
-        playButton.setBackgroundResource(R.drawable.ic_play_24dp);
-        if(mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                playButton.setBackgroundResource(R.drawable.ic_pause_24dp);
-            }
-        }
-    }
-
-    void releaseSelectedAudio() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            togglePlayButtonState();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-    }
+public class BottomSheetController {
 
     /**
      * Methods related to the Bottom Sheet
@@ -332,8 +147,7 @@ public class ActivePlaylistController {
         else {
             Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
 
-            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-            blurredAlbumCover = activePlaylistController.blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
+            blurredAlbumCover = blur(mainActivity.getInstance(), blurredAlbumCover); // blur the image
             ImageView bottomSheetAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_album_cover);
             bottomSheetAlbumCover.setImageBitmap(blurredAlbumCover);   // Set background of the bottom sheet
         }
@@ -376,7 +190,9 @@ public class ActivePlaylistController {
      * Methods related to the seekBars in the bottom sheet
      */
 
-    public void initializeSeekBar() {
+    void initializeSeekBar() {
+        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+        MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
         if(mediaPlayer != null) {
             int mediaPos = mediaPlayer.getCurrentPosition();
             int mediaMax = mediaPlayer.getDuration();
@@ -388,7 +204,7 @@ public class ActivePlaylistController {
 
             Handler seekBarHandler = new Handler();
             seekBarHandler.removeCallbacks(moveSeekBarThread);
-            seekBarHandler.postDelayed(moveSeekBarThread, 100); //call the thread after 100 milliseconds*/
+            seekBarHandler.postDelayed(moveSeekBarThread, 100); // call the thread after 100 milliseconds
         }
     }
 
@@ -396,16 +212,44 @@ public class ActivePlaylistController {
         SeekBar bottomSheetSeekBar = mainActivity.findViewById(R.id.bottom_sheet_seekbar);
         bottomSheetSeekBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
-                    int progress;
-                    String currentPosition;
+                    double progress;
+                    int currentPositionRaw;
+                    String currentPosition, time;
+                    boolean isSeekBarStarted;
                     MainActivity mainActivity = new MainActivity();
                     TextView seekBarPosition = mainActivity.getInstance().findViewById(R.id.seekbar_position);
+                    ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                    AudioController audioController = new AudioController();
+                    ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
+                    String finalTime;
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                         AudioController audioController = new AudioController();
                         currentPosition = audioController.milliSecondsToTimer(progressValue);
-                        seekBarPosition.setText(currentPosition);
+                        progress = seekBar.getProgress();
+
+                        currentPosition = Integer.toString(progressValue);
+                        int rawDuration = activePlaylistAdapter.getSelectedAudio().getRawDuration();
+
+                        isSeekBarStarted = AudioSingleton.getInstance().isSeekBarStarted();
+                        if(!isSeekBarStarted) {
+                            currentPositionRaw = (int) (rawDuration * (progress / 100));
+                            time = audioController.milliSecondsToTimer(currentPositionRaw); // calculates time before starting the song
+                            seekBarPosition.setText(time);
+                        }
+                        else {
+                            System.out.println(rawDuration / 1000 + " ; " + (int) progress / 1000);
+
+                            time = audioController.milliSecondsToTimer((long) progressValue);
+                            finalTime = audioController.milliSecondsToTimer(activePlaylistAdapter.getSelectedAudio().getRawDuration());
+
+                            //int r = rawDuration / 1000;
+                            //int p = (int) progress / 1000;
+                            if(rawDuration >= progressValue) {
+                                seekBarPosition.setText(time);
+                            }
+                        }
                     }
 
                     @Override
@@ -415,14 +259,14 @@ public class ActivePlaylistController {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        progress = seekBar.getProgress();
-
-                        AudioController audioController = new AudioController();
-                        mediaPlayer.seekTo(progress);
-
-                        currentPosition = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
-                        seekBarPosition.setText(currentPosition);
-
+                        MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
+                        isSeekBarStarted = AudioSingleton.getInstance().isSeekBarStarted();
+                        if(!isSeekBarStarted) {
+                            mediaPlayer.seekTo(currentPositionRaw);
+                        }
+                        else {
+                            mediaPlayer.seekTo((int) progress);
+                        }
                         AudioSingleton.getInstance().setSeekBarTracked(false);
                     }
                 }
@@ -430,70 +274,33 @@ public class ActivePlaylistController {
     }
 
     private Runnable moveSeekBarThread = new Runnable() {
+        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+        MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
+
         public void run() {
             if(mediaPlayer != null) {
                 if (mediaPlayer.isPlaying()) {
+                    if(!AudioSingleton.getInstance().isSeekBarStarted()) {
+                        AudioSingleton.getInstance().setSeekBarStarted(true);
+                    }
                     MainActivity mainActivity = new MainActivity();
                     if(!AudioSingleton.getInstance().isSeekBarTracked()) {
-                        int position = mediaPlayer.getCurrentPosition();
+                        double position = mediaPlayer.getCurrentPosition();
                         int duration = mediaPlayer.getDuration();
 
                         SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
                         capstoneSeekBar.setMax(duration);
-                        capstoneSeekBar.setProgress(position);
+                        capstoneSeekBar.setProgress((int) position);
 
                         SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
                         bottomSheetSeekBar.setMax(duration);
-                        bottomSheetSeekBar.setProgress(position);
+                        bottomSheetSeekBar.setProgress((int) position);
                     }
-
                     Handler seekBarHandler = new Handler();
-                    seekBarHandler.postDelayed(this, 100); //Looping the thread after 0.1 seconds }
+                    seekBarHandler.postDelayed(this, 100); // Looping the thread after 0.1 seconds
                 }
             }
         }
     };
 
-    /**
-     * Methods related to the active playlist but do not pertain to previous categories
-     */
-
-    private void showNotification(Audio audio) {
-        MainActivity mainActivity = new MainActivity();
-        Context context = mainActivity.getInstance();
-
-        String title = audio.getTitle();
-        String album = audio.getAlbum();
-        String artist = audio.getArtist();
-        Bitmap albumArt = audio.getAlbumArt();
-
-        /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("YOUR_CHANNEL_ID",
-                    "YOUR_CHANNEL_NAME",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-
-
-        }*/
-
-        if (albumArt != null) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "id")
-                    .setSmallIcon(R.drawable.audiopatch_logo_transparent)
-                    .setLargeIcon(albumArt)
-                    .setContentTitle(title)
-                    .setContentText(artist + " - " + album)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify(0, builder.build());
-        } else {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "id")
-                    .setSmallIcon(R.drawable.audiopatch_logo_transparent)
-                    .setContentTitle(title)
-                    .setContentText(artist + " - " + album)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify(0, builder.build());
-        }
-    }
 }

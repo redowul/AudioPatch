@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
+import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.Fragments.SongSelectionFragment;
 import com.colabella.connor.audiopatch.R;
@@ -148,8 +149,7 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        int itemCount = albumDataSet.size() + songDataSet.size();
-        return itemCount;
+        return albumDataSet.size() + songDataSet.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

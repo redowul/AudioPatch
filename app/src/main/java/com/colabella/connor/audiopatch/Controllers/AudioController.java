@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.Audio;
+package com.colabella.connor.audiopatch.Controllers;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +8,9 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+
+import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +39,7 @@ public class AudioController {
         retrieveAudioTask.execute(context); // Handles album cover retrieval on a secondary thread
     }
 
-    public String milliSecondsToTimer(long milliseconds) {
+    String milliSecondsToTimer(long milliseconds) {
         String finalTimerString = "";
         String secondsString;
 
@@ -87,9 +90,10 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                     AudioController audioController = new AudioController();
-                    duration = audioController.milliSecondsToTimer(valueOf(duration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
+                    int rawDuration = Integer.parseInt(duration);
+                    duration = audioController.milliSecondsToTimer(valueOf(rawDuration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
 
-                    Audio item = new Audio(data, title, null, artist, album, duration, "User", false); //TODO Replace 'Submitter' field
+                    Audio item = new Audio(data, title, null, artist, album, duration, "User", false, rawDuration); //TODO Replace 'Submitter' field
                     AudioSingleton.getInstance().getAudioList().add(item);
                     AudioSingleton.getInstance().getSongAdapter().updateDataSet(AudioSingleton.getInstance().getAudioList());
                     sortAudioByAlbum(item);

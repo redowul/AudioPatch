@@ -3,11 +3,8 @@ package com.colabella.connor.audiopatch;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,11 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioController;
+import com.colabella.connor.audiopatch.Controllers.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
+import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
 import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistController;
+import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.RecyclerView.MainDrawerAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
@@ -62,11 +60,12 @@ public class MainActivity extends AppCompatActivity {
         // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
         //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 
+        BottomSheetController bottomSheetController = new BottomSheetController();
         ActivePlaylistController activePlaylistController = new ActivePlaylistController();
 
         initializeRecyclerView();
         initializeBottomSheet();
-        activePlaylistController.initializeBottomSeekbar(this);
+        bottomSheetController.initializeBottomSeekbar(this);
 
         ImageView header = findViewById(R.id.drawer_header);
         header.setImageResource(R.drawable.audiopatch_header_transparent);
@@ -85,10 +84,14 @@ public class MainActivity extends AppCompatActivity {
         if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
             Audio selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
 
-            activePlaylistController.alterBottomSheet(selectedItem);
+            bottomSheetController.alterBottomSheet(selectedItem);
             activePlaylistController.togglePlayButtonState();
         }
     }
+
+    /**
+     * Initialization methods
+     **/
 
     private void initializeNavigationView() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -106,11 +109,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mainDrawerAdapter);
     }
 
-    //TODO move these to their own class, no need for them to take up space here
-
-    /**
-     * Initialization methods
-     **/
     private void initializeRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         ActivePlaylistAdapter recyclerViewAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
@@ -133,42 +131,6 @@ public class MainActivity extends AppCompatActivity {
         int screenW = displayMetrics.widthPixels; // get width of screen in pixels
         BottomSheetLayout layout = findViewById(R.id.bottom_sheet_layout);
         layout.getLayoutParams().height = (int) (screenW * .75); // set height of the bottom sheet to 75% the width of the screen. (Dynamic, screenW value depends on the size of device)
-
-        /*SeekBar seekBar = findViewById(R.id.bottom_sheet_seekbar);
-        seekBar.setOnSeekBarChangeListener(
-                new SeekBar.OnSeekBarChangeListener() {
-                    int progress;
-                    String currentPosition;
-                    TextView seekBarPosition = findViewById(R.id.seekbar_position);
-
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                        AudioController audioController = new AudioController();
-                        currentPosition = audioController.milliSecondsToTimer(progressValue);
-                        seekBarPosition.setText(currentPosition);
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                        AudioSingleton.getInstance().setSeekBarTracked(true);
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                        progress = seekBar.getProgress();
-
-                        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-                        AudioController audioController = new AudioController();
-                        MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
-                        mediaPlayer.seekTo(progress);
-
-                        currentPosition = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
-                        seekBarPosition.setText(currentPosition);
-
-                        AudioSingleton.getInstance().setSeekBarTracked(false);
-                    }
-                }
-        );*/
 
         layout.setOnProgressListener(progress -> {
             RelativeLayout bottomSheetLayoutCapstone = findViewById(R.id.bottom_sheet_layout_capstone); // needed for calculating bottom Y value of the capstone
@@ -234,8 +196,8 @@ public class MainActivity extends AppCompatActivity {
                 ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
                 boolean isItemSelected = activePlaylistAdapter.isItemSelected();
                 if (!isItemSelected) {
-                    ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-                    activePlaylistController.resetBottomSheet();
+                    BottomSheetController bottomSheetController = new BottomSheetController();
+                    bottomSheetController.resetBottomSheet();
                 }
             }
         });

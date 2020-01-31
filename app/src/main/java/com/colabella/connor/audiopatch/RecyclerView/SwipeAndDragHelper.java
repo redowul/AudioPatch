@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-import com.colabella.connor.audiopatch.Controller;
+import com.colabella.connor.audiopatch.Controllers.Controller;
 
 public class SwipeAndDragHelper extends ItemTouchHelper.Callback {
 
