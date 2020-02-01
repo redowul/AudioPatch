@@ -12,6 +12,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
@@ -70,9 +71,9 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                         seekbar.setProgress(0);
                         togglePlayButtonState();
                         // TODO if playlist looping is enabled
-                       // if() {
+                        // if() {
 
-                      //  }
+                        //  }
                     } else { // item isn't the last item, so we play it
                         setSelectedAudio(getCurrentlySelectedItemIndex() + 1);
                         currentlySelectedItem = getSelectedAudio();
@@ -106,12 +107,12 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                             //playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(selectedItem));
                         }
                         else {
-                           // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0);
-                           // initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
+                            // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0);
+                            // initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
                             //mediaPlayer.start();
                             //playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
                         }
-                       // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(selectedItem); // Set item at clicked position's isClicked to true
+                        // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(selectedItem); // Set item at clicked position's isClicked to true
                         view.setBackgroundResource(R.drawable.ic_pause_24dp);
                     }
                 } else { // mediaPlayer is not null
@@ -127,7 +128,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                         mediaPlayer = null;
                     } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
                 }
-                notifyDataSetChanged();
+                AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                 //initializeSeekBar();
                 break;
             }
