@@ -12,12 +12,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 
-public class ActivePlaylistController {
+public class ActivePlaylistController extends ActivePlaylistAdapter {
 
     /**
      * Methods related to the Media Player
@@ -60,12 +59,11 @@ public class ActivePlaylistController {
                 }
                 mediaPlayer = MediaPlayer.create(context, uri);
                 mediaPlayer.setOnCompletionListener(mp -> {
-                    ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-                    int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+                    int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
                     Audio currentlySelectedItem;
-                    if (currentlySelectedItemIndex == activePlaylistAdapter.getItemCount() - 1) { // if song played was last in the list
-                        activePlaylistAdapter.setSelectedAudio(0);
-                        currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+                    if (currentlySelectedItemIndex == getItemCount() - 1) { // if song played was last in the list
+                        setSelectedAudio(0);
+                        currentlySelectedItem = getSelectedAudio();
                         initializeMediaPlayer(currentlySelectedItem);
 
                         SeekBar seekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
@@ -76,8 +74,8 @@ public class ActivePlaylistController {
 
                       //  }
                     } else { // item isn't the last item, so we play it
-                        activePlaylistAdapter.setSelectedAudio(activePlaylistAdapter.getCurrentlySelectedItemIndex() + 1);
-                        currentlySelectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+                        setSelectedAudio(getCurrentlySelectedItemIndex() + 1);
+                        currentlySelectedItem = getSelectedAudio();
                         initializeMediaPlayer(currentlySelectedItem);
                         startMediaPlayer();
                     }
@@ -98,9 +96,9 @@ public class ActivePlaylistController {
             }
             case "play_button": {
                 if (mediaPlayer == null) { // mediaPlayer is null
-                    if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+                    if (getItemCount() > 0) {
                         mediaPlayer = new MediaPlayer();
-                        boolean isItemSelected = AudioSingleton.getInstance().getActivePlaylistAdapter().isItemSelected();
+                        boolean isItemSelected = isItemSelected();
                         if(isItemSelected) {
                             //int selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getCurrentlySelectedItemIndex();
                             //initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
@@ -117,7 +115,7 @@ public class ActivePlaylistController {
                         view.setBackgroundResource(R.drawable.ic_pause_24dp);
                     }
                 } else { // mediaPlayer is not null
-                    if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+                    if (getItemCount() > 0) {
                         if (mediaPlayer.isPlaying()) {
                             mediaPlayer.pause();                                // Pause audio in mediaPlayer
                             view.setBackgroundResource(R.drawable.ic_play_24dp);
@@ -129,7 +127,7 @@ public class ActivePlaylistController {
                         mediaPlayer = null;
                     } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
                 }
-                AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                notifyDataSetChanged();
                 //initializeSeekBar();
                 break;
             }
@@ -146,8 +144,7 @@ public class ActivePlaylistController {
         //Controller controller = new Controller();
         //if (controller.getUser().getRecyclerViewPermission()) {  // Checks the global user state to see if the user has permission to alter the RecyclerView
         //TODO set permission up properly
-        ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+        int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
 
         if (currentlySelectedItemIndex >= 0) {
             AudioController audioController = new AudioController();
@@ -157,13 +154,13 @@ public class ActivePlaylistController {
             if (seconds < 2 && minutes == 0) {
                 // go to previous song
                 if (currentlySelectedItemIndex > 0) {
-                    activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex - 1);
-                    initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex - 1));
+                    setSelectedAudio(currentlySelectedItemIndex - 1);
+                    initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex - 1));
                     togglePlayButtonState();
                 }
             } else {
-                activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex);
-                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex));
+                setSelectedAudio(currentlySelectedItemIndex);
+                initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex));
                 togglePlayButtonState();
             }
             startMediaPlayer();
@@ -177,16 +174,15 @@ public class ActivePlaylistController {
         //Controller controller = new Controller();
         //if (controller.getUser().getRecyclerViewPermission()) {  // Checks the global user state to see if the user has permission to alter the RecyclerView
         //TODO set permission up properly
-        ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
-        int currentlySelectedItemIndex = activePlaylistAdapter.getCurrentlySelectedItemIndex();
+        int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
 
         if (currentlySelectedItemIndex >= 0) {
-            if (currentlySelectedItemIndex == activePlaylistAdapter.getItemCount() - 1) { // the selected item is the last item in the list
-                activePlaylistAdapter.setSelectedAudio(0); // set the next audio to the first audio in the list
-                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(0));
+            if (currentlySelectedItemIndex == getItemCount() - 1) { // the selected item is the last item in the list
+                setSelectedAudio(0); // set the next audio to the first audio in the list
+                initializeMediaPlayer(getAudioAtIndex(0));
             } else {
-                activePlaylistAdapter.setSelectedAudio(currentlySelectedItemIndex + 1);
-                initializeMediaPlayer(activePlaylistAdapter.getAudioAtIndex(currentlySelectedItemIndex + 1));
+                setSelectedAudio(currentlySelectedItemIndex + 1);
+                initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex + 1));
             }
             startMediaPlayer();
             togglePlayButtonState();

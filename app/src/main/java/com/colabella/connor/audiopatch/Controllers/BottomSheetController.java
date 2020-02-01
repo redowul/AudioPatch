@@ -24,7 +24,7 @@ import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
-public class BottomSheetController {
+public class BottomSheetController extends ActivePlaylistController {
 
     /**
      * Methods related to the Bottom Sheet
@@ -183,8 +183,7 @@ public class BottomSheetController {
      */
 
     void initializeSeekBar() {
-        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-        MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
+        MediaPlayer mediaPlayer = getMediaPlayer();
         if(mediaPlayer != null) {
             int mediaPos = mediaPlayer.getCurrentPosition();
             int mediaMax = mediaPlayer.getDuration();
@@ -214,7 +213,6 @@ public class BottomSheetController {
                     boolean isSeekBarStarted; // once the audio file is initialized, this boolean calculates ranges larger than 100. This is necessary for smoother progressBar movement.
                     MainActivity mainActivity = new MainActivity();
                     TextView seekBarPosition = mainActivity.getInstance().findViewById(R.id.seekbar_position);
-                    ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                     AudioController audioController = new AudioController();
                     ActivePlaylistAdapter activePlaylistAdapter = new ActivePlaylistAdapter();
                     SeekBar bottomSheetCapstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
@@ -245,7 +243,7 @@ public class BottomSheetController {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
+                        MediaPlayer mediaPlayer = getMediaPlayer();
                         if(!isSeekBarStarted) {
                             mediaPlayer.seekTo((int) currentPositionRaw);
                         } else {
@@ -258,14 +256,13 @@ public class BottomSheetController {
     }
 
     private Runnable moveSeekBarThread = new Runnable() {
-        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
         MediaPlayer mediaPlayer;
         MainActivity mainActivity = new MainActivity();
         SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
         SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
 
         public void run() {
-            mediaPlayer = activePlaylistController.getMediaPlayer();
+            mediaPlayer = getMediaPlayer();
             if(mediaPlayer != null) {
                 if (mediaPlayer.isPlaying()) {
                     if(!AudioSingleton.getInstance().isSeekBarStarted()) {
