@@ -147,6 +147,14 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
         //TODO set permission up properly
         int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
 
+        boolean isCurrentlyPlaying = false;
+        MediaPlayer mediaPlayer = getMediaPlayer();
+        if(mediaPlayer != null) {
+            if(mediaPlayer.isPlaying()) {
+                isCurrentlyPlaying = true;
+            }
+        }
+
         if (currentlySelectedItemIndex >= 0) {
             AudioController audioController = new AudioController();
             String time = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
@@ -157,14 +165,26 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                 if (currentlySelectedItemIndex > 0) {
                     setSelectedAudio(currentlySelectedItemIndex - 1);
                     initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex - 1));
-                    togglePlayButtonState();
                 }
             } else {
                 setSelectedAudio(currentlySelectedItemIndex);
                 initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex));
-                togglePlayButtonState();
             }
-            startMediaPlayer();
+
+            if(isCurrentlyPlaying) { // begin playing audio
+                startMediaPlayer();
+            }
+            else { // reset seekbars and timestamp
+                MainActivity mainActivity = new MainActivity();
+
+                SeekBar bottomSheetSeekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+                TextView timestamp = mainActivity.getInstance().findViewById(R.id.seekbar_position);
+                bottomSheetSeekbar.setProgress(0);
+                capstoneSeekBar.setProgress(0);
+                timestamp.setText(mainActivity.getInstance().getResources().getString(R.string.timestamp));
+            }
+            togglePlayButtonState();
         }
         //}
     }
@@ -177,6 +197,14 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
         //TODO set permission up properly
         int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
 
+        boolean isCurrentlyPlaying = false;
+        MediaPlayer mediaPlayer = getMediaPlayer();
+        if(mediaPlayer != null) {
+            if(mediaPlayer.isPlaying()) {
+                isCurrentlyPlaying = true;
+            }
+        }
+
         if (currentlySelectedItemIndex >= 0) {
             if (currentlySelectedItemIndex == getItemCount() - 1) { // the selected item is the last item in the list
                 setSelectedAudio(0); // set the next audio to the first audio in the list
@@ -185,7 +213,20 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                 setSelectedAudio(currentlySelectedItemIndex + 1);
                 initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex + 1));
             }
-            startMediaPlayer();
+            
+            if(isCurrentlyPlaying) { // begin playing audio
+                startMediaPlayer();
+            }
+            else { // reset seekbars and timestamp
+                MainActivity mainActivity = new MainActivity();
+
+                SeekBar bottomSheetSeekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+                TextView timestamp = mainActivity.getInstance().findViewById(R.id.seekbar_position);
+                bottomSheetSeekbar.setProgress(0);
+                capstoneSeekBar.setProgress(0);
+                timestamp.setText(mainActivity.getInstance().getResources().getString(R.string.timestamp));
+            }
             togglePlayButtonState();
         }
         //}
