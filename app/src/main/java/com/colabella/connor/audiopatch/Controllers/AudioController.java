@@ -1,10 +1,13 @@
 package com.colabella.connor.audiopatch.Controllers;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -21,6 +24,25 @@ import static java.lang.Long.valueOf;
 public class AudioController {
 
     public AudioController() { }
+
+    // checks whether headphones have been plugged into or unplugged from the device
+    public static class HeadphonesInUseReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int state = intent.getIntExtra("state", -1);
+            if (state == 0) { // headphones are unplugged. Note that state "1" is when headphones are plugged in if that functionality needs to be implemented in the future
+                ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+                MediaPlayer mediaPlayer = activePlaylistController.getMediaPlayer();
+                if (mediaPlayer != null) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause(); // pauses playing audio
+                        activePlaylistController.togglePlayButtonState();
+                        AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                    }
+                }
+            }
+        }
+    }
 
     public List<List<Audio>> getAlbumsByArtist(String selectedArtist) {
         List<List<Audio>> albumsBySelectedArtist = new ArrayList<>();

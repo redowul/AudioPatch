@@ -1,6 +1,7 @@
 package com.colabella.connor.audiopatch;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -87,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
             bottomSheetController.alterBottomSheet(selectedItem);
             activePlaylistController.togglePlayButtonState();
         }
+
+        // Handles headphone plugging and unplugging
+        IntentFilter receiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        AudioController.HeadphonesInUseReceiver headphonesInUseReceiver = new AudioController.HeadphonesInUseReceiver ();
+        registerReceiver( headphonesInUseReceiver, receiverFilter );
     }
 
     /**
