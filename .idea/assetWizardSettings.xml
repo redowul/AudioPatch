@@ -138,7 +138,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_shuffle_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_repeat_one_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -148,8 +148,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="shuffle_24dp" />
+                            <entry key="color" value="6dac90" />
+                            <entry key="outputName" value="repeat_one_selected_24dp" />
                             <entry key="sourceFile" value="C:\Users\Connor\Desktop\ReorderIcon.psd" />
                           </map>
                         </option>

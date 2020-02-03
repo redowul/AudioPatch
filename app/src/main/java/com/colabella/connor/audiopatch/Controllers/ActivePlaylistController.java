@@ -2,6 +2,7 @@ package com.colabella.connor.audiopatch.Controllers;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -16,6 +17,8 @@ import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
+
+import java.util.Random;
 
 public class ActivePlaylistController extends ActivePlaylistAdapter {
 
@@ -60,22 +63,77 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                 }
                 mediaPlayer = MediaPlayer.create(context, uri);
                 mediaPlayer.setOnCompletionListener(mp -> {
-                    int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
+                    boolean repeatPlaylist = false;
+                    boolean repeatSong = false;
+                    boolean shufflePlaylist = false;
+                    Button repeatButton = mainActivity.getInstance().findViewById(R.id.repeat_button);
+                    Drawable.ConstantState repeatButtonCurrentState = repeatButton.getBackground().getConstantState();
+
+                    Button shuffleButton = mainActivity.getInstance().findViewById(R.id.shuffle_button);
+                    Drawable.ConstantState shuffleButtonCurrentState = shuffleButton.getBackground().getConstantState();
+
+                    if (repeatButtonCurrentState != null && shuffleButtonCurrentState != null) {
+                        Drawable.ConstantState repeatSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_selected_24dp).getConstantState();
+                        Drawable.ConstantState repeatOneSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_one_selected_24dp).getConstantState();
+                        Drawable.ConstantState shuffleSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.shuffle_selected_24dp).getConstantState();
+
+                        if(repeatButtonCurrentState.equals(repeatSelected)) {
+                            repeatPlaylist = true;
+                        }
+                        else if (repeatButtonCurrentState.equals(repeatOneSelected)) {
+                            repeatSong = true;
+                        }
+                        else if(shuffleButtonCurrentState.equals(shuffleSelected)) {
+                            shufflePlaylist = true;
+                        }
+                    }
+                    else if(shuffleButtonCurrentState != null) {
+                        Drawable.ConstantState shuffleSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.shuffle_selected_24dp).getConstantState();
+                        if(shuffleButtonCurrentState.equals(shuffleSelected)) {
+                            shufflePlaylist = true;
+                        }
+                    }
+
                     Audio currentlySelectedItem;
-                    if (currentlySelectedItemIndex == getItemCount() - 1) { // if song played was last in the list
-                        setSelectedAudio(0);
-                        currentlySelectedItem = getSelectedAudio();
-                        initializeMediaPlayer(currentlySelectedItem);
+                    if(!repeatSong) { // Default state, which is skipped if an alternative trigger is tripped above (repeating)
+                        if(shufflePlaylist) { // play a random song in the playlist
+                            int playlistSize = getItemCount();
 
-                        SeekBar seekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
-                        seekbar.setProgress(0);
-                        togglePlayButtonState();
-                        // TODO if playlist looping is enabled
-                        // if() {
+                            Random random = new Random();
+                            int randomNumber = random.nextInt(playlistSize); // generate random number ranging from 0 to the size of the playlist (exclusive) e.g. input of 3 generates range of 0 to 2
 
-                        //  }
-                    } else { // item isn't the last item, so we play it
-                        setSelectedAudio(getCurrentlySelectedItemIndex() + 1);
+                            setSelectedAudio(randomNumber);
+                            AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                            currentlySelectedItem = getSelectedAudio();
+                            initializeMediaPlayer(currentlySelectedItem);
+                            startMediaPlayer();
+                            togglePlayButtonState();
+                        }
+                        else {
+                            int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
+                            if (currentlySelectedItemIndex == getItemCount() - 1) { // if song played was last in the list
+                                SeekBar seekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                                seekbar.setProgress(0);
+
+                                if (repeatPlaylist) { // repeatPlaylist is enabled, so we can loop the playlist
+                                    setSelectedAudio(0);
+                                    currentlySelectedItem = getSelectedAudio();
+                                    initializeMediaPlayer(currentlySelectedItem);
+                                    startMediaPlayer();
+                                }
+                                else {
+                                    AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                                }
+                                togglePlayButtonState();
+                            } else { // item isn't the last item, so we play it
+                                setSelectedAudio(getCurrentlySelectedItemIndex() + 1);
+                                currentlySelectedItem = getSelectedAudio();
+                                initializeMediaPlayer(currentlySelectedItem);
+                                startMediaPlayer();
+                            }
+                        }
+                    }
+                    else { // repeat the current track
                         currentlySelectedItem = getSelectedAudio();
                         initializeMediaPlayer(currentlySelectedItem);
                         startMediaPlayer();
@@ -93,8 +151,8 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
         switch (buttonIdString) {
             case "back_button": {
                 playPreviousItem(); // Moves current selection to the previous available item in the RecyclerView. Selects the last item in the list if pressed at index 0.
-                break;
             }
+            break;
             case "play_button": {
                 if (mediaPlayer == null) { // mediaPlayer is null
                     if (getItemCount() > 0) {
@@ -129,12 +187,55 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                     } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
                 }
                 AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
-                //initializeSeekBar();
-                break;
             }
+            break;
             case "next_button": {
                 playNextItem(); // Moves current selection to the next available item in the RecyclerView. Selects index 0 when called after reaching the end of the list.
-                break;
+            }
+            break;
+            case "repeat_button": {
+                repeatButtonPressed();
+            }
+            break;
+            case "shuffle_button": {
+                shuffleButtonPressed();
+            }
+            break;
+        }
+    }
+
+    private void repeatButtonPressed() {
+        MainActivity mainActivity = new MainActivity();
+        Button repeatButton = mainActivity.getInstance().findViewById(R.id.repeat_button);
+        Drawable.ConstantState repeatUnselected = mainActivity.getInstance().getResources().getDrawable(R.drawable.ic_repeat_24dp).getConstantState();
+        Drawable.ConstantState repeatSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_selected_24dp).getConstantState();
+        // Drawable.ConstantState repeatOneSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_one_selected_24dp).getConstantState();
+
+        Drawable.ConstantState currentState = repeatButton.getBackground().getConstantState();
+
+        if (currentState != null) {
+            if (currentState.equals(repeatUnselected)) {
+                repeatButton.setBackgroundResource(R.drawable.repeat_selected_24dp); // swap to repeat playlist icon
+            } else if (currentState.equals(repeatSelected)) {
+                repeatButton.setBackgroundResource(R.drawable.repeat_one_selected_24dp); // swap to repeat song icon
+            } else {
+                repeatButton.setBackgroundResource(R.drawable.ic_repeat_24dp); // swap to repeat unselected icon
+            }
+        }
+    }
+
+    private void shuffleButtonPressed() {
+        MainActivity mainActivity = new MainActivity();
+        Button shuffleButton = mainActivity.getInstance().findViewById(R.id.shuffle_button);
+
+        Drawable.ConstantState shuffleUnselected = mainActivity.getInstance().getResources().getDrawable(R.drawable.shuffle_24dp).getConstantState();
+        Drawable.ConstantState currentState = shuffleButton.getBackground().getConstantState();
+
+        if (currentState != null) {
+            if (currentState.equals(shuffleUnselected)) {
+                shuffleButton.setBackgroundResource(R.drawable.shuffle_selected_24dp); // swap to shuffle selected
+            } else {
+                shuffleButton.setBackgroundResource(R.drawable.shuffle_24dp); // swap to shuffle unselected
             }
         }
     }
@@ -157,32 +258,34 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
 
         if (currentlySelectedItemIndex >= 0) {
             AudioController audioController = new AudioController();
-            String time = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
-            int minutes = Integer.valueOf(time.substring(0, time.indexOf(':')));
-            int seconds = Integer.valueOf(time.substring(time.indexOf(':') + 1)); // get all characters after ':'
-            if (seconds < 2 && minutes == 0) {
-                // go to previous song
-                if (currentlySelectedItemIndex > 0) {
-                    setSelectedAudio(currentlySelectedItemIndex - 1);
-                    initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex - 1));
+            if(mediaPlayer != null) {
+                String time = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
+
+                int minutes = Integer.valueOf(time.substring(0, time.indexOf(':')));
+                int seconds = Integer.valueOf(time.substring(time.indexOf(':') + 1)); // get all characters after ':'
+                if (seconds < 2 && minutes == 0) {
+                    // go to previous song
+                    if (currentlySelectedItemIndex > 0) {
+                        setSelectedAudio(currentlySelectedItemIndex - 1);
+                        initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex - 1));
+                    }
+                } else {
+                    setSelectedAudio(currentlySelectedItemIndex);
+                    initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex));
                 }
-            } else {
-                setSelectedAudio(currentlySelectedItemIndex);
-                initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex));
-            }
 
-            if(isCurrentlyPlaying) { // begin playing audio
-                startMediaPlayer();
-            }
-            else { // reset seekbars and timestamp
-                MainActivity mainActivity = new MainActivity();
+                if (isCurrentlyPlaying) { // begin playing audio
+                    startMediaPlayer();
+                } else { // reset seekbars and timestamp
+                    MainActivity mainActivity = new MainActivity();
 
-                SeekBar bottomSheetSeekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
-                SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
-                TextView timestamp = mainActivity.getInstance().findViewById(R.id.seekbar_position);
-                bottomSheetSeekbar.setProgress(0);
-                capstoneSeekBar.setProgress(0);
-                timestamp.setText(mainActivity.getInstance().getResources().getString(R.string.timestamp));
+                    SeekBar bottomSheetSeekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                    SeekBar capstoneSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_capstone_seekbar);
+                    TextView timestamp = mainActivity.getInstance().findViewById(R.id.seekbar_position);
+                    bottomSheetSeekbar.setProgress(0);
+                    capstoneSeekBar.setProgress(0);
+                    timestamp.setText(mainActivity.getInstance().getResources().getString(R.string.timestamp));
+                }
             }
             togglePlayButtonState();
         }
@@ -213,7 +316,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                 setSelectedAudio(currentlySelectedItemIndex + 1);
                 initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex + 1));
             }
-            
+
             if(isCurrentlyPlaying) { // begin playing audio
                 startMediaPlayer();
             }

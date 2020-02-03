@@ -57,11 +57,11 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         String artist = dataSet.get(position).get(0).get(0).getArtist();
         holder.itemArtist.setText(artist);
 
-        Random r = new Random();
+        Random random = new Random();
         Bitmap albumArt;
         if(albumCount > 1) {
             final List<List<Audio>> albumList = audioController.getAlbumsByArtist(artist);
-            int randomNumber = r.nextInt(albumCount);
+            int randomNumber = random.nextInt(albumCount);
             albumArt = albumList.get(randomNumber).get(0).getAlbumArt();
         }
         else {

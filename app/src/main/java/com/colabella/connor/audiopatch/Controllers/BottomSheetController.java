@@ -111,12 +111,16 @@ public class BottomSheetController extends ActivePlaylistController {
             Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
             Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
             Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
+            Button repeatButton = mainActivity.getInstance().findViewById(R.id.repeat_button);
+            Button shuffleButton = mainActivity.getInstance().findViewById(R.id.shuffle_button);
             SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
             TextView seekBarPosition = mainActivity.getInstance().findViewById(R.id.seekbar_position); // textView of the current position (e.g. 1:23) of the current audio file
             TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the total duration of the current audio file
             backButton.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
             nextButton.setVisibility(View.VISIBLE);
+            repeatButton.setVisibility(View.VISIBLE);
+            shuffleButton.setVisibility(View.VISIBLE);
             bottomSheetSeekBar.setVisibility(View.VISIBLE);
             seekBarPosition.setVisibility(View.VISIBLE);
             audioLength.setVisibility(View.VISIBLE);
@@ -160,10 +164,14 @@ public class BottomSheetController extends ActivePlaylistController {
         Button backButton = mainActivity.getInstance().findViewById(R.id.back_button);
         Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
         Button nextButton = mainActivity.getInstance().findViewById(R.id.next_button);
+        Button repeatButton = mainActivity.getInstance().findViewById(R.id.repeat_button);
+        Button shuffleButton = mainActivity.getInstance().findViewById(R.id.shuffle_button);
         SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
         backButton.setVisibility(View.GONE);
         playButton.setVisibility(View.GONE);
         nextButton.setVisibility(View.GONE);
+        repeatButton.setVisibility(View.GONE);
+        shuffleButton.setVisibility(View.GONE);
         bottomSheetSeekBar.setProgress(0);
         bottomSheetSeekBar.setVisibility(View.GONE);
 
