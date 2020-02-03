@@ -170,8 +170,12 @@ public class BottomSheetController extends ActivePlaylistController {
         backButton.setVisibility(View.GONE);
         playButton.setVisibility(View.GONE);
         nextButton.setVisibility(View.GONE);
+
+        repeatButton.setBackgroundResource(R.drawable.ic_repeat_24dp); // swap to repeat unselected icon
+        shuffleButton.setBackgroundResource(R.drawable.shuffle_24dp); // swap to shuffle unselected
         repeatButton.setVisibility(View.GONE);
         shuffleButton.setVisibility(View.GONE);
+        
         bottomSheetSeekBar.setProgress(0);
         bottomSheetSeekBar.setVisibility(View.GONE);
 

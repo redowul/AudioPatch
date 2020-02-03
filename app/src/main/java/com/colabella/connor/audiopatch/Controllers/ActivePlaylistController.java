@@ -87,15 +87,10 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                             shufflePlaylist = true;
                         }
                     }
-                    else if(shuffleButtonCurrentState != null) {
-                        Drawable.ConstantState shuffleSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.shuffle_selected_24dp).getConstantState();
-                        if(shuffleButtonCurrentState.equals(shuffleSelected)) {
-                            shufflePlaylist = true;
-                        }
-                    }
 
                     Audio currentlySelectedItem;
                     if(!repeatSong) { // Default state, which is skipped if an alternative trigger is tripped above (repeating)
+                        //TODO add a boolean to the audio objects so we can mark them off when searching for a random song to play. (So we can play every song out of order without repeats)
                         if(shufflePlaylist) { // play a random song in the playlist
                             int playlistSize = getItemCount();
 
@@ -103,7 +98,6 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                             int randomNumber = random.nextInt(playlistSize); // generate random number ranging from 0 to the size of the playlist (exclusive) e.g. input of 3 generates range of 0 to 2
 
                             setSelectedAudio(randomNumber);
-                            AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                             currentlySelectedItem = getSelectedAudio();
                             initializeMediaPlayer(currentlySelectedItem);
                             startMediaPlayer();
@@ -121,7 +115,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                                     initializeMediaPlayer(currentlySelectedItem);
                                     startMediaPlayer();
                                 }
-                                else {
+                                else { // notify the playlist that the song is finished
                                     AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                                 }
                                 togglePlayButtonState();
