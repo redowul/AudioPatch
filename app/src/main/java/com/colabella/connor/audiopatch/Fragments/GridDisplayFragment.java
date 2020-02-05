@@ -69,7 +69,7 @@ public class GridDisplayFragment extends Fragment {
                     }
                 });
 
-                AlbumAndSongAdapter albumAndSongAdapter = new AlbumAndSongAdapter(albumList, songList); //TODO this is where the problem is. I'm using a different adapter to display the data
+                AlbumAndSongAdapter albumAndSongAdapter = new AlbumAndSongAdapter(albumList, songList);
                 gridView.setAdapter(albumAndSongAdapter);
                 return;
             }

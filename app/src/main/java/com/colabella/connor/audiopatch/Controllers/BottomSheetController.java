@@ -212,7 +212,7 @@ public class BottomSheetController extends ActivePlaylistController {
     }
 
     public void initializeBottomSeekbar(MainActivity mainActivity) {
-        SeekBar bottomSheetSeekBar = mainActivity.findViewById(R.id.bottom_sheet_seekbar);
+        SeekBar bottomSheetSeekBar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
         bottomSheetSeekBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress, rawDuration; // progress is assigned the value of progressValue so it can be accessed by onStopTrackingTouch

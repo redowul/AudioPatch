@@ -1,5 +1,6 @@
 package com.colabella.connor.audiopatch;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -7,6 +8,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -30,7 +32,6 @@ import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Controllers.AudioController;
 import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
-import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnectionsController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.RecyclerView.MainDrawerAdapter;
@@ -72,13 +73,14 @@ public class MainActivity extends AppCompatActivity {
         header.setImageResource(R.drawable.audiopatch_header_transparent);
         initializeNavigationView();
 
-        //TODO place this automatic loader inside an 'if' that triggers only when permissions authorize it
-
-        // Ensures the data from the device storage is only retrieved once, when the list that data is stored in is empty
-        if (AudioSingleton.getInstance().getAudioList() != null) {
-            if (AudioSingleton.getInstance().getAudioList().size() == 0) {
-                AudioController audioController = new AudioController();
-                audioController.getAudioFilesFromDeviceStorage();
+        // Automatically retrieves audio files from storage if the application has already been granted permission to do so
+        PackageManager packageManager = getPackageManager();
+        if(packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+            if (AudioSingleton.getInstance().getAudioList() != null) {
+                if (AudioSingleton.getInstance().getAudioList().size() == 0) {
+                    AudioController audioController = new AudioController();
+                    audioController.getAudioFilesFromDeviceStorage(); // Retrieves audio files from storage
+                }
             }
         }
 
@@ -216,9 +218,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Enables audio selection
-    public void selectAudioFromStorage(View view) {
-        Intent myIntent = new Intent(MainActivity.this, DataRetrievalActivity.class);
-        MainActivity.this.startActivity(myIntent);
+    public void startDataRetrievalActivity(View view) {
+        PackageManager packageManager = getPackageManager();
+        if(packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+            if (AudioSingleton.getInstance().getAudioList() != null) {
+                if (AudioSingleton.getInstance().getAudioList().size() == 0) {
+                     AudioController audioController = new AudioController();
+                     audioController.getAudioFilesFromDeviceStorage(); // Retrieves audio files from storage
+                }
+            }
+            Intent myIntent = new Intent(MainActivity.this, DataRetrievalActivity.class);
+            MainActivity.this.startActivity(myIntent);
+        }
+        else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        }
     }
 
     /*@Override
@@ -269,22 +283,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //TODO need to actually implement all permissions properly
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case 0: {
-                // If request is cancelled, the result arrays are empty.
+            case 0: { // device storage permission
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //Since the permission was granted, we want to go straight back to the process we were starting before requesting the permission.
-                    //TODO Trigger DataRetriever
+                    if (AudioSingleton.getInstance().getAudioList() != null) {
+                        if (AudioSingleton.getInstance().getAudioList().size() == 0) {
+                            AudioController audioController = new AudioController();
+                            audioController.getAudioFilesFromDeviceStorage(); // Retrieves audio files from storage
+                        }
+                    }
+                    Intent myIntent = new Intent(this, DataRetrievalActivity.class);
+                    this.startActivity(myIntent);
                 } else {
                     // permission denied
-                    Toast.makeText(MainActivity.this, "Permission denied to read your external storage", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permission to read your external storage was denied", Toast.LENGTH_SHORT).show();
                     //closeNow();
                 }
             }
             break;
             case 1: {
+
+            }
+            break;
+         /*   case 1: {
                 NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController();
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

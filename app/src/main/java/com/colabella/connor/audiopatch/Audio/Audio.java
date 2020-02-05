@@ -166,7 +166,6 @@ public class Audio {
     }
 
     public static void sortAudioByAlbum() {
-        Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioByArtistsComparator); //TODO can maybe remove this line
         Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioByAlbumsComparator);
     }
 
@@ -225,7 +224,7 @@ public class Audio {
     /**
      * Comparators for artists
      */
-    public static Comparator<List<List<Audio>>> sortArtistsAlphabeticallyComparator = new Comparator<List<List<Audio>>>() { //TODO Artist comparators not working
+    public static Comparator<List<List<Audio>>> sortArtistsAlphabeticallyComparator = new Comparator<List<List<Audio>>>() {
         @Override
         public int compare(List<List<Audio>> a1, List<List<Audio>> a2){
             return a1.get(0).get(0).getArtist().compareTo(a2.get(0).get(0).getArtist());
