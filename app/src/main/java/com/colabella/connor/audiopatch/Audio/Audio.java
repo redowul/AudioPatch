@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 
 import com.colabella.connor.audiopatch.Controllers.AudioController;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -140,13 +141,13 @@ public class Audio {
     };
 
     public static void sortAudioByArtist() {
-        Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioAlphabeticallyComparator);
-        Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioByArtistsComparator);
+        Collections.sort(SingletonController.getInstance().getAudioList(), Audio.sortAudioAlphabeticallyComparator);
+        Collections.sort(SingletonController.getInstance().getAudioList(), Audio.sortAudioByArtistsComparator);
         String currentArtist = null;
         ArrayList<Audio> masterAudioList = new ArrayList<>();
         ArrayList<Audio> currentAudioList = new ArrayList<>();
 
-        for (Audio item : AudioSingleton.getInstance().getAudioList()) {
+        for (Audio item : SingletonController.getInstance().getAudioList()) {
             if (currentArtist == null) {
                 currentArtist = item.getArtist();
                 currentAudioList.add(item);
@@ -162,11 +163,11 @@ public class Audio {
                 currentAudioList.add(item);
             }
         }
-        AudioSingleton.getInstance().setAudioList(masterAudioList);
+        SingletonController.getInstance().setAudioList(masterAudioList);
     }
 
     public static void sortAudioByAlbum() {
-        Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioByAlbumsComparator);
+        Collections.sort(SingletonController.getInstance().getAudioList(), Audio.sortAudioByAlbumsComparator);
     }
 
     private static Comparator<Audio> sortAudioByAlbumsComparator = new Comparator<Audio>() {

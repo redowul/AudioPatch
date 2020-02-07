@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
 import com.colabella.connor.audiopatch.Controllers.Controller;
 import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
@@ -64,7 +64,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             }
             notifyItemChanged(i);
         }
-        AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+        SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
     }
 
     public int getCurrentlySelectedItemIndex() {

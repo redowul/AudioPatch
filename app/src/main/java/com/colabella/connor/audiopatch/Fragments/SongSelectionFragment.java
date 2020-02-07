@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumListViewAdapter;
 
@@ -31,7 +31,7 @@ public class SongSelectionFragment extends Fragment {
             List<Audio> selectedAlbum = new ArrayList<>();
             String selectedAlbumTitle = bundle.getString("albumKey");
 
-            List<List<Audio>> albums = AudioSingleton.getInstance().getAlbumList();
+            List<List<Audio>> albums = SingletonController.getInstance().getAlbumList();
             for (List<Audio> album : albums) {
                 if (album.get(0).getAlbum().equalsIgnoreCase(selectedAlbumTitle)) {
                     selectedAlbum = album;

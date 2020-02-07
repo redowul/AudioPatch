@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAndSongAdapter;
 
@@ -42,11 +42,11 @@ public class GridDisplayFragment extends Fragment {
         AudioController audioController = new AudioController();
         switch(arguments) { // Instructs fragment whether to display artists or albums
             case 0: { // Display Artists
-                gridView.setAdapter(AudioSingleton.getInstance().getArtistAdapter());
+                gridView.setAdapter(SingletonController.getInstance().getArtistAdapter());
             }
             break;
             case 1: { // Display All Albums
-                gridView.setAdapter(AudioSingleton.getInstance().getAlbumAdapter()); // Fetches album list, which contains all available albums
+                gridView.setAdapter(SingletonController.getInstance().getAlbumAdapter()); // Fetches album list, which contains all available albums
             }
             break;
             case 2: { // Display Albums & Songs

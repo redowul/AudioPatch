@@ -13,7 +13,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
@@ -116,7 +115,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                                     startMediaPlayer();
                                 }
                                 else { // notify the playlist that the song is finished
-                                    AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                                    SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                                 }
                                 togglePlayButtonState();
                             } else { // item isn't the last item, so we play it
@@ -180,7 +179,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                         mediaPlayer = null;
                     } // There aren't any songs queued, so we delete the mediaPlayer to enable the creation of a fresh one.
                 }
-                AudioSingleton.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
             }
             break;
             case "next_button": {

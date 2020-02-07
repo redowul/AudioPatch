@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.R;
 
 public class SongListFragment extends Fragment {
@@ -23,7 +23,7 @@ public class SongListFragment extends Fragment {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),1);
         recyclerView.setLayoutManager(gridLayoutManager); // set LayoutManager to RecyclerView
-        recyclerView.setAdapter(AudioSingleton.getInstance().getSongAdapter());
+        recyclerView.setAdapter(SingletonController.getInstance().getSongAdapter());
         //setupRecyclerView(recyclerView);
         return recyclerView;
     }

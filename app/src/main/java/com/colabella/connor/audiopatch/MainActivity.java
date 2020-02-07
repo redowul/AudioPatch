@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
@@ -77,16 +77,16 @@ public class MainActivity extends AppCompatActivity {
         // Automatically retrieves audio files from storage if the application has already been granted permission to do so
         PackageManager packageManager = getPackageManager();
         if(packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
-            if (AudioSingleton.getInstance().getAudioList() != null) {
-                if (AudioSingleton.getInstance().getAudioList().size() == 0) {
+            if (SingletonController.getInstance().getAudioList() != null) {
+                if (SingletonController.getInstance().getAudioList().size() == 0) {
                     AudioController audioController = new AudioController();
                     audioController.getAudioFilesFromDeviceStorage(); // Retrieves audio files from storage
                 }
             }
         }
 
-        if (AudioSingleton.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
-            Audio selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+        if (SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+            Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
 
             bottomSheetController.alterBottomSheet(selectedItem);
             activePlaylistController.togglePlayButtonState();
@@ -106,6 +106,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0 && !drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.openDrawer(GravityCompat.START); // Open the drawer
+        }
+        else if (drawer.isDrawerOpen(GravityCompat.START)) { // close drawer, set add audio button to be visible
+            Button addAudioButton = findViewById(R.id. add_audio_button);
+            addAudioButton.setVisibility(View.VISIBLE);
+
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            drawer.closeDrawer(GravityCompat.START);
+
+            MainDrawerAdapter mainDrawerAdapter = SingletonController.getInstance().getMainDrawerAdapter();
+            mainDrawerAdapter.setSelectedMenuItem(0);
+        }
+        else { // Move the task containing this activity to the back of the activity stack.
+            moveTaskToBack(true);
+        }
+    }
+
     /**
      * Initialization methods
      **/
@@ -122,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView primaryItemsRecyclerView = findViewById(R.id.drawer_recycler_view);
         primaryItemsRecyclerView.setLayoutManager(linearLayoutManager);
 
-        MainDrawerAdapter mainDrawerAdapter = new MainDrawerAdapter();
+        MainDrawerAdapter mainDrawerAdapter = SingletonController.getInstance().getMainDrawerAdapter();
         String home = getResources().getString(R.string.home);
         String settings = getResources().getString(R.string.settings);
         String about = getResources().getString(R.string.about);
@@ -151,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        ActivePlaylistAdapter recyclerViewAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
+        ActivePlaylistAdapter recyclerViewAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
 
         SwipeAndDragHelper swipeAndDragHelper = new SwipeAndDragHelper(recyclerViewAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeAndDragHelper);
@@ -253,8 +274,8 @@ public class MainActivity extends AppCompatActivity {
     public void startDataRetrievalActivity(View view) {
         PackageManager packageManager = getPackageManager();
         if(packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
-            if (AudioSingleton.getInstance().getAudioList() != null) {
-                if (AudioSingleton.getInstance().getAudioList().size() == 0) {
+            if (SingletonController.getInstance().getAudioList() != null) {
+                if (SingletonController.getInstance().getAudioList().size() == 0) {
                      AudioController audioController = new AudioController();
                      audioController.getAudioFilesFromDeviceStorage(); // Retrieves audio files from storage
                 }
@@ -321,8 +342,8 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case 0: { // device storage permission
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (AudioSingleton.getInstance().getAudioList() != null) {
-                        if (AudioSingleton.getInstance().getAudioList().size() == 0) {
+                    if (SingletonController.getInstance().getAudioList() != null) {
+                        if (SingletonController.getInstance().getAudioList().size() == 0) {
                             AudioController audioController = new AudioController();
                             audioController.getAudioFilesFromDeviceStorage(); // Retrieves audio files from storage
                         }

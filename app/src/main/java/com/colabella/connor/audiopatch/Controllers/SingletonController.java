@@ -1,15 +1,18 @@
-package com.colabella.connor.audiopatch.Audio;
+package com.colabella.connor.audiopatch.Controllers;
 
+import com.colabella.connor.audiopatch.Audio.Audio;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
+import com.colabella.connor.audiopatch.RecyclerView.MainDrawerAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioSingleton {
+public class SingletonController {
 
-    private static AudioSingleton instance; // Should ideally be our only static item. All the other variables serve as a reference to this
+    private static SingletonController instance; // Should ideally be our only static item. All the other variables serve as a reference to this
 
     private ArrayList<Audio> audioList;
     private ArrayList<List<Audio>> albumList;
@@ -18,10 +21,11 @@ public class AudioSingleton {
     private AlbumAdapter albumAdapter;
     private ArtistAdapter artistAdapter;
     private ActivePlaylistAdapter activePlaylistAdapter;
+    private MainDrawerAdapter mainDrawerAdapter;
     private boolean isSeekBarTracked; // Handles the draggable seekbar's movement
     private boolean isSeekBarStarted; // Allows for movement of seekpar position before the song has started
 
-    private AudioSingleton() {
+    private SingletonController() {
         this.audioList = new ArrayList<>();
         this.albumList = new ArrayList<>();
         this.artistList = new ArrayList<>();
@@ -29,13 +33,14 @@ public class AudioSingleton {
         this.albumAdapter = new AlbumAdapter();
         this.artistAdapter = new ArtistAdapter();
         this.activePlaylistAdapter = new ActivePlaylistAdapter();
+        this.mainDrawerAdapter = new MainDrawerAdapter();
         this.isSeekBarTracked = false;
         this.isSeekBarTracked = false;
     }
 
-    public static AudioSingleton getInstance() {
+    public static SingletonController getInstance() {
         if (instance == null) {
-            instance = new AudioSingleton();
+            instance = new SingletonController();
         }
         return instance;
     }
@@ -44,7 +49,7 @@ public class AudioSingleton {
         return this.audioList;
     }
 
-    void setAudioList(ArrayList<Audio> audioList) {
+    public void setAudioList(ArrayList<Audio> audioList) {
         this.audioList = audioList;
     }
 
@@ -52,7 +57,7 @@ public class AudioSingleton {
         return this.albumList;
     }
 
-    public void setAlbumList(ArrayList<List<Audio>> albumList) {
+    void setAlbumList(ArrayList<List<Audio>> albumList) {
         this.albumList = albumList;
     }
 
@@ -68,7 +73,7 @@ public class AudioSingleton {
         return artistList;
     }
 
-    public void setArtistList(ArrayList<List<List<Audio>>> artistList) {
+    void setArtistList(ArrayList<List<List<Audio>>> artistList) {
         this.artistList = artistList;
     }
 
@@ -85,7 +90,7 @@ public class AudioSingleton {
         return null;
     }
 
-    public List<List<Audio>> getArtistByArtistName (String artistName) { // returns artist if the artist's name exists in the master artist list
+    public List<List<Audio>> getArtistByArtistName(String artistName) { // returns artist if the artist's name exists in the master artist list
         for (List<List<Audio>> artist : this.artistList) {
             if (artist.get(0).get(0).getArtist().equalsIgnoreCase(artistName)) {
                 return artist;
@@ -98,24 +103,24 @@ public class AudioSingleton {
         return activePlaylistAdapter;
     }
 
-    public void setActivePlaylistAdapter(ActivePlaylistAdapter activePlaylistAdapter) {
-        this.activePlaylistAdapter = activePlaylistAdapter;
-    }
-
-    public boolean isSeekBarTracked() {
+    boolean isSeekBarTracked() {
         return isSeekBarTracked;
     }
 
-    public void setSeekBarTracked(boolean seekBarTracked) {
+    void setSeekBarTracked(boolean seekBarTracked) {
         isSeekBarTracked = seekBarTracked;
     }
 
-    public boolean isSeekBarStarted() {
+    boolean isSeekBarStarted() {
         return isSeekBarStarted;
     }
 
-    public void setSeekBarStarted(boolean seekBarStarted) {
+    void setSeekBarStarted(boolean seekBarStarted) {
         isSeekBarStarted = seekBarStarted;
+    }
+
+    public MainDrawerAdapter getMainDrawerAdapter() {
+        return mainDrawerAdapter;
     }
 }
 

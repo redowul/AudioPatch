@@ -18,7 +18,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
@@ -231,7 +230,7 @@ public class BottomSheetController extends ActivePlaylistController {
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                        isSeekBarStarted = AudioSingleton.getInstance().isSeekBarStarted();
+                        isSeekBarStarted = SingletonController.getInstance().isSeekBarStarted();
                         if(!isSeekBarStarted) {
                             rawDuration = activePlaylistAdapter.getSelectedAudio().getRawDuration(); // length of the audio file in milliseconds
 
@@ -250,7 +249,7 @@ public class BottomSheetController extends ActivePlaylistController {
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
-                        AudioSingleton.getInstance().setSeekBarTracked(true);
+                        SingletonController.getInstance().setSeekBarTracked(true);
                     }
 
                     @Override
@@ -261,7 +260,7 @@ public class BottomSheetController extends ActivePlaylistController {
                         } else {
                             mediaPlayer.seekTo(progress);
                         }
-                        AudioSingleton.getInstance().setSeekBarTracked(false);
+                        SingletonController.getInstance().setSeekBarTracked(false);
                     }
                 }
         );
@@ -277,11 +276,11 @@ public class BottomSheetController extends ActivePlaylistController {
             mediaPlayer = getMediaPlayer();
             if(mediaPlayer != null) {
                 if (mediaPlayer.isPlaying()) {
-                    if(!AudioSingleton.getInstance().isSeekBarStarted()) {
-                        AudioSingleton.getInstance().setSeekBarStarted(true);
+                    if(!SingletonController.getInstance().isSeekBarStarted()) {
+                        SingletonController.getInstance().setSeekBarStarted(true);
                     }
 
-                    if(!AudioSingleton.getInstance().isSeekBarTracked()) {
+                    if(!SingletonController.getInstance().isSeekBarTracked()) {
                         int position = mediaPlayer.getCurrentPosition();
                         int duration = mediaPlayer.getDuration();
 

@@ -8,13 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
-import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
-import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
-import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
-import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +54,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     Audio item = dataSet.get(position);
-                    ActivePlaylistAdapter activePlaylistAdapter = AudioSingleton.getInstance().getActivePlaylistAdapter();
+                    ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
                     activePlaylistAdapter.addItem(Audio.copy(item));
                     activePlaylistAdapter.notifyDataSetChanged();
                     DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();

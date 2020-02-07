@@ -15,6 +15,7 @@ import com.colabella.connor.audiopatch.Fragments.AboutFragment;
 import com.colabella.connor.audiopatch.Fragments.SettingsFragment;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
 import java.util.ArrayList;
 import java.util.List;

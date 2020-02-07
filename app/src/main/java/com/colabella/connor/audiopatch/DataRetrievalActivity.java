@@ -21,7 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Audio.AudioSingleton;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.Fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.Fragments.SongListFragment;
 import java.util.ArrayList;
@@ -58,12 +58,12 @@ public class DataRetrievalActivity extends AppCompatActivity {
         closeButton.setOnClickListener(view -> {
             simpleSearchView.setQuery("", true);
             hideSoftKeyboard(instance);
-            AudioSingleton.getInstance().getSongAdapter().updateDataSet(AudioSingleton.getInstance().getAudioList());
-            AudioSingleton.getInstance().getAlbumAdapter().updateDataSet(AudioSingleton.getInstance().getAlbumList());
-            AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
-            AudioSingleton.getInstance().getSongAdapter().notifyDataSetChanged();
-            AudioSingleton.getInstance().getAlbumAdapter().notifyDataSetChanged();
-            AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
+            SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
+            SingletonController.getInstance().getAlbumAdapter().updateDataSet(SingletonController.getInstance().getAlbumList());
+            SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
+            SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
+            SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
+            SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
         });
 
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -76,7 +76,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
             // Handles album search feature. Filters albums on device by user input.
             @Override
             public boolean onQueryTextChange(String userInput) {
-                List<Audio> audioList = AudioSingleton.getInstance().getAudioList();
+                List<Audio> audioList = SingletonController.getInstance().getAudioList();
                 List<Audio> filteredAudio = new ArrayList<>();
                 List<List<Audio>> filteredAlbums = new ArrayList<>();
                 List<List<List<Audio>>> filteredArtists = new ArrayList<>();
@@ -97,42 +97,42 @@ public class DataRetrievalActivity extends AppCompatActivity {
                         }
 
                         if (albumTitle.contains(userInput) || artist.contains(userInput)) {
-                            List<Audio> searchedAlbum = AudioSingleton.getInstance().getAlbumByAlbumTitle(albumTitle);
+                            List<Audio> searchedAlbum = SingletonController.getInstance().getAlbumByAlbumTitle(albumTitle);
                             if (searchedAlbum != null) {
                                 if (!filteredAlbums.contains(searchedAlbum)) {
                                     filteredAlbums.add(searchedAlbum);
                                 }
                             }
                         } else {
-                            List<Audio> searchedAlbum = AudioSingleton.getInstance().getAlbumByAlbumTitle(albumTitle);
+                            List<Audio> searchedAlbum = SingletonController.getInstance().getAlbumByAlbumTitle(albumTitle);
                             filteredAlbums.remove(searchedAlbum);
                         }
 
                         if (artist.contains(userInput)) {
-                            List<List<Audio>> searchedArtist = AudioSingleton.getInstance().getArtistByArtistName(artist);
+                            List<List<Audio>> searchedArtist = SingletonController.getInstance().getArtistByArtistName(artist);
                             if (searchedArtist != null) {
                                 if (!filteredArtists.contains(searchedArtist)) {
                                     filteredArtists.add(searchedArtist);
                                 }
                             }
                         } else {
-                            List<List<Audio>> searchedArtist = AudioSingleton.getInstance().getArtistByArtistName(artist);
+                            List<List<Audio>> searchedArtist = SingletonController.getInstance().getArtistByArtistName(artist);
                             filteredArtists.remove(searchedArtist);
                         }
                     }
-                    AudioSingleton.getInstance().getSongAdapter().updateDataSet(filteredAudio);
-                    AudioSingleton.getInstance().getSongAdapter().notifyDataSetChanged();
-                    AudioSingleton.getInstance().getAlbumAdapter().updateDataSet(filteredAlbums);
-                    AudioSingleton.getInstance().getAlbumAdapter().notifyDataSetChanged();
-                    AudioSingleton.getInstance().getArtistAdapter().updateDataSet(filteredArtists);
-                    AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
+                    SingletonController.getInstance().getSongAdapter().updateDataSet(filteredAudio);
+                    SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
+                    SingletonController.getInstance().getAlbumAdapter().updateDataSet(filteredAlbums);
+                    SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
+                    SingletonController.getInstance().getArtistAdapter().updateDataSet(filteredArtists);
+                    SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
                 } else {
-                    AudioSingleton.getInstance().getSongAdapter().updateDataSet(AudioSingleton.getInstance().getAudioList());
-                    AudioSingleton.getInstance().getAlbumAdapter().updateDataSet(AudioSingleton.getInstance().getAlbumList());
-                    AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
-                    AudioSingleton.getInstance().getSongAdapter().notifyDataSetChanged();
-                    AudioSingleton.getInstance().getAlbumAdapter().notifyDataSetChanged();
-                    AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
+                    SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
+                    SingletonController.getInstance().getAlbumAdapter().updateDataSet(SingletonController.getInstance().getAlbumList());
+                    SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
+                    SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
+                    SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
+                    SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
                 }
                 return true;
             }
@@ -181,34 +181,34 @@ public class DataRetrievalActivity extends AppCompatActivity {
                     switch (menuItem.getItemId()) {
                         case R.id.sortMenu_alphabetical: {
                             if (viewPager.getCurrentItem() == 0) { // Artists
-                                Collections.sort(AudioSingleton.getInstance().getArtistList(), Audio.sortArtistsAlphabeticallyComparator);
-                                AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
-                                AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
+                                Collections.sort(SingletonController.getInstance().getArtistList(), Audio.sortArtistsAlphabeticallyComparator);
+                                SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
+                                SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
                             } else if (viewPager.getCurrentItem() == 1) { // Albums
-                                Collections.sort(AudioSingleton.getInstance().getAlbumList(), Audio.sortAlbumsAlphabeticallyComparator);
-                                AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
-                                AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
+                                Collections.sort(SingletonController.getInstance().getAlbumList(), Audio.sortAlbumsAlphabeticallyComparator);
+                                SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
+                                SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
                             } else { // Songs
-                                Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioAlphabeticallyComparator);
+                                Collections.sort(SingletonController.getInstance().getAudioList(), Audio.sortAudioAlphabeticallyComparator);
                             }
                         }
                         break;
                         case R.id.sortMenu_omegapsical: {
                             if (viewPager.getCurrentItem() == 0) { // Artists
-                                Collections.sort(AudioSingleton.getInstance().getArtistList(), Audio.sortArtistsOmegapsicallyComparator);
-                                AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
-                                AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
+                                Collections.sort(SingletonController.getInstance().getArtistList(), Audio.sortArtistsOmegapsicallyComparator);
+                                SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
+                                SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
                             } else if (viewPager.getCurrentItem() == 1) { // Albums
-                                Collections.sort(AudioSingleton.getInstance().getAlbumList(), Audio.sortAlbumsOmegapsicallyComparator);
+                                Collections.sort(SingletonController.getInstance().getAlbumList(), Audio.sortAlbumsOmegapsicallyComparator);
                             } else { // Songs
-                                Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioOmegapsicallyComparator);
+                                Collections.sort(SingletonController.getInstance().getAudioList(), Audio.sortAudioOmegapsicallyComparator);
                             }
                         }
                         break;
                         case R.id.sortMenu_artist: {
                             if (viewPager.getCurrentItem() == 1) { // Albums
-                                Collections.sort(AudioSingleton.getInstance().getAlbumList(), Audio.sortAlbumsAlphabeticallyComparator);
-                                Collections.sort(AudioSingleton.getInstance().getAlbumList(), Audio.sortAlbumsByArtistsComparator);
+                                Collections.sort(SingletonController.getInstance().getAlbumList(), Audio.sortAlbumsAlphabeticallyComparator);
+                                Collections.sort(SingletonController.getInstance().getAlbumList(), Audio.sortAlbumsByArtistsComparator);
                             } else if (viewPager.getCurrentItem() == 2) { // Songs
                                 Audio.sortAudioByArtist();
                             }
@@ -221,28 +221,28 @@ public class DataRetrievalActivity extends AppCompatActivity {
                         }
                         break;
                         case R.id.sortMenu_shortestDuration: {
-                            Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioByShortestDurationComparator);
+                            Collections.sort(SingletonController.getInstance().getAudioList(), Audio.sortAudioByShortestDurationComparator);
                         }
                         break;
                         case R.id.sortMenu_longestDuration: {
-                            Collections.sort(AudioSingleton.getInstance().getAudioList(), Audio.sortAudioByLongestDurationComparator);
+                            Collections.sort(SingletonController.getInstance().getAudioList(), Audio.sortAudioByLongestDurationComparator);
                         }
                         break;
                         case R.id.sortMenu_totalAlbums: {
                             if (viewPager.getCurrentItem() == 0) { // Artists
-                                Collections.sort(AudioSingleton.getInstance().getArtistList(), Audio.sortArtistsAlphabeticallyComparator);
-                                Collections.sort(AudioSingleton.getInstance().getArtistList(), Audio.sortArtistsByTotalAlbumsComparator);
-                                AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
-                                AudioSingleton.getInstance().getArtistAdapter().notifyDataSetChanged();
+                                Collections.sort(SingletonController.getInstance().getArtistList(), Audio.sortArtistsAlphabeticallyComparator);
+                                Collections.sort(SingletonController.getInstance().getArtistList(), Audio.sortArtistsByTotalAlbumsComparator);
+                                SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
+                                SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
                             }
                         }
                         break;
                     }
                 }
-                AudioSingleton.getInstance().getSongAdapter().updateDataSet(AudioSingleton.getInstance().getAudioList());
-                AudioSingleton.getInstance().getSongAdapter().notifyDataSetChanged();
-                AudioSingleton.getInstance().getAlbumAdapter().updateDataSet(AudioSingleton.getInstance().getAlbumList());
-                AudioSingleton.getInstance().getAlbumAdapter().notifyDataSetChanged();
+                SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
+                SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
+                SingletonController.getInstance().getAlbumAdapter().updateDataSet(SingletonController.getInstance().getAlbumList());
+                SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
                 return false;
             }
 
@@ -319,9 +319,9 @@ public class DataRetrievalActivity extends AppCompatActivity {
 
     public void endActivity() {
         instance.finish();
-        AudioSingleton.getInstance().getSongAdapter().updateDataSet(AudioSingleton.getInstance().getAudioList());
-        AudioSingleton.getInstance().getAlbumAdapter().updateDataSet(AudioSingleton.getInstance().getAlbumList());
-        AudioSingleton.getInstance().getArtistAdapter().updateDataSet(AudioSingleton.getInstance().getArtistList());
+        SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
+        SingletonController.getInstance().getAlbumAdapter().updateDataSet(SingletonController.getInstance().getAlbumList());
+        SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
     }
 
     public void backButtonPressed(View view) { // Attached to song selection recyclerView xml.
