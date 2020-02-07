@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/recyclerViewPrimary"
-        android:overScrollMode="never"
-        android:layout_marginBottom="56dp"/>
+        tools:context=".MainActivity"
+        tools:showIn="@layout/app_bar_main">
 
-    <include layout="@layout/bottom_sheet_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="56dp"
+            android:background="@color/recyclerViewPrimary"
+            android:overScrollMode="never" />
+
+        <include
+            layout="@layout/bottom_sheet_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</FrameLayout>

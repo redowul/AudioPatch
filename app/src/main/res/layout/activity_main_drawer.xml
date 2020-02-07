@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/colorPrimary"
+        android:background="@color/recyclerViewPrimary"
         android:choiceMode="singleChoice"
         android:divider="@color/recyclerViewAccent"
         android:dividerHeight="1dp"
@@ -26,7 +26,7 @@
             android:id="@+id/drawer_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/audiopatch_header_transparent">
+            android:background="@color/colorPrimary">
         </ImageView>
 
         <android.support.v7.widget.RecyclerView
@@ -38,7 +38,37 @@
             android:layout_alignLeft="@+id/drawer_header"
             android:layout_alignEnd="@+id/drawer_header"
             android:layout_alignRight="@+id/drawer_header"
-            android:layout_alignParentBottom="true"
             android:background="@color/recyclerViewPrimary" />
+
+        <TextView
+            android:id="@+id/nearby_connections"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/drawer_recycler_view"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            android:singleLine="true"
+            android:text="@string/connect_and_share"
+            android:textColor="@color/iconColor"
+            android:textSize="14sp"
+            android:background="@color/recyclerViewPrimary">
+        </TextView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/drawer_secondary_recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nearby_connections"
+            android:layout_alignStart="@+id/drawer_header"
+            android:layout_alignLeft="@+id/drawer_header"
+            android:layout_alignEnd="@+id/drawer_header"
+            android:layout_alignRight="@+id/drawer_header"
+            android:background="@color/recyclerViewDark" />
     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

@@ -36,17 +36,10 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_recyclerview_album_layout, parent,false);
-
-        switch (viewType) {
-            case 0: {
-                View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_recyclerview_album_layout, parent, false);
-                return new ViewHolder(v1);
-            }
-            case 1: {
-                View v2 = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_recyclerview_layout, parent, false);
-                return new SongViewHolder(v2);
-            }
+       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_recyclerview_album_layout, parent,false);
+        if (viewType == 1) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_recyclerview_layout, parent, false);
+            return new SongViewHolder(view);
         }
         return new ViewHolder(view);
     }
@@ -137,7 +130,7 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getItemViewType(int position) { // Handles setting viewType (albums precede albumDataSet.size, songs are any items remaining)
         if(position < albumDataSet.size()) {
             return 0;
         } // For layout 1

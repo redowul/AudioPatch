@@ -35,6 +35,7 @@ import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
 import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.RecyclerView.MainDrawerAdapter;
+import com.colabella.connor.audiopatch.RecyclerView.MainDrawerSecondaryAdapter;
 import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
@@ -97,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver( headphonesInUseReceiver, receiverFilter );
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
     /**
      * Initialization methods
      **/
@@ -107,14 +116,37 @@ public class MainActivity extends AppCompatActivity {
         openDrawerButton.setOnClickListener(view -> drawer.openDrawer(GravityCompat.START)); // close the sheet if pressed
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        RecyclerView recyclerView = findViewById(R.id.drawer_recycler_view);
-        recyclerView.setLayoutManager(linearLayoutManager);
+
+        /* DrawerLayout Primary RecyclerView  */
+
+        RecyclerView primaryItemsRecyclerView = findViewById(R.id.drawer_recycler_view);
+        primaryItemsRecyclerView.setLayoutManager(linearLayoutManager);
 
         MainDrawerAdapter mainDrawerAdapter = new MainDrawerAdapter();
-        mainDrawerAdapter.addItem("Home", true);
-        mainDrawerAdapter.addItem("Settings", false);
-        mainDrawerAdapter.addItem("About", false);
-        recyclerView.setAdapter(mainDrawerAdapter);
+        String home = getResources().getString(R.string.home);
+        String settings = getResources().getString(R.string.settings);
+        String about = getResources().getString(R.string.about);
+        mainDrawerAdapter.addItem(home, true, false);
+        mainDrawerAdapter.addItem(settings, false, false);
+        mainDrawerAdapter.addItem(about, false, false);
+        primaryItemsRecyclerView.setAdapter(mainDrawerAdapter);
+
+        /* DrawerLayout Secondary RecyclerView  */
+
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+
+        RecyclerView secondaryItemsRecyclerView = findViewById(R.id.drawer_secondary_recycler_view);
+        secondaryItemsRecyclerView.setLayoutManager(linearLayoutManager2);
+
+        MainDrawerSecondaryAdapter mainDrawerSecondaryAdapter = new MainDrawerSecondaryAdapter();
+        String host = getResources().getString(R.string.host);
+        String join = getResources().getString(R.string.join);
+        mainDrawerSecondaryAdapter.addItem(host, false, true);
+        mainDrawerSecondaryAdapter.addItem(join, false, true);
+
+        secondaryItemsRecyclerView.setAdapter(mainDrawerSecondaryAdapter);
+
+
     }
 
     private void initializeRecyclerView() {
