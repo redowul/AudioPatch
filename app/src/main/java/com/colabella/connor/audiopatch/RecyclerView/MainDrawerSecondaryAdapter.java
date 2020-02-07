@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.MainActivity;
@@ -67,6 +68,8 @@ public class MainDrawerSecondaryAdapter extends RecyclerView.Adapter<MainDrawerS
             holder.itemIcon.setColorFilter(mainActivity.getInstance().getResources().getColor(R.color.colorPrimary));
             if(menuItems.get(position).isCircleEnabled()) {
                  holder.circle.setBackgroundResource(R.drawable.circle);
+                 holder.itemBackgroundCircle.setBackgroundResource(R.drawable.circle);
+                 holder.itemBackground.setVisibility(View.VISIBLE);
             }
         }
         else {
@@ -75,6 +78,8 @@ public class MainDrawerSecondaryAdapter extends RecyclerView.Adapter<MainDrawerS
             holder.itemIcon.setColorFilter(mainActivity.getInstance().getResources().getColor(R.color.iconColor));
             if(menuItems.get(position).isCircleEnabled()) {
                 holder.circle.setBackground(null);
+                holder.itemBackgroundCircle.setBackground(null);
+                holder.itemBackground.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -106,13 +111,16 @@ public class MainDrawerSecondaryAdapter extends RecyclerView.Adapter<MainDrawerS
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView itemTitle;
         private ImageView itemIcon;
-        private ImageView circle;
+        private ImageView circle, itemBackgroundCircle;
+        private RelativeLayout itemBackground;
 
         private ViewHolder(View itemView) {
             super(itemView);
             itemTitle = itemView.findViewById(R.id.menu_item_title);
             itemIcon = itemView.findViewById(R.id.menu_item_icon);
             circle = itemView.findViewById(R.id.menu_item_circle);
+            itemBackgroundCircle = itemView.findViewById(R.id.menu_item_background_circle);
+            itemBackground =  itemView.findViewById(R.id.menu_item_background);
 
             View menuItemPanel = itemView.findViewById(R.id.menu_item_panel);
             menuItemPanel.setOnClickListener(this);

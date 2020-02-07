@@ -9,8 +9,6 @@
     android:paddingStart="8dp"
     android:paddingLeft="8dp"
     android:paddingTop="4dp"
-    android:paddingEnd="10dp"
-    android:paddingRight="10dp"
     android:paddingBottom="4dp">
 
     <RelativeLayout
@@ -31,6 +29,28 @@
             android:layout_centerInParent="true" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/menu_item_background"
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
+            android:background="@color/recyclerViewDark"
+            android:layout_marginLeft="89dp"
+            android:layout_marginStart="89dp">
+        </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/menu_item_background_circle"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/circle"
+        android:layout_alignRight="@id/menu_item_title"
+        android:layout_alignEnd="@id/menu_item_title"/>
+
     <TextView
         android:id="@+id/menu_item_title"
         android:layout_width="wrap_content"
@@ -49,5 +69,6 @@
         android:textSize="20sp"
         android:textStyle="bold">
     </TextView>
+    </RelativeLayout>
 
 </RelativeLayout>
