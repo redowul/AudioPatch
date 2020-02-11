@@ -44,4 +44,10 @@
         <item name="android:maxHeight">4dp</item>
     </style>
 
+    <style name="NearbyConnectionsAlertDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
 </resources>

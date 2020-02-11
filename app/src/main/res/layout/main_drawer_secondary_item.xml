@@ -48,8 +48,9 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:background="@drawable/circle"
-        android:layout_alignRight="@id/menu_item_title"
-        android:layout_alignEnd="@id/menu_item_title"/>
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
+      />
 
     <TextView
         android:id="@+id/menu_item_title"

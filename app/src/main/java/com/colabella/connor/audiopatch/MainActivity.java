@@ -139,23 +139,23 @@ public class MainActivity extends AppCompatActivity {
         String home = getResources().getString(R.string.home);
         String settings = getResources().getString(R.string.settings);
         String about = getResources().getString(R.string.about);
-        mainDrawerAdapter.addItem(home, true, false);
-        mainDrawerAdapter.addItem(settings, false, false);
-        mainDrawerAdapter.addItem(about, false, false);
+        mainDrawerAdapter.addItem(home, true);
+        mainDrawerAdapter.addItem(settings, false);
+        mainDrawerAdapter.addItem(about, false);
         primaryItemsRecyclerView.setAdapter(mainDrawerAdapter);
 
         /* DrawerLayout Secondary RecyclerView  */
 
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+        LinearLayoutManager secondaryLinearLayoutManager = new LinearLayoutManager(this);
 
         RecyclerView secondaryItemsRecyclerView = findViewById(R.id.drawer_secondary_recycler_view);
-        secondaryItemsRecyclerView.setLayoutManager(linearLayoutManager2);
+        secondaryItemsRecyclerView.setLayoutManager(secondaryLinearLayoutManager);
 
         MainDrawerSecondaryAdapter mainDrawerSecondaryAdapter = new MainDrawerSecondaryAdapter();
         String host = getResources().getString(R.string.host);
         String join = getResources().getString(R.string.join);
-        mainDrawerSecondaryAdapter.addItem(host, false, true);
-        mainDrawerSecondaryAdapter.addItem(join, false, true);
+        mainDrawerSecondaryAdapter.addItem(host, false);
+        mainDrawerSecondaryAdapter.addItem(join, false);
 
         secondaryItemsRecyclerView.setAdapter(mainDrawerSecondaryAdapter);
 

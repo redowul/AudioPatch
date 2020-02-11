@@ -24,12 +24,10 @@ class MenuItem {
 
     private String itemTitle;
     private boolean selected;
-    private boolean circleEnabled;
 
-    MenuItem(String itemTitle, boolean selected, boolean circleEnabled) {
+    MenuItem(String itemTitle, boolean selected) {
         this.itemTitle = itemTitle;
         this.selected = selected;
-        this.circleEnabled = circleEnabled;
     }
 
     String getItemTitle() {
@@ -43,18 +41,14 @@ class MenuItem {
     void setSelected(boolean isSelected) {
         this.selected = isSelected;
     }
-
-    boolean isCircleEnabled() {
-        return circleEnabled;
-    }
 }
 
 public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.ViewHolder> {
 
     private static List<MenuItem> menuItems = new ArrayList<>();
 
-    public void addItem(String itemTitle, boolean isSelected, boolean circleEnabled) {
-        MenuItem item = new MenuItem(itemTitle, isSelected, circleEnabled);
+    public void addItem(String itemTitle, boolean isSelected) {
+        MenuItem item = new MenuItem(itemTitle, isSelected);
         menuItems.add(item);
     }
 
@@ -81,15 +75,15 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
 
         switch (position) {
             case 0: {
-                holder.itemIcon.setImageResource(R.drawable.home_36dp);
+                holder.itemIcon.setImageResource(R.drawable.home_36dp); // Home
             }
             break;
             case 1: {
-                holder.itemIcon.setImageResource(R.drawable.settings_36dp);
+                holder.itemIcon.setImageResource(R.drawable.settings_36dp); // Settings
             }
             break;
             case 2: {
-                holder.itemIcon.setImageResource(R.drawable.info_outline_36dp);
+                holder.itemIcon.setImageResource(R.drawable.info_outline_36dp); // About
             }
             break;
         }
@@ -100,8 +94,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
             holder.itemView.setBackgroundResource(R.color.recyclerViewDark);
             holder.itemTitle.setTextColor(mainActivity.getInstance().getResources().getColor(R.color.colorPrimary));
             holder.itemIcon.setColorFilter(mainActivity.getInstance().getResources().getColor(R.color.colorPrimary));
-        }
-        else {
+        } else {
             holder.itemView.setBackgroundResource(R.color.recyclerViewPrimary);
             holder.itemTitle.setTextColor(mainActivity.getInstance().getResources().getColor(R.color.textColor));
             holder.itemIcon.setColorFilter(mainActivity.getInstance().getResources().getColor(R.color.iconColor));
@@ -111,7 +104,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
             if (menuItems != null) {
                 if (menuItems.size() > 0) {
                     setSelectedMenuItem(position);
-                    Button addAudioButton = mainActivity.getInstance().findViewById(R.id. add_audio_button);
+                    Button addAudioButton = mainActivity.getInstance().findViewById(R.id.add_audio_button);
                     switch (position) {
                         case 0: { // return to Home Activity
                             mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -160,6 +153,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
         }
 
         @Override
-        public void onClick(View view) { }
+        public void onClick(View view) {
+        }
     }
 }
