@@ -17,6 +17,7 @@ public class SingletonController {
     private ArrayList<Audio> audioList;
     private ArrayList<List<Audio>> albumList;
     private ArrayList<List<List<Audio>>> artistList;
+    private ArrayList<String> endpointIdList;
     private SongAdapter songAdapter;
     private AlbumAdapter albumAdapter;
     private ArtistAdapter artistAdapter;
@@ -29,6 +30,7 @@ public class SingletonController {
         this.audioList = new ArrayList<>();
         this.albumList = new ArrayList<>();
         this.artistList = new ArrayList<>();
+        this.endpointIdList = new ArrayList<>();
         this.songAdapter = new SongAdapter();
         this.albumAdapter = new AlbumAdapter();
         this.artistAdapter = new ArtistAdapter();
@@ -121,6 +123,10 @@ public class SingletonController {
 
     public MainDrawerAdapter getMainDrawerAdapter() {
         return mainDrawerAdapter;
+    }
+
+    public ArrayList<String> getEndpointIdList() {
+        return endpointIdList;
     }
 }
 

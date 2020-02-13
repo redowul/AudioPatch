@@ -1,6 +1,6 @@
 package com.colabella.connor.audiopatch.NearbyConnections;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
@@ -8,6 +8,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.google.android.gms.nearby.Nearby;
@@ -158,6 +159,11 @@ public class NearbyConnections {
                     case ConnectionsStatusCodes.STATUS_OK: {
                         // We're connected! Can now start sending and receiving data.
                         Toast.makeText(context, "Connection to " + endpointId + " was successful.", Toast.LENGTH_SHORT).show();
+                        if(SingletonController.getInstance().getEndpointIdList() != null) {
+                            if(!SingletonController.getInstance().getEndpointIdList().contains(endpointId)) {
+                                SingletonController.getInstance().getEndpointIdList().add(endpointId);
+                            }
+                        }
                         break;
                     }
                     case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED: {
@@ -182,6 +188,10 @@ public class NearbyConnections {
                 Context context = mainActivity.getInstance();
 
                 Toast.makeText(context, "Disconnected successfully.", Toast.LENGTH_SHORT).show();
+               // int size = SingletonController.getInstance().getEndpointIdList().size() - 1;
+                //for (int i = size; SingletonController.getInstance().getEndpointIdList().size() > 0; i--) {
+                    SingletonController.getInstance().getEndpointIdList().remove(0);
+                //}
             }
         };
     }

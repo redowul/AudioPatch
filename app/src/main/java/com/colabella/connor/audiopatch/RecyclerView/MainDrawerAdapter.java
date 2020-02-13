@@ -11,9 +11,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.Controllers.SingletonController;
 import com.colabella.connor.audiopatch.Fragments.AboutFragment;
 import com.colabella.connor.audiopatch.Fragments.SettingsFragment;
 import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.NearbyConnections.PayloadController;
 import com.colabella.connor.audiopatch.R;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
@@ -112,17 +115,38 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                         }
                         break;
                         case 1: { // open Settings fragment
-                            mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            /*mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                     new SettingsFragment(), "SettingsFragment").addToBackStack("open_settings").commit();
                             addAudioButton.setVisibility(View.GONE);
+                             */
+                            if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+                               // if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
+                                    //String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
+                                    /*String endpointId = "test";
+                                    PayloadController payloadController = new PayloadController();
+                                    Audio audio = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+                                    payloadController.sendAudio(endpointId, audio, mainActivity.getInstance());
+
+                                     */
+                               // }
+                            }
                         }
                         break;
                         case 2: { // open About fragment
-                            mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            /*mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                     new AboutFragment(), "AboutFragment").addToBackStack("open_about").commit();
                             addAudioButton.setVisibility(View.GONE);
+                           */
+                            /*if(SingletonController.getInstance().getEndpointIdList() != null) {
+                                if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
+                                    String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
+                                    PayloadController payloadController = new PayloadController();
+                                    String s = " test";
+                                    payloadController.sendBytes(endpointId, s, mainActivity.getInstance());
+                                }
+                            }*/
                         }
                         break;
                     }

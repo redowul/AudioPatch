@@ -84,9 +84,30 @@ public class AudioController {
         // return timer string
         return finalTimerString;
     }
+
+    public Bitmap getAlbumCover(String pathId) {
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        Bitmap albumCover;
+        try {
+            metaRetriever.setDataSource(pathId);
+            byte[] art = metaRetriever.getEmbeddedPicture();
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inSampleSize = 0; // Setting this lower returns a lower resolution image. For example, setting this variable to 2 returns an image 1/2 the size of the original. 4 = 1/4 the size, etc.
+            albumCover = BitmapFactory.decodeByteArray(art, 0, art.length, opt);
+            if (albumCover != null) {
+                return albumCover;
+            }
+        } catch (Exception ignored) { }
+        finally {
+            metaRetriever.release();
+        }
+        return null;
+    }
 }
 
 class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
+    private AudioController audioController = new AudioController();
+
     @Override
     // Actual download method, run in the task thread
     protected Void doInBackground(Context... params) {
@@ -154,7 +175,7 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                 return;
             }
         }
-        item.setAlbumArt(getAlbumCover(item.getData()));
+        item.setAlbumArt(audioController.getAlbumCover(item.getData()));
         ArrayList<Audio> album = new ArrayList<>(); // creating new album
         album.add(item); // adding item to the new album
         SingletonController.getInstance().getAlbumList().add(album); // adding the new album to the album list
@@ -184,24 +205,5 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
         artist.add(album);
         SingletonController.getInstance().getArtistList().add(artist);
         SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList()); // update the artist adapter
-    }
-
-    private Bitmap getAlbumCover(String pathId) {
-        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
-        Bitmap albumCover;
-        try {
-            metaRetriever.setDataSource(pathId);
-            byte[] art = metaRetriever.getEmbeddedPicture();
-            BitmapFactory.Options opt = new BitmapFactory.Options();
-            opt.inSampleSize = 0; // Setting this lower returns a lower resolution image. For example, setting this variable to 2 returns an image 1/2 the size of the original. 4 = 1/4 the size, etc.
-            albumCover = BitmapFactory.decodeByteArray(art, 0, art.length, opt);
-            if (albumCover != null) {
-                return albumCover;
-            }
-        } catch (Exception ignored) { }
-        finally {
-            metaRetriever.release();
-        }
-        return null;
     }
 }

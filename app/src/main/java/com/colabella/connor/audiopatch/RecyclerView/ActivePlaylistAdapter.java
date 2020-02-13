@@ -39,7 +39,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         return dataSet.get(index);
     }
 
-    void addItem(Audio item) {
+    public void addItem(Audio item) {
         dataSet.add(item);
         if(dataSet.size() == 1) {
             BottomSheetController bottomSheetController = new BottomSheetController();
@@ -56,7 +56,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         return getSelectedItem(getCurrentlySelectedItemIndex());
     }
 
-    public void setSelectedAudio(int selectedAudioPos) {
+    protected void setSelectedAudio(int selectedAudioPos) {
         for (int i = 0; i < getItemCount(); i++) {
             dataSet.get(i).setSelected(false);
             if (i == selectedAudioPos) {
@@ -67,7 +67,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
     }
 
-    public int getCurrentlySelectedItemIndex() {
+    protected int getCurrentlySelectedItemIndex() {
         if (dataSet != null) {
             if (dataSet.size() > 0) {
                 for (int i = 0; i < dataSet.size(); i++) {
@@ -93,7 +93,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         return false;
     }
 
-    public Audio getAudioAtIndex(int index) {
+    protected Audio getAudioAtIndex(int index) {
         return dataSet.get(index);
     }
 

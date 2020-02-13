@@ -51,6 +51,13 @@ public class Audio {
         this.selected = selected;
     }
 
+    public Audio(String data, String title, Bitmap albumArt) {
+        this.data = data;
+        this.title = title;
+        this.albumArt = albumArt;
+    }
+
+
     public Audio(Bitmap albumArt, String album) {
         this.albumArt = albumArt;
         this.album = album;
