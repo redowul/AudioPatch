@@ -57,6 +57,15 @@ public class Audio {
         this.albumArt = albumArt;
     }
 
+    public Audio(String data, String title, Bitmap albumArt, String artist, String duration, String submitter) {
+        this.data = data;
+        this.title = title;
+        this.albumArt = albumArt;
+        this.artist = artist;
+        this.duration = duration;
+        this.submitter = submitter;
+    }
+
 
     public Audio(Bitmap albumArt, String album) {
         this.albumArt = albumArt;

@@ -64,12 +64,17 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                     dataRetrievalActivity.endActivity();
 
                     PayloadController payloadController = new PayloadController();
-                    String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
+                    if(SingletonController.getInstance().getEndpointIdList() != null) {
+                        if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
+                            String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
 
-                    MainActivity mainActivity = new MainActivity();
-                    Context context = mainActivity.getInstance();
+                            MainActivity mainActivity = new MainActivity();
+                            Context context = mainActivity.getInstance();
 
-                    payloadController.sendAudio(endpointId, item, context);
+                            //TODO only trigger this if connected
+                            payloadController.sendAudio(endpointId, item, context);
+                        }
+                    }
                 }
             });
         }
