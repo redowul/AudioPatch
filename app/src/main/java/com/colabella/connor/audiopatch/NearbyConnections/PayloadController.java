@@ -18,7 +18,11 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -42,8 +46,8 @@ public class PayloadController extends NearbyConnections {
         }
         if (filePayload != null) {
             // if(filePayload != null) { // null check to make certain we have data to send
-            //String payloadFilename = "filename" + "|" + audio.getTitle() + "|" + audio.getArtist() + "|" + audio.getDuration() + "|" + audio.getSubmitter();
-            String payloadFilename = "filename" + "|" + audio.getTitle();
+            String payloadFilename = "filename" + "|" + audio.getTitle() + "|" + audio.getArtist() + "|" + audio.getDuration() + "|" + audio.getSubmitter();
+            //String payloadFilename = "filename" + "|" + audio.getTitle();
             sendBytes(endpointId, payloadFilename, context); // send the payload; the goal is to attach it to the sent audio file and rebuild the object on the receiving device
 
             Nearby.getConnectionsClient(context).sendPayload(endpointId, filePayload); // send the payload
@@ -70,10 +74,10 @@ public class PayloadController extends NearbyConnections {
 
                     if (inputSplit[0].equals("filename")) {
                         String filename = inputSplit[1]; // get filename from the array ; format is [filename|audio.getTitle()]
-                        //String artist = inputSplit[2];
-                        //String duration = inputSplit[3];
-                        //String submitter = inputSplit[4];
-                        String[] filenameInput = {endpointId, filename/*, artist, duration, submitter*/}; // create a new array and associate it with the given endpoint
+                        String artist = inputSplit[2];
+                        String duration = inputSplit[3];
+                        String submitter = inputSplit[4];
+                        String[] filenameInput = {endpointId, filename, artist, duration, submitter}; // create a new array and associate it with the given endpoint
                         if (!filenames.contains(filenameInput)) { // check to see if the item already exists in the array
                             filenames.add(filenameInput); // store the item
                         }
@@ -81,7 +85,7 @@ public class PayloadController extends NearbyConnections {
                 } else if (payload.getType() == Payload.Type.FILE) {
                     //incomingPayloads.put(Long.toString(payload.getId()), payload); // store the payload so it can be referenced in onPayloadTransferUpdate()
                     incomingPayloads.add(payload); // store the payload so it can be referenced in onPayloadTransferUpdate()
-                    System.out.println(payload.getId());
+                   /* System.out.println(payload.getId());
                     for (int i = 0; i < filenames.size(); i++) {
                         if (filenames.get(i)[0].equals(endpointId)) { // after updating the array, payload id will be used for linking the two items, not the endpointId
                             String[] item = new String[]{
@@ -91,7 +95,7 @@ public class PayloadController extends NearbyConnections {
                             filenames.set(i, item); // add the item to the queue
                             break;
                         }
-                    }
+                    }*/
                 }
             }
 
@@ -105,9 +109,9 @@ public class PayloadController extends NearbyConnections {
                         File payloadFile = payload.asFile().asJavaFile();
                         String[] audioData = filenames.remove(0);
                         String filename = audioData[1];
-                        //String artist = audioData[2];
-                        //String duration = audioData[3];
-                        //String submitter = audioData[4];
+                        String artist = audioData[2];
+                        String duration = audioData[3];
+                        String submitter = audioData[4];
 
                         boolean success;
                         if (payloadFile != null) {
@@ -117,7 +121,17 @@ public class PayloadController extends NearbyConnections {
                                 Uri uri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch" + File.separator + filename + ".mp3");
                                 String data = uri.toString();
                                 Bitmap bitmap = audioController.getAlbumCover(data);
-                                Audio audio = new Audio(data, filename, bitmap/*, artist, duration, submitter*/); // Audio object rebuilt and can be used at leisure
+                                Audio audio = new Audio(data, filename, bitmap, artist, duration, submitter); // Audio object rebuilt and can be used at leisure
+
+                                SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio); // Add the item to the playlist
+                                SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                            }
+                            else {
+                                AudioController audioController = new AudioController();
+                                Uri uri = Uri.parse(payloadFile.getAbsolutePath());
+                                String data = uri.toString();
+                                Bitmap bitmap = audioController.getAlbumCover(data);
+                                Audio audio = new Audio(data, filename, bitmap, artist, duration, submitter); // Audio object rebuilt and can be used at leisure
 
                                 SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio); // Add the item to the playlist
                                 SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
