@@ -116,26 +116,24 @@ public class PayloadController extends NearbyConnections {
                         boolean success;
                         if (payloadFile != null) {
                             success = payloadFile.renameTo(new File(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch", filename + ".mp3"));
+                            Uri uri;
+                            String data;
+                            Bitmap bitmap;
                             if (success) {
                                 AudioController audioController = new AudioController();
-                                Uri uri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch" + File.separator + filename + ".mp3");
-                                String data = uri.toString();
-                                Bitmap bitmap = audioController.getAlbumCover(data);
-                                Audio audio = new Audio(data, filename, bitmap, artist, duration, submitter); // Audio object rebuilt and can be used at leisure
-
-                                SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio); // Add the item to the playlist
-                                SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                                uri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch" + File.separator + filename + ".mp3");
+                                data = uri.toString();
+                                bitmap = audioController.getAlbumCover(data);
                             }
                             else {
                                 AudioController audioController = new AudioController();
-                                Uri uri = Uri.parse(payloadFile.getAbsolutePath());
-                                String data = uri.toString();
-                                Bitmap bitmap = audioController.getAlbumCover(data);
-                                Audio audio = new Audio(data, filename, bitmap, artist, duration, submitter); // Audio object rebuilt and can be used at leisure
-
-                                SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio); // Add the item to the playlist
-                                SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                                uri = Uri.parse(payloadFile.getAbsolutePath());
+                                data = uri.toString();
+                                bitmap = audioController.getAlbumCover(data);
                             }
+                            Audio audio = new Audio(data, filename, bitmap, artist, duration, submitter); // Audio object rebuilt and can be used at leisure
+                            SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio); // Add the item to the playlist
+                            SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                         }
                     }
                 }

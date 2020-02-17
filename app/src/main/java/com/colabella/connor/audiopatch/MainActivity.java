@@ -213,13 +213,20 @@ public class MainActivity extends AppCompatActivity {
             // Sets the location of the seekbar on the screen.
             // Note that placement is handled manually here, and that the seekbar's view is NOT located inside the bottom sheet.
             SeekBar seekBar = findViewById(R.id.bottom_sheet_seekbar);
-            seekBar.setY((int) (currentY + (bottomSheetSize * .70)));
-
             TextView seekbarPosition = findViewById(R.id.seekbar_position);
             TextView audioLength = findViewById(R.id.audio_length);
 
-            seekbarPosition.setY((int) (currentY + (bottomSheetSize * .69)));
-            audioLength.setY((int) (currentY + (bottomSheetSize * .69)));
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                // only for gingerbread and newer versions
+                seekBar.setY((int) (currentY + (bottomSheetSize * .50)));
+                seekbarPosition.setY((int) (currentY + (bottomSheetSize * .49)));
+                audioLength.setY((int) (currentY + (bottomSheetSize * .49)));
+            }
+            else {
+                seekBar.setY((int) (currentY + (bottomSheetSize * .70)));
+                seekbarPosition.setY((int) (currentY + (bottomSheetSize * .69)));
+                audioLength.setY((int) (currentY + (bottomSheetSize * .69)));
+            }
 
             /* Bottom Sheet Capstone Text blocks */
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);
