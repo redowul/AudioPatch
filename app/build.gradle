@@ -42,6 +42,7 @@ dependencies {
     implementation 'com.github.claucookie.miniequalizer:library:1.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.qhutch.bottomsheetlayout:bottomsheetlayout:0.1.9'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
 }
 repositories {
     mavenCentral()

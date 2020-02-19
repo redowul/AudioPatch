@@ -25,6 +25,7 @@ public class SingletonController {
     private MainDrawerAdapter mainDrawerAdapter;
     private boolean isSeekBarTracked; // Handles the draggable seekbar's movement
     private boolean isSeekBarStarted; // Allows for movement of seekpar position before the song has started
+    private boolean isGuest;
 
     private SingletonController() {
         this.audioList = new ArrayList<>();
@@ -38,6 +39,7 @@ public class SingletonController {
         this.mainDrawerAdapter = new MainDrawerAdapter();
         this.isSeekBarTracked = false;
         this.isSeekBarTracked = false;
+        this.isGuest = false;
     }
 
     public static SingletonController getInstance() {
@@ -127,6 +129,14 @@ public class SingletonController {
 
     public ArrayList<String> getEndpointIdList() {
         return endpointIdList;
+    }
+
+    public boolean isGuest() {
+        return isGuest;
+    }
+
+    public void setGuest(boolean guest) {
+        isGuest = guest;
     }
 }
 

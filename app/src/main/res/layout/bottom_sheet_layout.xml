@@ -72,9 +72,7 @@
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="0dp"
                     android:layout_toStartOf="@id/expand_bottom_sheet_button"
-                    android:layout_toLeftOf="@id/expand_bottom_sheet_button"
                     android:layout_toEndOf="@id/bottom_sheet_current_album_cover_small"
-                    android:layout_toRightOf="@id/bottom_sheet_current_album_cover_small"
                     android:orientation="horizontal"
                     android:singleLine="true"
                     android:text="@string/title"
@@ -92,9 +90,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_toStartOf="@id/expand_bottom_sheet_button"
-                    android:layout_toLeftOf="@id/expand_bottom_sheet_button"
                     android:layout_toEndOf="@id/bottom_sheet_current_album_cover_small"
-                    android:layout_toRightOf="@id/bottom_sheet_current_album_cover_small"
                     android:orientation="horizontal"
                     android:singleLine="true"
                     android:text="@string/artist"
@@ -105,7 +101,6 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:background="@drawable/arrow_drop_up_24dp"
                     android:gravity="end" />
             </RelativeLayout>

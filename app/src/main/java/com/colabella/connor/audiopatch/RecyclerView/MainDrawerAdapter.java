@@ -1,5 +1,8 @@
 package com.colabella.connor.audiopatch.RecyclerView;
 
+import android.arch.lifecycle.MutableLiveData;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,13 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
 import com.colabella.connor.audiopatch.Controllers.SingletonController;
-import com.colabella.connor.audiopatch.Fragments.AboutFragment;
-import com.colabella.connor.audiopatch.Fragments.SettingsFragment;
+import com.colabella.connor.audiopatch.Fragments.guest.GuestFragment;
 import com.colabella.connor.audiopatch.MainActivity;
-import com.colabella.connor.audiopatch.NearbyConnections.PayloadController;
 import com.colabella.connor.audiopatch.R;
-import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ class MenuItem {
 public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.ViewHolder> {
 
     private static List<MenuItem> menuItems = new ArrayList<>();
+    private GuestFragment guestFragment = new GuestFragment();
 
     public void addItem(String itemTitle, boolean isSelected) {
         MenuItem item = new MenuItem(itemTitle, isSelected);
@@ -115,25 +117,29 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                         }
                         break;
                         case 1: { // open Settings fragment
-                            /*mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                    new SettingsFragment(), "SettingsFragment").addToBackStack("open_settings").commit();
+                                    guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
                             addAudioButton.setVisibility(View.GONE);
-                             */
-                            if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
-                               // if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
-                                    //String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
+                            if (SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+                                // if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
+                                //String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
                                     /*String endpointId = "test";
                                     PayloadController payloadController = new PayloadController();
                                     Audio audio = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
                                     payloadController.sendAudio(endpointId, audio, mainActivity.getInstance());
-
                                      */
-                               // }
+                                // }
                             }
                         }
                         break;
                         case 2: { // open About fragment
+
+                            // String s = "Test";
+                            //  guestFragment.getGuestViewModel().setText(s);
+
+
+
                             /*mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                     new AboutFragment(), "AboutFragment").addToBackStack("open_about").commit();

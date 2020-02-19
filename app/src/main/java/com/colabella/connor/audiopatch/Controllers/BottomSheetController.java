@@ -30,7 +30,7 @@ public class BottomSheetController extends ActivePlaylistController {
      */
 
     @SuppressLint("NewApi")
-    private Bitmap blur(Context context, Bitmap image) {
+    public Bitmap blur(Context context, Bitmap image) {
         float BITMAP_SCALE = 0.4f;
         float BLUR_RADIUS = 7.5f;
 
