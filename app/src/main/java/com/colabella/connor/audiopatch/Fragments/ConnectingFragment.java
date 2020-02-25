@@ -11,10 +11,10 @@ import android.widget.Button;
 import com.colabella.connor.audiopatch.R;
 
 
-public class AboutFragment extends Fragment {
+public class ConnectingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_about, container,false);
+        return inflater.inflate(R.layout.fragment_connecting, container,false);
     }
 }

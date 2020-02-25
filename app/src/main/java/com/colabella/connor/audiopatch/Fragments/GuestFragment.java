@@ -1,16 +1,14 @@
-package com.colabella.connor.audiopatch.Fragments.guest;
+package com.colabella.connor.audiopatch.Fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,33 +26,9 @@ public class GuestFragment extends Fragment {
     }
 
     public void setViewData(View view) {
-        Button collapseAlbumCoverButton = view.findViewById(R.id.collapse_album_cover_button);
-        AppBarLayout appBarLayout = view.findViewById(R.id.appbar);
-
-        appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
-            System.out.println(verticalOffset);
-            if (Math.abs(verticalOffset)- appBarLayout1.getTotalScrollRange() == 0)
-            {
-                //  Collapsed
-
-                System.out.println("Collapsed");
-                collapseAlbumCoverButton.setOnClickListener(v -> {
-                    appBarLayout.setExpanded(true);
-                });
-            }
-            else
-            {
-                //Expanded
-                collapseAlbumCoverButton.setOnClickListener(v -> {
-                    appBarLayout.setExpanded(false);
-                });
-
-            }
-        });
-
         if (SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
             Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
-            ImageView background = view.findViewById(R.id.album_art);
+            ImageView background = view.findViewById(R.id.playing_item_background);
             if (background != null) {
                 // For calculating the width of the screen
                 DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -72,17 +46,19 @@ public class GuestFragment extends Fragment {
                     background.setImageBitmap(appLogo);
                 }
             }
-           /* TextView itemTitle = view.findViewById(R.id.playing_item_title);
+
+            TextView itemTitle = view.findViewById(R.id.playing_item_title);
             TextView itemArtist = view.findViewById(R.id.playing_item_artist);
-            TextView itemSubmitter = view.findViewById(R.id.playing_item_album_submitter);
+            TextView itemSubmitter = view.findViewById(R.id.playing_item_submitter);
             TextView itemDuration = view.findViewById(R.id.playing_item_duration);
 
-            String submittedBy = "Submitted by " + view.getResources().getString(R.string.submitter, selectedItem.getSubmitter());
+            String submittedBy = view.getResources().getString(R.string.submitted_by);
+            String submitMessage = submittedBy + " " + view.getResources().getString(R.string.submitter, selectedItem.getSubmitter());
+            
             itemTitle.setText(selectedItem.getTitle());
             itemArtist.setText(selectedItem.getArtist());
-            itemSubmitter.setText(submittedBy);
+            itemSubmitter.setText(submitMessage);
             itemDuration.setText(selectedItem.getDuration());
-            */
         }
     }
 }

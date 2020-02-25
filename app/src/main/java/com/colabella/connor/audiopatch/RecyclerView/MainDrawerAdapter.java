@@ -1,8 +1,6 @@
 package com.colabella.connor.audiopatch.RecyclerView;
 
-import android.arch.lifecycle.MutableLiveData;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,10 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
+import com.colabella.connor.audiopatch.Controllers.AudioController;
 import com.colabella.connor.audiopatch.Controllers.SingletonController;
-import com.colabella.connor.audiopatch.Fragments.guest.GuestFragment;
+import com.colabella.connor.audiopatch.Fragments.GuestFragment;
 import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.NearbyConnections.PayloadController;
 import com.colabella.connor.audiopatch.R;
 
 import java.util.ArrayList;
@@ -134,6 +133,25 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                         }
                         break;
                         case 2: { // open About fragment
+                            if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
+                                if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+                                    Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+                                    if (selectedItem != null) {
+                                        String endpointId = SingletonController.getInstance().getEndpointIdList().get(0); //TODO update to hit all endpoints on list
+
+                                        AudioController audioController = new AudioController();
+                                        Bitmap input = selectedItem.getAlbumArt();
+                                        //String albumCover = audioController.bitmapToBase64(selectedItem.getAlbumArt());
+                                       // byte[] x = albumCover.getBytes();
+                                        //System.out.println(x);
+                                        
+                                        //String input = "currentItem" + "|" + albumCover;
+
+                                        PayloadController payloadController = new PayloadController();
+                                        payloadController.sendImage(endpointId, input, mainActivity.getInstance());
+                                    }
+                                }
+                            }
 
                             // String s = "Test";
                             //  guestFragment.getGuestViewModel().setText(s);

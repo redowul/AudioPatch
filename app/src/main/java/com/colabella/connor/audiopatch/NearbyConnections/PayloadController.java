@@ -2,6 +2,7 @@ package com.colabella.connor.audiopatch.NearbyConnections;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -16,14 +17,46 @@ import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.PayloadCallback;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class PayloadController extends NearbyConnections {
+
+    public void sendImage(String endpointId, Bitmap albumCover, Context context) {
+        if (albumCover != null) {
+            File albumCoverFile = new File(context.getCacheDir(), "file");         // create a file to write bitmap data
+            try {
+                albumCoverFile.createNewFile();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+                albumCover.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, byteArrayOutputStream);
+                byte[] bitmapData = byteArrayOutputStream.toByteArray();
+
+                FileOutputStream fileOutputStream;
+                fileOutputStream = new FileOutputStream(albumCoverFile);
+                fileOutputStream.write(bitmapData);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+
+                if (albumCoverFile.exists()) {
+                    Payload imagePayload = Payload.fromFile(albumCoverFile);
+                    Nearby.getConnectionsClient(context).sendPayload(endpointId, imagePayload); // send the payload
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private void sendBytes(String endpointId, String string, Context context) {
         byte[] bytes = string.getBytes(UTF_8); // convert string to bytes
@@ -77,10 +110,18 @@ public class PayloadController extends NearbyConnections {
                         if (!filenames.contains(filenameInput)) { // check to see if the item already exists in the array
                             filenames.add(filenameInput); // store the item
                         }
+                    } else if (inputSplit[0].equals("albumCover")) {
+                        AudioController audioController = new AudioController();
+                        Bitmap albumArt = audioController.base64ToBitmap(inputSplit[1]);
+
+                        Audio audio = new Audio(albumArt, "Test");
+                        SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio);
+                        SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                     }
                 } else if (payload.getType() == Payload.Type.FILE) {
                     //incomingPayloads.put(Long.toString(payload.getId()), payload); // store the payload so it can be referenced in onPayloadTransferUpdate()
                     incomingPayloads.add(payload); // store the payload so it can be referenced in onPayloadTransferUpdate()
+
                    /* System.out.println(payload.getId());
                     for (int i = 0; i < filenames.size(); i++) {
                         if (filenames.get(i)[0].equals(endpointId)) { // after updating the array, payload id will be used for linking the two items, not the endpointId
@@ -100,36 +141,58 @@ public class PayloadController extends NearbyConnections {
                 if (update.getStatus() == PayloadTransferUpdate.Status.SUCCESS) {
 
                     if (incomingPayloads.size() > 0) {
-                        System.out.println(payloadId);
-                        Payload payload = incomingPayloads.remove(0);
-                        File payloadFile = payload.asFile().asJavaFile();
-                        String[] audioData = filenames.remove(0);
-                        String filename = audioData[1];
-                        String artist = audioData[2];
-                        String duration = audioData[3];
-                        String submitter = audioData[4];
+                        if (!SingletonController.getInstance().isGuest()) {
+                            Payload payload = incomingPayloads.remove(0);
+                            File payloadFile = payload.asFile().asJavaFile();
+                            String[] audioData = filenames.remove(0);
+                            String filename = audioData[1];
+                            String artist = audioData[2];
+                            String duration = audioData[3];
+                            String submitter = audioData[4];
 
-                        boolean success;
-                        if (payloadFile != null) {
-                            success = payloadFile.renameTo(new File(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch", filename + ".mp3"));
-                            Uri uri;
-                            String data;
-                            Bitmap bitmap;
-                            if (success) {
-                                AudioController audioController = new AudioController();
-                                uri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch" + File.separator + filename + ".mp3");
-                                data = uri.toString();
-                                bitmap = audioController.getAlbumCover(data);
+                            boolean success;
+                            if (payloadFile != null) {
+                                success = payloadFile.renameTo(new File(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch", filename + ".mp3"));
+                                Uri uri;
+                                String data;
+                                Bitmap bitmap;
+                                if (success) {
+                                    AudioController audioController = new AudioController();
+                                    uri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch" + File.separator + filename + ".mp3");
+                                    data = uri.toString();
+                                    bitmap = audioController.getAlbumCover(data);
+                                } else {
+                                    AudioController audioController = new AudioController();
+                                    uri = Uri.parse(payloadFile.getAbsolutePath());
+                                    data = uri.toString();
+                                    bitmap = audioController.getAlbumCover(data);
+                                }
+                                Audio audio = new Audio(data, filename, bitmap, artist, duration, submitter); // Audio object rebuilt and can be used at leisure
+                                SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio); // Add the item to the playlist
+                                SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                             }
-                            else {
-                                AudioController audioController = new AudioController();
-                                uri = Uri.parse(payloadFile.getAbsolutePath());
-                                data = uri.toString();
-                                bitmap = audioController.getAlbumCover(data);
+                        }
+                        else {
+                            Payload payload = incomingPayloads.remove(0);
+                            File payloadFile = payload.asFile().asJavaFile();
+
+                            if (payloadFile != null) {
+                                int size = (int) payloadFile.length();
+
+                                byte[] bytes = new byte[size];
+                                try {
+                                    BufferedInputStream buf = new BufferedInputStream(new FileInputStream(payloadFile));
+                                    buf.read(bytes, 0, bytes.length);
+                                    buf.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                Bitmap albumArt = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                                Audio audio = new Audio(albumArt, "Test");
+                                SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio);
+                                SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                             }
-                            Audio audio = new Audio(data, filename, bitmap, artist, duration, submitter); // Audio object rebuilt and can be used at leisure
-                            SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio); // Add the item to the playlist
-                            SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                         }
                     }
                 }
