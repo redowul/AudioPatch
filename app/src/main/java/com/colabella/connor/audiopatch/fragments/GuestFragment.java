@@ -26,19 +26,24 @@ public class GuestFragment extends Fragment {
     }
 
     public void setViewData(View view) {
+        ImageView background = view.findViewById(R.id.playing_item_background);
+        MainActivity mainActivity = new MainActivity();
+        if (background != null) {
+            // For calculating the width of the screen
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            mainActivity.getInstance().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screenW;
+            screenW = displayMetrics.widthPixels; // get width of screen in pixels
+            background.getLayoutParams().height = screenW;
+            background.getLayoutParams().width = screenW;
+
+            Bitmap appLogo = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable);
+            background.setImageBitmap(appLogo);
+        }
+
         if (SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
             Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
-            ImageView background = view.findViewById(R.id.playing_item_background);
             if (background != null) {
-                // For calculating the width of the screen
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                MainActivity mainActivity = new MainActivity();
-                mainActivity.getInstance().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                int screenW;
-                screenW = displayMetrics.widthPixels; // get width of screen in pixels
-                background.getLayoutParams().height = screenW;
-                background.getLayoutParams().width = screenW;
-
                 if (selectedItem.getAlbumArt() != null) {
                     background.setImageBitmap(selectedItem.getAlbumArt());
                 } else {

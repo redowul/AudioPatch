@@ -26,6 +26,7 @@ public class SingletonController {
     private boolean isSeekBarTracked; // Handles the draggable seekbar's movement
     private boolean isSeekBarStarted; // Allows for movement of seekpar position before the song has started
     private boolean isGuest;
+    private String username;
 
     private SingletonController() {
         this.audioList = new ArrayList<>();
@@ -40,6 +41,7 @@ public class SingletonController {
         this.isSeekBarTracked = false;
         this.isSeekBarTracked = false;
         this.isGuest = false;
+        this.username = android.os.Build.MODEL;
     }
 
     public static SingletonController getInstance() {
@@ -137,6 +139,14 @@ public class SingletonController {
 
     public void setGuest(boolean guest) {
         isGuest = guest;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
 

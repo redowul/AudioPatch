@@ -30,7 +30,6 @@
                 android:layout_alignBottom="@+id/playing_item_background"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="4dp"
-                android:text="@string/timestamp"
                 android:textSize="16sp" />
 
             <TextView
@@ -42,7 +41,6 @@
                 android:layout_centerInParent="true"
                 android:orientation="horizontal"
                 android:singleLine="true"
-                android:text="@string/title"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -54,8 +52,8 @@
                 android:layout_centerInParent="true"
                 android:orientation="horizontal"
                 android:singleLine="true"
-                android:text="@string/artist"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:text="@string/next_song_tip"/>
 
             <TextView
                 android:id="@+id/playing_item_submitter"
@@ -65,7 +63,6 @@
                 android:layout_centerInParent="true"
                 android:orientation="horizontal"
                 android:singleLine="true"
-                android:text="@string/submitter"
                 android:textSize="16sp" />
         </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -35,4 +35,5 @@
     <string name="action_addAudio">Add to playlist</string>
     <string name="item">Item</string>
     <string name="package_name">com.colabella.connor</string>
+    <string name="next_song_tip">Awaiting update from host…</string>
 </resources>

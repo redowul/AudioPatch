@@ -149,8 +149,9 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     AudioController audioController = new AudioController();
                     int rawDuration = Integer.parseInt(duration);
                     duration = audioController.milliSecondsToTimer(valueOf(rawDuration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
+                    String submitter = SingletonController.getInstance().getUsername();
 
-                    Audio item = new Audio(data, title, null, artist, album, duration, "User", false, rawDuration); //TODO Replace 'Submitter' field
+                    Audio item = new Audio(data, title, null, artist, album, duration, submitter, false, rawDuration);
                     SingletonController.getInstance().getAudioList().add(item);
                     SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
                     sortAudioByAlbum(item);

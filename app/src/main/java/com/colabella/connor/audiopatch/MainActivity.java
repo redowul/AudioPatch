@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             MainDrawerAdapter mainDrawerAdapter = SingletonController.getInstance().getMainDrawerAdapter();
             mainDrawerAdapter.setSelectedMenuItem(0);
 
-            if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) { //TODO update this to trigger on guest status
+            if(SingletonController.getInstance().isGuest()) {
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 GuestFragment guestFragment = new GuestFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
@@ -145,12 +145,16 @@ public class MainActivity extends AppCompatActivity {
 
         MainDrawerAdapter mainDrawerAdapter = SingletonController.getInstance().getMainDrawerAdapter();
         String home = getResources().getString(R.string.home);
-        //String settings = getResources().getString(R.string.settings);
+        String settings = getResources().getString(R.string.settings);
         //String about = getResources().getString(R.string.about);
         mainDrawerAdapter.addItem(home, true);
-        //mainDrawerAdapter.addItem(settings, false);
+        mainDrawerAdapter.addItem(settings, false);
         //mainDrawerAdapter.addItem(about, false);
         primaryItemsRecyclerView.setAdapter(mainDrawerAdapter);
+
+        TextView username = findViewById(R.id.username);
+        String phoneModel = SingletonController.getInstance().getUsername();
+        username.setText(phoneModel);
 
         /* DrawerLayout Secondary RecyclerView  */
 

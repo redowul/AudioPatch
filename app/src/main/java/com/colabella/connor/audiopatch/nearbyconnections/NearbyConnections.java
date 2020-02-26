@@ -3,6 +3,7 @@ package com.colabella.connor.audiopatch.nearbyconnections;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.ContextThemeWrapper;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+import com.colabella.connor.audiopatch.fragments.GuestFragment;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AdvertisingOptions;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
@@ -33,7 +35,7 @@ public class NearbyConnections {
         MainActivity mainActivity = new MainActivity();
         Context context = mainActivity.getInstance();
 
-        String nickname = "nickname"; //TODO get this value from somewhere else e.g. do not hardcode it
+        String nickname = SingletonController.getInstance().getUsername();
         String serviceId = mainActivity.getInstance().getResources().getString(R.string.package_name);
         ConnectionLifecycleCallback connectionLifeCycle = createConnectionLifeCycle();
         AdvertisingOptions advertisingOptions = new AdvertisingOptions.Builder().setStrategy(strategy).build();
@@ -90,7 +92,7 @@ public class NearbyConnections {
             public void onEndpointFound(@NonNull String endpointId, @NonNull DiscoveredEndpointInfo discoveredEndpointInfo) {
                 MainActivity mainActivity = new MainActivity();
                 Context context = mainActivity.getInstance();
-                String nickname = "nickname"; //TODO allow this to be set
+                String nickname = SingletonController.getInstance().getUsername();
                 ConnectionLifecycleCallback connectionLifeCycle = createConnectionLifeCycle();
 
                 Nearby.getConnectionsClient(context).requestConnection(
@@ -163,6 +165,9 @@ public class NearbyConnections {
                         Toast.makeText(context, "Connection to " + endpointId + " was successful.", Toast.LENGTH_SHORT).show();
                         if(isDiscovering) {
                             SingletonController.getInstance().setGuest(true);
+                            GuestFragment guestFragment = new GuestFragment();
+                            mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                    guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
                         }
                         if(SingletonController.getInstance().getEndpointIdList() != null) {
                             if(!SingletonController.getInstance().getEndpointIdList().contains(endpointId)) {
@@ -201,8 +206,19 @@ public class NearbyConnections {
                         SingletonController.getInstance().getEndpointIdList().remove(i);
                     }
                 }
-                SingletonController.getInstance().setGuest(false);
                 isDiscovering = false;
+
+                // Handles resetting the home menu to normal state
+                if(SingletonController.getInstance().isGuest()) {
+                    SingletonController.getInstance().setGuest(false);
+                    String selectedDrawerItem = SingletonController.getInstance().getMainDrawerAdapter().getSelectedItemName();
+                    if (selectedDrawerItem != null) {
+                        String home = mainActivity.getInstance().getString(R.string.home);
+                        if (selectedDrawerItem.equals(home)) {
+                            mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        }
+                    }
+                }
             }
         };
     }

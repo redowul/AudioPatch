@@ -62,6 +62,15 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
         notifyDataSetChanged();
     }
 
+    public String getSelectedItemName() {
+        for (int i = 0; i < getItemCount(); i++) {
+            if(menuItems.get(i).isSelected()) {
+                return menuItems.get(i).getItemTitle();
+            }
+        }
+        return null;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_drawer_item, parent, false);
@@ -107,7 +116,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                     switch (position) {
                         case 0: { // return to Home Activity
 
-                            if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() == 0) {
+                            if(!SingletonController.getInstance().isGuest()) {
                                 mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                 //addAudioButton.setVisibility(View.VISIBLE);
                             }
@@ -120,7 +129,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                             }
                         }
                         break;
-                        /*case 1: { // open Settings fragment
+                        case 1: { // open Settings fragment
                             mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                     guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
@@ -134,9 +143,10 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                                     payloadController.sendAudio(endpointId, audio, mainActivity.getInstance());
                                      */
                                 // }
-                       /*     }
+                            }
                         }
                         break;
+                        /*
                         case 2: { // open About fragment
                             if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
                                 if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
