@@ -258,7 +258,5 @@
                 android:text="@string/timestamp">
             </TextView>
         </RelativeLayout>
-
     </android.support.design.widget.CoordinatorLayout>
-
 </RelativeLayout>

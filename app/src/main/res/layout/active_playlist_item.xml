@@ -17,7 +17,6 @@
         android:id="@+id/item_handle"
         android:visibility="visible"
         android:layout_marginTop="12dp"
-        android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
         android:layout_width="36dp"
         android:layout_height="36dp"
@@ -26,7 +25,6 @@
 
     <ImageView
         android:id="@+id/album_art"
-        android:layout_toRightOf="@id/item_handle"
         android:layout_toEndOf="@id/item_handle"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -34,17 +32,14 @@
 
     <TextView
         android:id="@+id/audio_title"
-        android:layout_toLeftOf="@id/equalizer"
         android:layout_toStartOf="@id/equalizer"
         android:textStyle="bold"
-        android:layout_toRightOf="@id/album_art"
         android:layout_toEndOf="@id/album_art"
         android:textSize ="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="0dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="0dp"
         android:singleLine="true"
@@ -53,7 +48,6 @@
 
     <TextView
         android:id="@+id/artist"
-        android:layout_toRightOf="@id/album_art"
         android:layout_toEndOf="@id/album_art"
         android:layout_below="@+id/audio_title"
         android:textSize = "12sp"
@@ -61,9 +55,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginRight="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="0dp"
         android:singleLine="true"
@@ -72,7 +64,6 @@
 
     <TextView
         android:id="@+id/interpunct"
-        android:layout_toRightOf="@id/artist"
         android:layout_toEndOf="@id/artist"
         android:layout_below="@+id/audio_title"
         android:textSize="12sp"
@@ -80,8 +71,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginStart="2dp"
         android:layout_marginBottom="0dp"
@@ -91,7 +80,6 @@
 
     <TextView
         android:id="@+id/audio_duration"
-        android:layout_toRightOf="@id/interpunct"
         android:layout_toEndOf="@id/interpunct"
         android:layout_below="@+id/audio_title"
         android:textSize = "12sp"
@@ -110,7 +98,6 @@
 
     <TextView
         android:id="@+id/submitter_intro_text"
-        android:layout_toRightOf="@id/album_art"
         android:layout_toEndOf="@id/album_art"
         android:layout_below="@+id/artist"
         android:textSize ="12sp"
@@ -118,9 +105,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginRight="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="0dp"
         android:singleLine="true"
@@ -129,9 +114,7 @@
 
     <TextView
         android:id="@+id/submitter"
-        android:layout_toLeftOf="@id/equalizer"
         android:layout_toStartOf="@id/equalizer"
-        android:layout_toRightOf="@id/submitter_intro_text"
         android:layout_toEndOf="@id/submitter_intro_text"
         android:layout_below="@+id/artist"
         android:textSize ="12sp"
@@ -139,9 +122,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="1dp"
-        android:layout_marginLeft="1dp"
         android:layout_marginStart="1dp"
-        android:layout_marginRight="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="0dp"
         android:singleLine="true"
@@ -155,10 +136,8 @@
         custom:foregroundColor="@color/colorPrimary"
         custom:animDuration="3500"
         android:layout_marginTop="12dp"
-        android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 </RelativeLayout>

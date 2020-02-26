@@ -14,9 +14,7 @@
     android:numColumns="2"
     android:scaleType="fitCenter"
     android:paddingStart="8dp"
-    android:paddingLeft="8dp"
     android:paddingTop="8dp"
     android:paddingEnd="16dp"
-    android:paddingRight="16dp"
     android:paddingBottom="8dp"/>
 

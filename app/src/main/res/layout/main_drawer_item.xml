@@ -17,8 +17,7 @@
         android:id="@+id/menu_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp" />
+        android:layout_marginStart="12dp" />
 
     <TextView
         android:id="@+id/menu_item_title"
@@ -26,11 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
         android:layout_toEndOf="@id/menu_item_icon"
-        android:layout_toRightOf="@id/menu_item_icon"
         android:orientation="horizontal"
         android:singleLine="true"
         android:text="@string/item"
@@ -38,5 +35,4 @@
         android:textStyle="bold"
         android:textSize="20sp">
     </TextView>
-
 </RelativeLayout>

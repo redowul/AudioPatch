@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/sortMenu_alphabetical"
-        android:title="A to Z" />
+        android:title="@string/alphabetical" />
 
     <item
         android:id="@+id/sortMenu_omegapsical"
-        android:title="Z to A" />
+        android:title="@string/omegapsical" />
 
     <item
         android:id="@+id/sortMenu_artist"
@@ -18,12 +18,12 @@
 
     <item
         android:id="@+id/sortMenu_shortestDuration"
-        android:title="Shortest Duration" />
+        android:title="@string/shortest_duration" />
 
     <item
         android:id="@+id/sortMenu_longestDuration"
-        android:title="Longest Duration" />
+        android:title="@string/longest_duration" />
     <item
         android:id="@+id/sortMenu_totalAlbums"
-        android:title="Total Albums" />
+        android:title="@string/total_albums" />
 </menu>

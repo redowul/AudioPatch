@@ -73,11 +73,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/artist">
                 </TextView>
-
             </android.support.v7.widget.Toolbar>
-
         </android.support.design.widget.CollapsingToolbarLayout>
-
     </android.support.design.widget.AppBarLayout>
-
 </android.support.design.widget.CoordinatorLayout>

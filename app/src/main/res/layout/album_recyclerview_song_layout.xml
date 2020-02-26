@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:id="@+id/item_number_panel"
         android:background="@color/recyclerViewDark"
         android:layout_width="36dp"
@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:orientation="horizontal"
             android:paddingStart="0dp"
             android:paddingLeft="0dp"
@@ -31,23 +30,19 @@
 
     <RelativeLayout
         android:id="@+id/item_panel"
-        android:layout_toRightOf="@id/item_number_panel"
         android:layout_toEndOf="@id/item_number_panel"
         android:background="@color/recyclerViewDark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:paddingTop="12dp"
-        android:paddingRight="10dp"
         android:paddingEnd="10dp"
-        android:paddingLeft="24dp"
         android:paddingStart="24dp"
         android:paddingBottom="12dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/item_duration"
-            android:layout_toRightOf="@id/item_artist"
             android:layout_toEndOf="@id/item_artist"
             android:layout_below="@+id/item_title"
             android:textSize = "12sp"
@@ -71,9 +66,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:ellipsize="end"
-            android:paddingLeft="0dp"
             android:paddingStart="0dp"
-            android:paddingRight="15dp"
             android:paddingEnd="15dp"
             android:text="@string/title">
         </TextView>
@@ -86,13 +79,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="1dp"
-            android:layout_marginRight="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="0dp"
             android:singleLine="true"
             android:ellipsize="end"
             android:text="@string/artist">
         </TextView>
-
     </RelativeLayout>
 </RelativeLayout>

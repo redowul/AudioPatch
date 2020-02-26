@@ -21,24 +21,25 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-   <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
-       <item name="android:popupBackground">@drawable/menu_background</item>
-       <item name="android:itemBackground">@color/recyclerViewDark</item>
-       <item name="android:colorBackground">@color/recyclerViewPrimary</item>
-       <item name="android:textColorSecondary">@color/textColor</item>
-       <item name="android:textSize">15sp</item>
-       <item name="android:paddingTop">3dp</item>
-       <item name="android:paddingLeft">3dp</item>
-       <item name="android:paddingRight">3dp</item>
-       <item name="android:paddingBottom">3dp</item>
-       <item name="android:radius">4dp</item>
-       <item name="android:dropDownHorizontalOffset">4dp</item>
-       <item name="android:dropDownVerticalOffset">4dp</item>
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_background</item>
+        <item name="android:itemBackground">@color/recyclerViewDark</item>
+        <item name="android:colorBackground">@color/recyclerViewPrimary</item>
+        <item name="android:textColorSecondary">@color/textColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:radius">4dp</item>
+        <item name="android:dropDownHorizontalOffset">4dp</item>
+        <item name="android:dropDownVerticalOffset">4dp</item>
     </style>
 
-    <style name = "ProgressBar" parent = "android:Widget.ProgressBar.Horizontal">
+    <style name="ProgressBar" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/bottom_sheet_seekbar_style</item>
         <item name="android:minHeight">2dp</item>
         <item name="android:maxHeight">4dp</item>
@@ -52,5 +53,4 @@
         <item name="android:headerDividersEnabled">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
-
 </resources>
