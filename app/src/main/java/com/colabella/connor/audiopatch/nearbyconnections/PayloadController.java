@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.NearbyConnections;
+package com.colabella.connor.audiopatch.nearbyconnections;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,9 +8,9 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
+import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.controllers.AudioController;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.Payload;

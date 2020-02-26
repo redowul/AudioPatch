@@ -1,10 +1,10 @@
-package com.colabella.connor.audiopatch.Audio;
+package com.colabella.connor.audiopatch.audio;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
 
-import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
+import com.colabella.connor.audiopatch.controllers.AudioController;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
 
 import java.util.ArrayList;
 import java.util.Collections;

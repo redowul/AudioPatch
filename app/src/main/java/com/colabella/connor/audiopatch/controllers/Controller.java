@@ -1,10 +1,6 @@
-package com.colabella.connor.audiopatch.Controllers;
+package com.colabella.connor.audiopatch.controllers;
 
-import android.support.design.widget.AppBarLayout;
-import android.view.View;
-import android.widget.Toolbar;
-
-import com.colabella.connor.audiopatch.NearbyConnections.User;
+import com.colabella.connor.audiopatch.nearbyconnections.User;
 
 public class Controller {
     private static boolean[] permissions = {true}; // [0] RecyclerView Interactivity

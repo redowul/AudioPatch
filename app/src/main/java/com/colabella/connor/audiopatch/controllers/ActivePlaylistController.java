@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.Controllers;
+package com.colabella.connor.audiopatch.controllers;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,10 +12,10 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
-import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
+import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
 
 import java.util.Random;
 

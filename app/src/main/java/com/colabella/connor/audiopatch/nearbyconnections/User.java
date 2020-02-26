@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.NearbyConnections;
+package com.colabella.connor.audiopatch.nearbyconnections;
 
 public class User {
 

@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.RecyclerView;
+package com.colabella.connor.audiopatch.recyclerview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,12 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
+import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.MainActivity;
-import com.colabella.connor.audiopatch.NearbyConnections.PayloadController;
+import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
 import com.colabella.connor.audiopatch.R;
 
 import java.util.ArrayList;

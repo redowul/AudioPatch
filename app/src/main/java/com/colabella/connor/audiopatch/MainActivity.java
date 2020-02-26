@@ -28,15 +28,16 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
-import com.colabella.connor.audiopatch.Controllers.BottomSheetController;
-import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
-import com.colabella.connor.audiopatch.Controllers.ActivePlaylistController;
-import com.colabella.connor.audiopatch.RecyclerView.MainDrawerAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.MainDrawerSecondaryAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.SwipeAndDragHelper;
+import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.controllers.AudioController;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
+import com.colabella.connor.audiopatch.controllers.BottomSheetController;
+import com.colabella.connor.audiopatch.fragments.GuestFragment;
+import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
+import com.colabella.connor.audiopatch.controllers.ActivePlaylistController;
+import com.colabella.connor.audiopatch.recyclerview.MainDrawerAdapter;
+import com.colabella.connor.audiopatch.recyclerview.MainDrawerSecondaryAdapter;
+import com.colabella.connor.audiopatch.recyclerview.SwipeAndDragHelper;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
 import java.util.ArrayList;
@@ -113,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
 
             MainDrawerAdapter mainDrawerAdapter = SingletonController.getInstance().getMainDrawerAdapter();
             mainDrawerAdapter.setSelectedMenuItem(0);
+
+            if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) { //TODO update this to trigger on guest status
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                GuestFragment guestFragment = new GuestFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
+                addAudioButton.setVisibility(View.GONE);
+            }
         }
         else { // Move the task containing this activity to the back of the activity stack.
             moveTaskToBack(true);
@@ -137,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
 
         MainDrawerAdapter mainDrawerAdapter = SingletonController.getInstance().getMainDrawerAdapter();
         String home = getResources().getString(R.string.home);
-        String settings = getResources().getString(R.string.settings);
-        String about = getResources().getString(R.string.about);
+        //String settings = getResources().getString(R.string.settings);
+        //String about = getResources().getString(R.string.about);
         mainDrawerAdapter.addItem(home, true);
-        mainDrawerAdapter.addItem(settings, false);
-        mainDrawerAdapter.addItem(about, false);
+        //mainDrawerAdapter.addItem(settings, false);
+        //mainDrawerAdapter.addItem(about, false);
         primaryItemsRecyclerView.setAdapter(mainDrawerAdapter);
 
         /* DrawerLayout Secondary RecyclerView  */

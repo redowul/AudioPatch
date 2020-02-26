@@ -1,6 +1,5 @@
-package com.colabella.connor.audiopatch.RecyclerView;
+package com.colabella.connor.audiopatch.recyclerview;
 
-import android.graphics.Bitmap;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -8,16 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
-import com.colabella.connor.audiopatch.Fragments.GuestFragment;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
+import com.colabella.connor.audiopatch.fragments.GuestFragment;
 import com.colabella.connor.audiopatch.MainActivity;
-import com.colabella.connor.audiopatch.NearbyConnections.PayloadController;
 import com.colabella.connor.audiopatch.R;
 
 import java.util.ArrayList;
@@ -108,18 +103,28 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
             if (menuItems != null) {
                 if (menuItems.size() > 0) {
                     setSelectedMenuItem(position);
-                    Button addAudioButton = mainActivity.getInstance().findViewById(R.id.add_audio_button);
+                    //Button addAudioButton = mainActivity.getInstance().findViewById(R.id.add_audio_button);
                     switch (position) {
                         case 0: { // return to Home Activity
-                            mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            addAudioButton.setVisibility(View.VISIBLE);
+
+                            if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() == 0) {
+                                mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                //addAudioButton.setVisibility(View.VISIBLE);
+                            }
+                            else {
+                                if(mainActivity.getInstance().getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                                    mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                            guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
+                                   // addAudioButton.setVisibility(View.VISIBLE);
+                                }
+                            }
                         }
                         break;
-                        case 1: { // open Settings fragment
+                        /*case 1: { // open Settings fragment
                             mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                     guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
-                            addAudioButton.setVisibility(View.GONE);
+                            //addAudioButton.setVisibility(View.GONE);
                             if (SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
                                 // if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
                                 //String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
@@ -129,7 +134,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                                     payloadController.sendAudio(endpointId, audio, mainActivity.getInstance());
                                      */
                                 // }
-                            }
+                       /*     }
                         }
                         break;
                         case 2: { // open About fragment
@@ -151,7 +156,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                                         payloadController.sendImage(endpointId, input, mainActivity.getInstance());
                                     }
                                 }
-                            }
+                            }*/
 
                             // String s = "Test";
                             //  guestFragment.getGuestViewModel().setText(s);
@@ -171,8 +176,8 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                                     payloadController.sendBytes(endpointId, s, mainActivity.getInstance());
                                 }
                             }*/
-                        }
-                        break;
+                        /*}
+                        break;*/
                     }
                     DrawerLayout drawer = mainActivity.getInstance().findViewById(R.id.drawer_layout);
                     drawer.closeDrawer(GravityCompat.START);

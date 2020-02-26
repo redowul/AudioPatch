@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.RecyclerView;
+package com.colabella.connor.audiopatch.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.MainActivity;
-import com.colabella.connor.audiopatch.NearbyConnections.NearbyConnections;
+import com.colabella.connor.audiopatch.nearbyconnections.NearbyConnections;
 import com.colabella.connor.audiopatch.R;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.Controllers;
+package com.colabella.connor.audiopatch.controllers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Base64;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.MainActivity;
 
 import java.io.ByteArrayOutputStream;

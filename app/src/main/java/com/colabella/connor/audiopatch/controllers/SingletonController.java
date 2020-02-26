@@ -1,11 +1,11 @@
-package com.colabella.connor.audiopatch.Controllers;
+package com.colabella.connor.audiopatch.controllers;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.AlbumAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.ArtistAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.MainDrawerAdapter;
-import com.colabella.connor.audiopatch.RecyclerView.SongAdapter;
+import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
+import com.colabella.connor.audiopatch.recyclerview.AlbumAdapter;
+import com.colabella.connor.audiopatch.recyclerview.ArtistAdapter;
+import com.colabella.connor.audiopatch.recyclerview.MainDrawerAdapter;
+import com.colabella.connor.audiopatch.recyclerview.SongAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.Controllers;
+package com.colabella.connor.audiopatch.controllers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,10 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
+import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
-import com.colabella.connor.audiopatch.RecyclerView.ActivePlaylistAdapter;
+import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
 
 public class BottomSheetController extends ActivePlaylistController {

@@ -1,21 +1,16 @@
-package com.colabella.connor.audiopatch.NearbyConnections;
+package com.colabella.connor.audiopatch.nearbyconnections;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.colabella.connor.audiopatch.MainActivity;
-import com.colabella.connor.audiopatch.R;
 
 public class NearbyConnectionsController {
 

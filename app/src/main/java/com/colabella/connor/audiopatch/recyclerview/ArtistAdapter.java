@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.RecyclerView;
+package com.colabella.connor.audiopatch.recyclerview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Fragments.GridDisplayFragment;
+import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.controllers.AudioController;
+import com.colabella.connor.audiopatch.fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 

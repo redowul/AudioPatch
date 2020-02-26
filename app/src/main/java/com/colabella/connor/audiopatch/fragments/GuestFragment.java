@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.Fragments;
+package com.colabella.connor.audiopatch.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
+import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 
@@ -54,7 +54,7 @@ public class GuestFragment extends Fragment {
 
             String submittedBy = view.getResources().getString(R.string.submitted_by);
             String submitMessage = submittedBy + " " + view.getResources().getString(R.string.submitter, selectedItem.getSubmitter());
-            
+
             itemTitle.setText(selectedItem.getTitle());
             itemArtist.setText(selectedItem.getArtist());
             itemSubmitter.setText(submitMessage);

@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.NearbyConnections;
+package com.colabella.connor.audiopatch.nearbyconnections;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,7 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.google.android.gms.nearby.Nearby;

@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.Fragments;
+package com.colabella.connor.audiopatch.fragments;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -12,11 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.colabella.connor.audiopatch.Audio.Audio;
-import com.colabella.connor.audiopatch.Controllers.AudioController;
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
+import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.controllers.AudioController;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.R;
-import com.colabella.connor.audiopatch.RecyclerView.AlbumAndSongAdapter;
+import com.colabella.connor.audiopatch.recyclerview.AlbumAndSongAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

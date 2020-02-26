@@ -1,4 +1,4 @@
-package com.colabella.connor.audiopatch.Fragments;
+package com.colabella.connor.audiopatch.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.colabella.connor.audiopatch.Controllers.SingletonController;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.R;
 
 public class SongListFragment extends Fragment {
