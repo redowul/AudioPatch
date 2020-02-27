@@ -18,22 +18,15 @@ import com.colabella.connor.audiopatch.controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.Equalizer;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAdapter.ViewHolder> implements SwipeAndDragHelper.ActionCompletionContract {
-    // private static ActivePlaylistAdapter instance;
     private static List<Audio> dataSet = new ArrayList<>();
     private ItemTouchHelper itemTouchHelper;
-
-    //TODO only bother initializing after the user is confirmed for hosting?
-   /* public static ActivePlaylistAdapter getInstance() {
-        if (instance == null) {
-            instance = new ActivePlaylistAdapter();
-        }
-        return instance;
-    }*/
 
     private Audio getSelectedItem(int index) {
         return dataSet.get(index);
@@ -50,6 +43,12 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             if(!SingletonController.getInstance().isGuest()) {
                 activePlaylistController.initializeMediaPlayer(getSelectedAudio());
             }
+        }
+    }
+
+    public void removeAllItems() {
+        for(int i = dataSet.size() - 1; i > 0; i--) {
+            dataSet.remove(i);
         }
     }
 
@@ -177,7 +176,8 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
         }
         else {
             MainActivity mainActivity = new MainActivity();
-            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
+            Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(),
+                    R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
 
             ImageView bottomSheetCapstoneAlbumCover = mainActivity.getInstance().findViewById(R.id.bottom_sheet_current_album_cover_small);
             bottomSheetCapstoneAlbumCover.setImageBitmap(null);
@@ -264,6 +264,9 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
                     activePlaylistController.initializeMediaPlayer(getAudioAtIndex(getCurrentlySelectedItemIndex()));
                     activePlaylistController.startMediaPlayer();
                     activePlaylistController.togglePlayButtonState();
+
+                    PayloadController payloadController = new PayloadController();
+                    payloadController.sendUpdate(); // distribute currently playing item data to all connected guests
                 }
             }
         }

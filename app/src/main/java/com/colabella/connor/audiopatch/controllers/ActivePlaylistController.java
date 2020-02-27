@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
 import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
 
 import java.util.Random;
@@ -87,7 +88,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                         }
                     }
 
-                    Audio currentlySelectedItem;
+                    Audio currentlySelectedItem = null;
                     if(!repeatSong) { // Default state, which is skipped if an alternative trigger is tripped above (repeating)
                         //TODO add a boolean to the audio objects so we can mark them off when searching for a random song to play. (So we can play every song out of order without repeats)
                         if(shufflePlaylist) { // play a random song in the playlist
@@ -135,6 +136,9 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                 showNotification(selectedItem);
                 TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
                 audioLength.setText(selectedItem.getDuration()); // setting the duration
+
+                PayloadController payloadController = new PayloadController();
+                payloadController.sendUpdate(); // distribute currently playing item data to all connected guests
             }
         }
     }

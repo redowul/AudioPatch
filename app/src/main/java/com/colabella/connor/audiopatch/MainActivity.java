@@ -145,10 +145,10 @@ public class MainActivity extends AppCompatActivity {
 
         MainDrawerAdapter mainDrawerAdapter = SingletonController.getInstance().getMainDrawerAdapter();
         String home = getResources().getString(R.string.home);
-        String settings = getResources().getString(R.string.settings);
+        //String settings = getResources().getString(R.string.settings);
         //String about = getResources().getString(R.string.about);
         mainDrawerAdapter.addItem(home, true);
-        mainDrawerAdapter.addItem(settings, false);
+        //mainDrawerAdapter.addItem(settings, false);
         //mainDrawerAdapter.addItem(about, false);
         primaryItemsRecyclerView.setAdapter(mainDrawerAdapter);
 

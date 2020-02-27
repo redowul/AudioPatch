@@ -168,19 +168,22 @@ public class NearbyConnections {
                             GuestFragment guestFragment = new GuestFragment();
                             mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                     guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
+
+                            SingletonController.getInstance().getActivePlaylistAdapter().removeAllItems();
                         }
                         else { // host is sending data to guest who just connected
                             if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
                                 Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
-                                Bitmap albumCover = selectedItem.getAlbumArt();
+                                if(selectedItem != null) {
+                                    Bitmap albumCover = selectedItem.getAlbumArt();
 
-                                PayloadController payloadController = new PayloadController();
-
-                                payloadController.sendBytes(
-                                        endpointId,
-                                        "filename" + "|" + selectedItem.getTitle() + "|" + selectedItem.getArtist() + "|" + selectedItem.getDuration() + "|" + selectedItem.getSubmitter(),
-                                        mainActivity.getInstance());
-                                payloadController.sendImage(endpointId, albumCover, mainActivity.getInstance());
+                                    PayloadController payloadController = new PayloadController();
+                                    payloadController.sendBytes(
+                                            endpointId,
+                                            "filename" + "|" + selectedItem.getTitle() + "|" + selectedItem.getArtist() + "|" + selectedItem.getDuration() + "|" + selectedItem.getSubmitter(),
+                                            mainActivity.getInstance());
+                                    payloadController.sendImage(endpointId, albumCover, mainActivity.getInstance());
+                                }
                             }
                         }
                         if(SingletonController.getInstance().getEndpointIdList() != null) {
@@ -213,17 +216,19 @@ public class NearbyConnections {
                 MainActivity mainActivity = new MainActivity();
                 Context context = mainActivity.getInstance();
 
-                Toast.makeText(context, "Disconnected successfully.", Toast.LENGTH_SHORT).show();
-
                 if (SingletonController.getInstance().getEndpointIdList() != null) {
-                    for (int i = 0; SingletonController.getInstance().getEndpointIdList().size() > 0; i++) { // remove all endpoints
-                        SingletonController.getInstance().getEndpointIdList().remove(i);
+                    for (int i = 0; SingletonController.getInstance().getEndpointIdList().size() > 0; i++) {
+                        if(SingletonController.getInstance().getEndpointIdList().get(i).equals(endpointId)) {
+                            SingletonController.getInstance().getEndpointIdList().remove(i); // remove disconnected endpoint
+                        }
                     }
                 }
                 isDiscovering = false;
 
                 // Handles resetting the home menu to normal state
                 if(SingletonController.getInstance().isGuest()) {
+                    Toast.makeText(context, "Disconnected successfully.", Toast.LENGTH_SHORT).show();
+
                     SingletonController.getInstance().setGuest(false);
                     String selectedDrawerItem = SingletonController.getInstance().getMainDrawerAdapter().getSelectedItemName();
                     if (selectedDrawerItem != null) {

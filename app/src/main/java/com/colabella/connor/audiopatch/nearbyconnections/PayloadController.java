@@ -6,12 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.AudioController;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
@@ -89,6 +84,39 @@ public class PayloadController extends NearbyConnections {
         }
     }
 
+    // sends update data to connected guest devices
+    public void sendUpdate() {
+        int endpointListSize = SingletonController.getInstance().getEndpointIdList().size();
+        if(endpointListSize > 0) {
+            if (!SingletonController.getInstance().isGuest()) {
+                Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+                if(selectedItem != null) {
+                    Bitmap albumCover = selectedItem.getAlbumArt();
+                    PayloadController payloadController = new PayloadController();
+                    MainActivity mainActivity = new MainActivity();
+                    String token;
+                    if(selectedItem.getAlbumArt() != null) {
+                        token = "filename";
+                    }
+                    else {
+                        token = "albumcovernull";
+                    }
+                    for (int i = 0; i < endpointListSize; i++) {
+                        String endpointId = SingletonController.getInstance().getEndpointIdList().get(i);
+                        payloadController.sendBytes(
+                                endpointId,
+                                token
+                                        + "|" + selectedItem.getTitle()
+                                        + "|" + selectedItem.getArtist()
+                                        + "|" + selectedItem.getDuration()
+                                        + "|" + selectedItem.getSubmitter(),
+                                mainActivity.getInstance());
+                        payloadController.sendImage(endpointId, albumCover, mainActivity.getInstance());
+                    }
+                }
+            }
+        }
+    }
 
     PayloadCallback createPayloadCallback() {
         ArrayList<Payload> incomingPayloads = new ArrayList<>(); // format is [endpointId|audio.getTitle()]
@@ -116,21 +144,16 @@ public class PayloadController extends NearbyConnections {
                             filenames.add(filenameInput); // store the item
                         }
                     }
+                    else if (inputSplit[0].equals("albumcovernull")) {
+                        String filename = inputSplit[1]; // get filename from the array ; format is [filename|audio.getTitle()]
+                        String artist = inputSplit[2];
+                        String duration = inputSplit[3];
+                        String submitter = inputSplit[4];
+                        GuestFragment guestFragment = new GuestFragment();
+                        guestFragment.updateGuestData(null, filename, artist, duration, submitter);
+                    }
                 } else if (payload.getType() == Payload.Type.FILE) {
-                    //incomingPayloads.put(Long.toString(payload.getId()), payload); // store the payload so it can be referenced in onPayloadTransferUpdate()
                     incomingPayloads.add(payload); // store the payload so it can be referenced in onPayloadTransferUpdate()
-
-                   /* System.out.println(payload.getId());
-                    for (int i = 0; i < filenames.size(); i++) {
-                        if (filenames.get(i)[0].equals(endpointId)) { // after updating the array, payload id will be used for linking the two items, not the endpointId
-                            String[] item = new String[]{
-                                    Long.toString(payload.getId()), // payloadId
-                                    filenames.get(i)[1] // title of file
-                            };
-                            filenames.set(i, item); // add the item to the queue
-                            break;
-                        }
-                    }*/
                 }
             }
 
@@ -193,19 +216,8 @@ public class PayloadController extends NearbyConnections {
                                     e.printStackTrace();
                                 }
                                 Bitmap albumArt = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-                                MainActivity mainActivity = new MainActivity();
-                                ImageView background = mainActivity.getInstance().findViewById(R.id.playing_item_background);
-                                TextView playingItemTitle  = mainActivity.getInstance().findViewById(R.id.playing_item_title);
-                                TextView playingItemArtist  = mainActivity.getInstance().findViewById(R.id.playing_item_artist);
-                                TextView playingItemDuration  = mainActivity.getInstance().findViewById(R.id.playing_item_duration);
-                                TextView playingItemSubmitter  = mainActivity.getInstance().findViewById(R.id.playing_item_submitter);
-
-                                background.setImageBitmap(albumArt);
-                                playingItemTitle.setText(filename);
-                                playingItemArtist.setText(artist);
-                                playingItemDuration.setText(duration);
-                                playingItemSubmitter.setText(submitter);
+                                GuestFragment guestFragment = new GuestFragment();
+                                guestFragment.updateGuestData(albumArt, filename, artist, duration, submitter);
                             }
                         }
                     }

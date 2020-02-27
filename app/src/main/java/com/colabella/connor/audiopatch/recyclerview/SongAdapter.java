@@ -57,24 +57,27 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     Audio item = dataSet.get(position);
-                    ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
-                    activePlaylistAdapter.addItem(Audio.copy(item));
-                    activePlaylistAdapter.notifyDataSetChanged();
+
                     DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
                     dataRetrievalActivity.endActivity();
 
                     PayloadController payloadController = new PayloadController();
                     if(SingletonController.getInstance().getEndpointIdList() != null) {
                         if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
-                            String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
+                            if(SingletonController.getInstance().isGuest()) {
+                                String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
 
-                            MainActivity mainActivity = new MainActivity();
-                            Context context = mainActivity.getInstance();
+                                MainActivity mainActivity = new MainActivity();
+                                Context context = mainActivity.getInstance();
 
-                            //TODO only trigger this if connected
-                            payloadController.sendAudio(endpointId, item, context);
+                                payloadController.sendAudio(endpointId, item, context);
+                                return;
+                            }
                         }
                     }
+                    ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
+                    activePlaylistAdapter.addItem(Audio.copy(item));
+                    activePlaylistAdapter.notifyDataSetChanged();
                 }
             });
         }

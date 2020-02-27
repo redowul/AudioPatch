@@ -11,9 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.colabella.connor.audiopatch.audio.Audio;
-import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 
@@ -40,30 +37,32 @@ public class GuestFragment extends Fragment {
             Bitmap appLogo = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable);
             background.setImageBitmap(appLogo);
         }
+    }
 
-        if (SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
-            Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
-            if (background != null) {
-                if (selectedItem.getAlbumArt() != null) {
-                    background.setImageBitmap(selectedItem.getAlbumArt());
-                } else {
-                    Bitmap appLogo = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable);
-                    background.setImageBitmap(appLogo);
-                }
+    public void updateGuestData(Bitmap albumArt, String filename, String artist, String duration, String submitter) {
+        MainActivity mainActivity = new MainActivity();
+        ImageView background = mainActivity.getInstance().findViewById(R.id.playing_item_background);
+        TextView playingItemTitle  = mainActivity.getInstance().findViewById(R.id.playing_item_title);
+        TextView playingItemArtist  = mainActivity.getInstance().findViewById(R.id.playing_item_artist);
+        TextView playingItemDuration  = mainActivity.getInstance().findViewById(R.id.playing_item_duration);
+        TextView playingItemSubmitter  = mainActivity.getInstance().findViewById(R.id.playing_item_submitter);
+
+        if (background != null) {
+            if (albumArt != null) {
+                background.setImageBitmap(albumArt);
+            } else {
+                Bitmap appLogo = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(), R.drawable.audiopatch_logo_square_blurrable);
+                background.setImageBitmap(appLogo);
             }
-
-            TextView itemTitle = view.findViewById(R.id.playing_item_title);
-            TextView itemArtist = view.findViewById(R.id.playing_item_artist);
-            TextView itemSubmitter = view.findViewById(R.id.playing_item_submitter);
-            TextView itemDuration = view.findViewById(R.id.playing_item_duration);
-
-            String submittedBy = view.getResources().getString(R.string.submitted_by);
-            String submitMessage = submittedBy + " " + view.getResources().getString(R.string.submitter, selectedItem.getSubmitter());
-
-            itemTitle.setText(selectedItem.getTitle());
-            itemArtist.setText(selectedItem.getArtist());
-            itemSubmitter.setText(submitMessage);
-            itemDuration.setText(selectedItem.getDuration());
         }
+
+        playingItemTitle.setText(filename);
+        playingItemArtist.setText(artist);
+        playingItemDuration.setText(duration);
+
+        String submittedBy = mainActivity.getInstance().getResources().getString(R.string.submitted_by);
+        String submitMessage = submittedBy + " " + mainActivity.getInstance().getResources().getString(R.string.submitter, submitter);
+        playingItemSubmitter.setText(submitMessage);
     }
 }
+
