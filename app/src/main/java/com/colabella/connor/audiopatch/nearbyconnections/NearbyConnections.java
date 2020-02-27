@@ -2,12 +2,14 @@ package com.colabella.connor.audiopatch.nearbyconnections;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
+import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
@@ -139,8 +141,6 @@ public class NearbyConnections {
                                 PayloadCallback payloadCallback = payloadController.createPayloadCallback();
 
                                 Nearby.getConnectionsClient(context).acceptConnection(endpointId, payloadCallback);
-                                // if (ConnectionsStatusCodes.STATUS_OK == 0) {
-                                // }
                             }
                         })
                         // Reject connection
@@ -168,6 +168,20 @@ public class NearbyConnections {
                             GuestFragment guestFragment = new GuestFragment();
                             mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                     guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
+                        }
+                        else { // host is sending data to guest who just connected
+                            if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
+                                Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
+                                Bitmap albumCover = selectedItem.getAlbumArt();
+
+                                PayloadController payloadController = new PayloadController();
+
+                                payloadController.sendBytes(
+                                        endpointId,
+                                        "filename" + "|" + selectedItem.getTitle() + "|" + selectedItem.getArtist() + "|" + selectedItem.getDuration() + "|" + selectedItem.getSubmitter(),
+                                        mainActivity.getInstance());
+                                payloadController.sendImage(endpointId, albumCover, mainActivity.getInstance());
+                            }
                         }
                         if(SingletonController.getInstance().getEndpointIdList() != null) {
                             if(!SingletonController.getInstance().getEndpointIdList().contains(endpointId)) {

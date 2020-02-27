@@ -1,6 +1,7 @@
 package com.colabella.connor.audiopatch.controllers;
 
 import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.fragments.GuestFragment;
 import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.recyclerview.AlbumAdapter;
 import com.colabella.connor.audiopatch.recyclerview.ArtistAdapter;
@@ -27,6 +28,7 @@ public class SingletonController {
     private boolean isSeekBarStarted; // Allows for movement of seekpar position before the song has started
     private boolean isGuest;
     private String username;
+    private String filter;
 
     private SingletonController() {
         this.audioList = new ArrayList<>();
@@ -42,6 +44,7 @@ public class SingletonController {
         this.isSeekBarTracked = false;
         this.isGuest = false;
         this.username = android.os.Build.MODEL;
+        this.filter = null;
     }
 
     public static SingletonController getInstance() {
@@ -147,6 +150,19 @@ public class SingletonController {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        if(!filter.equals("")) {
+            this.filter = filter;
+        }
+        else {
+            this.filter = null;
+        }
     }
 }
 

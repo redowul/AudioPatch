@@ -152,7 +152,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                                 if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
                                     Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
                                     if (selectedItem != null) {
-                                        String endpointId = SingletonController.getInstance().getEndpointIdList().get(0); //TODO update to hit all endpoints on list
+
 
                                         AudioController audioController = new AudioController();
                                         Bitmap input = selectedItem.getAlbumArt();
@@ -161,9 +161,6 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
                                         //System.out.println(x);
                                         
                                         //String input = "currentItem" + "|" + albumCover;
-
-                                        PayloadController payloadController = new PayloadController();
-                                        payloadController.sendImage(endpointId, input, mainActivity.getInstance());
                                     }
                                 }
                             }*/

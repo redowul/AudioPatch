@@ -6,12 +6,17 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.AudioController;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.fragments.GuestFragment;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.PayloadCallback;
@@ -31,7 +36,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class PayloadController extends NearbyConnections {
 
-    public void sendImage(String endpointId, Bitmap albumCover, Context context) {
+    void sendImage(String endpointId, Bitmap albumCover, Context context) {
         if (albumCover != null) {
             File albumCoverFile = new File(context.getCacheDir(), "file");         // create a file to write bitmap data
             try {
@@ -58,7 +63,7 @@ public class PayloadController extends NearbyConnections {
         }
     }
 
-    private void sendBytes(String endpointId, String string, Context context) {
+    void sendBytes(String endpointId, String string, Context context) {
         byte[] bytes = string.getBytes(UTF_8); // convert string to bytes
         Payload bytesPayload = Payload.fromBytes(bytes); // convert bytes to payload object
         Nearby.getConnectionsClient(context).sendPayload(endpointId, bytesPayload); // send the payload
@@ -97,11 +102,11 @@ public class PayloadController extends NearbyConnections {
                     String input = new String(receivedBytes, StandardCharsets.UTF_8);
                     String[] inputSplit = input.split("\\|");
 
-                    MainActivity mainActivity = new MainActivity();
-                    Context context = mainActivity.getInstance();
-                    Toast.makeText(context, inputSplit[1], Toast.LENGTH_SHORT).show();
-
                     if (inputSplit[0].equals("filename")) {
+                        MainActivity mainActivity = new MainActivity();
+                        Context context = mainActivity.getInstance();
+                        Toast.makeText(context, inputSplit[1], Toast.LENGTH_SHORT).show();
+
                         String filename = inputSplit[1]; // get filename from the array ; format is [filename|audio.getTitle()]
                         String artist = inputSplit[2];
                         String duration = inputSplit[3];
@@ -110,13 +115,6 @@ public class PayloadController extends NearbyConnections {
                         if (!filenames.contains(filenameInput)) { // check to see if the item already exists in the array
                             filenames.add(filenameInput); // store the item
                         }
-                    } else if (inputSplit[0].equals("albumCover")) {
-                        AudioController audioController = new AudioController();
-                        Bitmap albumArt = audioController.base64ToBitmap(inputSplit[1]);
-
-                        Audio audio = new Audio(albumArt, "Test");
-                        SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio);
-                        SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                     }
                 } else if (payload.getType() == Payload.Type.FILE) {
                     //incomingPayloads.put(Long.toString(payload.getId()), payload); // store the payload so it can be referenced in onPayloadTransferUpdate()
@@ -141,15 +139,22 @@ public class PayloadController extends NearbyConnections {
                 if (update.getStatus() == PayloadTransferUpdate.Status.SUCCESS) {
 
                     if (incomingPayloads.size() > 0) {
+                        String filename = "";
+                        String artist = "";
+                        String duration = "";
+                        String submitter = "";
+                        if(filenames.size() > 0) {
+                            String[] audioData = filenames.remove(0);
+                            filename = audioData[1];
+                            artist = audioData[2];
+                            duration = audioData[3];
+                            submitter = audioData[4];
+                        }
+
+                        // If user is the host
                         if (!SingletonController.getInstance().isGuest()) {
                             Payload payload = incomingPayloads.remove(0);
                             File payloadFile = payload.asFile().asJavaFile();
-                            String[] audioData = filenames.remove(0);
-                            String filename = audioData[1];
-                            String artist = audioData[2];
-                            String duration = audioData[3];
-                            String submitter = audioData[4];
-
                             boolean success;
                             if (payloadFile != null) {
                                 success = payloadFile.renameTo(new File(Environment.getExternalStorageDirectory().toString() + File.separator + "AudioPatch", filename + ".mp3"));
@@ -172,7 +177,7 @@ public class PayloadController extends NearbyConnections {
                                 SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                             }
                         }
-                        else {
+                        else { // user is the guest
                             Payload payload = incomingPayloads.remove(0);
                             File payloadFile = payload.asFile().asJavaFile();
 
@@ -189,9 +194,18 @@ public class PayloadController extends NearbyConnections {
                                 }
                                 Bitmap albumArt = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-                                Audio audio = new Audio(albumArt, "Test");
-                                SingletonController.getInstance().getActivePlaylistAdapter().addItem(audio);
-                                SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                                MainActivity mainActivity = new MainActivity();
+                                ImageView background = mainActivity.getInstance().findViewById(R.id.playing_item_background);
+                                TextView playingItemTitle  = mainActivity.getInstance().findViewById(R.id.playing_item_title);
+                                TextView playingItemArtist  = mainActivity.getInstance().findViewById(R.id.playing_item_artist);
+                                TextView playingItemDuration  = mainActivity.getInstance().findViewById(R.id.playing_item_duration);
+                                TextView playingItemSubmitter  = mainActivity.getInstance().findViewById(R.id.playing_item_submitter);
+
+                                background.setImageBitmap(albumArt);
+                                playingItemTitle.setText(filename);
+                                playingItemArtist.setText(artist);
+                                playingItemDuration.setText(duration);
+                                playingItemSubmitter.setText(submitter);
                             }
                         }
                     }

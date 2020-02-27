@@ -76,67 +76,72 @@ public class DataRetrievalActivity extends AppCompatActivity {
             // Handles album search feature. Filters albums on device by user input.
             @Override
             public boolean onQueryTextChange(String userInput) {
-                List<Audio> audioList = SingletonController.getInstance().getAudioList();
-                List<Audio> filteredAudio = new ArrayList<>();
-                List<List<Audio>> filteredAlbums = new ArrayList<>();
-                List<List<List<Audio>>> filteredArtists = new ArrayList<>();
-
-                userInput = userInput.toLowerCase();
-                if (userInput.length() > 0) {
-                    for (Audio item : audioList) {
-                        String title = item.getTitle().toLowerCase();
-                        String artist = item.getArtist().toLowerCase();
-                        String albumTitle = item.getAlbum().toLowerCase();
-
-                        if (title.contains(userInput) || artist.contains(userInput)) {
-                            if (!filteredAudio.contains(item)) {
-                                filteredAudio.add(item);
-                            }
-                        } else {
-                            filteredAudio.remove(item);
-                        }
-
-                        if (albumTitle.contains(userInput) || artist.contains(userInput)) {
-                            List<Audio> searchedAlbum = SingletonController.getInstance().getAlbumByAlbumTitle(albumTitle);
-                            if (searchedAlbum != null) {
-                                if (!filteredAlbums.contains(searchedAlbum)) {
-                                    filteredAlbums.add(searchedAlbum);
-                                }
-                            }
-                        } else {
-                            List<Audio> searchedAlbum = SingletonController.getInstance().getAlbumByAlbumTitle(albumTitle);
-                            filteredAlbums.remove(searchedAlbum);
-                        }
-
-                        if (artist.contains(userInput)) {
-                            List<List<Audio>> searchedArtist = SingletonController.getInstance().getArtistByArtistName(artist);
-                            if (searchedArtist != null) {
-                                if (!filteredArtists.contains(searchedArtist)) {
-                                    filteredArtists.add(searchedArtist);
-                                }
-                            }
-                        } else {
-                            List<List<Audio>> searchedArtist = SingletonController.getInstance().getArtistByArtistName(artist);
-                            filteredArtists.remove(searchedArtist);
-                        }
-                    }
-                    SingletonController.getInstance().getSongAdapter().updateDataSet(filteredAudio);
-                    SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
-                    SingletonController.getInstance().getAlbumAdapter().updateDataSet(filteredAlbums);
-                    SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
-                    SingletonController.getInstance().getArtistAdapter().updateDataSet(filteredArtists);
-                    SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
-                } else {
-                    SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
-                    SingletonController.getInstance().getAlbumAdapter().updateDataSet(SingletonController.getInstance().getAlbumList());
-                    SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
-                    SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
-                    SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
-                    SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
-                }
+                filterAudio(userInput);
+                SingletonController.getInstance().setFilter(userInput);
                 return true;
             }
         });
+    }
+
+    private void filterAudio(String userInput) {
+        List<Audio> audioList = SingletonController.getInstance().getAudioList();
+        List<Audio> filteredAudio = new ArrayList<>();
+        List<List<Audio>> filteredAlbums = new ArrayList<>();
+        List<List<List<Audio>>> filteredArtists = new ArrayList<>();
+
+        userInput = userInput.toLowerCase();
+        if (userInput.length() > 0) {
+            for (Audio item : audioList) {
+                String title = item.getTitle().toLowerCase();
+                String artist = item.getArtist().toLowerCase();
+                String albumTitle = item.getAlbum().toLowerCase();
+
+                if (title.contains(userInput) || artist.contains(userInput)) {
+                    if (!filteredAudio.contains(item)) {
+                        filteredAudio.add(item);
+                    }
+                } else {
+                    filteredAudio.remove(item);
+                }
+
+                if (albumTitle.contains(userInput) || artist.contains(userInput)) {
+                    List<Audio> searchedAlbum = SingletonController.getInstance().getAlbumByAlbumTitle(albumTitle);
+                    if (searchedAlbum != null) {
+                        if (!filteredAlbums.contains(searchedAlbum)) {
+                            filteredAlbums.add(searchedAlbum);
+                        }
+                    }
+                } else {
+                    List<Audio> searchedAlbum = SingletonController.getInstance().getAlbumByAlbumTitle(albumTitle);
+                    filteredAlbums.remove(searchedAlbum);
+                }
+
+                if (artist.contains(userInput)) {
+                    List<List<Audio>> searchedArtist = SingletonController.getInstance().getArtistByArtistName(artist);
+                    if (searchedArtist != null) {
+                        if (!filteredArtists.contains(searchedArtist)) {
+                            filteredArtists.add(searchedArtist);
+                        }
+                    }
+                } else {
+                    List<List<Audio>> searchedArtist = SingletonController.getInstance().getArtistByArtistName(artist);
+                    filteredArtists.remove(searchedArtist);
+                }
+            }
+            SingletonController.getInstance().getSongAdapter().updateDataSet(filteredAudio);
+            SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
+            SingletonController.getInstance().getAlbumAdapter().updateDataSet(filteredAlbums);
+            SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
+            SingletonController.getInstance().getArtistAdapter().updateDataSet(filteredArtists);
+            SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
+        } else {
+            SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
+            SingletonController.getInstance().getAlbumAdapter().updateDataSet(SingletonController.getInstance().getAlbumList());
+            SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
+            SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
+            SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
+            SingletonController.getInstance().getArtistAdapter().notifyDataSetChanged();
+        }
     }
 
     @SuppressLint({"NewApi", "RestrictedApi"})
@@ -243,6 +248,12 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
                 SingletonController.getInstance().getAlbumAdapter().updateDataSet(SingletonController.getInstance().getAlbumList());
                 SingletonController.getInstance().getAlbumAdapter().notifyDataSetChanged();
+
+                // Filters all items by user input after they've been sorted
+                String filter = SingletonController.getInstance().getFilter();
+                if(filter != null) {
+                    filterAudio(filter);
+                }
                 return false;
             }
 
@@ -281,10 +292,10 @@ public class DataRetrievalActivity extends AppCompatActivity {
                         showPopupSortSubmenu(view);
                     }
                     break;
-                    case R.id.settings: {
+                    /*case R.id.settings: {
 
                     }
-                    break;
+                    break;*/
                 }
                 return false;
             }

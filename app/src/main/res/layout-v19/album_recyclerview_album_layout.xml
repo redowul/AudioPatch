@@ -44,7 +44,6 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="2dp"
-                android:layout_marginBottom="0dp"
                 android:orientation="horizontal"
                 android:singleLine="true"
                 android:text="@string/title"
