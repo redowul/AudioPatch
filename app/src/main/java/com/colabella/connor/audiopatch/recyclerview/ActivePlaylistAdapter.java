@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.colabella.connor.audiopatch.audio.Audio;
-import com.colabella.connor.audiopatch.controllers.Controller;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.controllers.BottomSheetController;
 import com.colabella.connor.audiopatch.controllers.ActivePlaylistController;
@@ -34,20 +34,20 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
     public void addItem(Audio item) {
         dataSet.add(item);
-        if(dataSet.size() == 1) {
+        if (dataSet.size() == 1) {
             BottomSheetController bottomSheetController = new BottomSheetController();
             bottomSheetController.alterBottomSheet(item);
             setSelectedAudio(0);
 
             ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-            if(!SingletonController.getInstance().isGuest()) {
+            if (!SingletonController.getInstance().isGuest()) {
                 activePlaylistController.initializeMediaPlayer(getSelectedAudio());
             }
         }
     }
 
     public void removeAllItems() {
-        for(int i = dataSet.size() - 1; i > 0; i--) {
+        for (int i = dataSet.size() - 1; i > 0; i--) {
             dataSet.remove(i);
         }
     }
@@ -132,10 +132,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                        Controller controller = new Controller();
-                        if (controller.getUser().getRecyclerViewPermission()) {
-                            itemTouchHelper.startDrag(holder);
-                        }
+                        itemTouchHelper.startDrag(holder);
                     }
                     return false;
                 }
@@ -146,20 +143,19 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
             holder.equalizer = holder.itemView.findViewById(R.id.equalizer);
 
             if (dataSet.get(position).isSelected()) { // If isSelected returns true, highlight the item.
-                    holder.equalizer.setVisibility(View.VISIBLE);
-                    holder.itemView.setBackgroundResource(R.color.recyclerViewDark);
+                holder.equalizer.setVisibility(View.VISIBLE);
+                holder.itemView.setBackgroundResource(R.color.recyclerViewDark);
                 ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                 if (activePlaylistController.getMediaPlayer() != null) {
                     if (activePlaylistController.getMediaPlayer().isPlaying()) {
                         holder.equalizer.animateBars();
-                    }
-                    else {
-                        if(holder.equalizer.isAnimating()) {
+                    } else {
+                        if (holder.equalizer.isAnimating()) {
                             holder.equalizer.stopBars();
                         }
                     }
                 } else {
-                    if(holder.equalizer.isAnimating()) {
+                    if (holder.equalizer.isAnimating()) {
                         holder.equalizer.stopBars();
                     }
                 }
@@ -167,14 +163,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
                 holder.equalizer.setVisibility(View.GONE);
                 holder.equalizer.stopBars();
             }
-            Controller controller = new Controller();
-            if (controller.getUser().getRecyclerViewPermission()) {
-                holder.itemView.findViewById(R.id.item_handle).setVisibility(View.VISIBLE);
-            } else {
-                holder.itemView.findViewById(R.id.item_handle).setVisibility(View.GONE);
-            }
-        }
-        else {
+        } else {
             MainActivity mainActivity = new MainActivity();
             Bitmap blurredAlbumCover = BitmapFactory.decodeResource(mainActivity.getInstance().getResources(),
                     R.drawable.audiopatch_logo_square_blurrable); // getting the resource, it isn't blurred yet
@@ -189,7 +178,7 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
     @Override
     public int getItemCount() {
         BottomSheetController bottomSheetController = new BottomSheetController();
-        if(dataSet.size() == 0) {
+        if (dataSet.size() == 0) {
             bottomSheetController.resetBottomSheet();
         }
         return dataSet.size();
@@ -211,18 +200,16 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
     @Override
     public void onViewSwiped(int position) {
-        Controller controller = new Controller();
-        if (controller.getUser().getRecyclerViewPermission()) {
-            if (dataSet.get(position).isSelected()) {
-                ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-                activePlaylistController.releaseSelectedAudio();
+        if (dataSet.get(position).isSelected()) {
+            ActivePlaylistController activePlaylistController = new ActivePlaylistController();
+            activePlaylistController.releaseSelectedAudio();
 
-                BottomSheetController bottomSheetController = new BottomSheetController();
-                bottomSheetController.resetBottomSheet();
-            }
-            dataSet.remove(position);
-            notifyItemRemoved(position);
+            BottomSheetController bottomSheetController = new BottomSheetController();
+            bottomSheetController.resetBottomSheet();
         }
+        dataSet.remove(position);
+        notifyItemRemoved(position);
+
     }
 
     public void setTouchHelper(ItemTouchHelper touchHelper) {
@@ -256,18 +243,15 @@ public class ActivePlaylistAdapter extends RecyclerView.Adapter<ActivePlaylistAd
 
         @Override
         public void onClick(View view) {
-            Controller controller = new Controller();
             ActivePlaylistController activePlaylistController = new ActivePlaylistController();
-            if (controller.getUser().getRecyclerViewPermission()) {
-                if (getAdapterPosition() >= 0) {
-                    setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
-                    activePlaylistController.initializeMediaPlayer(getAudioAtIndex(getCurrentlySelectedItemIndex()));
-                    activePlaylistController.startMediaPlayer();
-                    activePlaylistController.togglePlayButtonState();
+            if (getAdapterPosition() >= 0) {
+                setSelectedAudio(getAdapterPosition());             // Set item at clicked position's isClicked to true
+                activePlaylistController.initializeMediaPlayer(getAudioAtIndex(getCurrentlySelectedItemIndex()));
+                activePlaylistController.startMediaPlayer();
+                activePlaylistController.togglePlayButtonState();
 
-                    PayloadController payloadController = new PayloadController();
-                    payloadController.sendUpdate(); // distribute currently playing item data to all connected guests
-                }
+                PayloadController payloadController = new PayloadController();
+                payloadController.sendUpdate(); // distribute currently playing item data to all connected guests
             }
         }
     }

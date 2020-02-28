@@ -4,8 +4,6 @@ import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-import com.colabella.connor.audiopatch.controllers.Controller;
-
 public class SwipeAndDragHelper extends ItemTouchHelper.Callback {
 
     private ActionCompletionContract contract;
@@ -32,10 +30,7 @@ public class SwipeAndDragHelper extends ItemTouchHelper.Callback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        Controller controller = new Controller();
-        if (controller.getUser().getRecyclerViewPermission()) {
-            contract.onViewSwiped(viewHolder.getAdapterPosition());
-        }
+        contract.onViewSwiped(viewHolder.getAdapterPosition());
     }
 
     @Override
@@ -51,14 +46,13 @@ public class SwipeAndDragHelper extends ItemTouchHelper.Callback {
                             float dY,
                             int actionState,
                             boolean isCurrentlyActive) {
-        Controller controller = new Controller();
-        if (controller.getUser().getRecyclerViewPermission()) {
-            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                float alpha = 1 - (Math.abs(dX) / recyclerView.getWidth());
-                viewHolder.itemView.setAlpha(alpha);
-            }
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            float alpha = 1 - (Math.abs(dX) / recyclerView.getWidth());
+            viewHolder.itemView.setAlpha(alpha);
         }
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
     }
 
     public interface ActionCompletionContract {

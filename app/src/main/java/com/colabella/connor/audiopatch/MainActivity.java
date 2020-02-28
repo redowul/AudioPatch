@@ -9,9 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -33,20 +31,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.colabella.connor.audiopatch.audio.Audio;
+import com.colabella.connor.audiopatch.controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.controllers.AudioController;
-import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.controllers.BottomSheetController;
+import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.fragments.GuestFragment;
 import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
 import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
-import com.colabella.connor.audiopatch.controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.recyclerview.MainDrawerAdapter;
 import com.colabella.connor.audiopatch.recyclerview.MainDrawerSecondaryAdapter;
 import com.colabella.connor.audiopatch.recyclerview.SwipeAndDragHelper;
 import com.qhutch.bottomsheetlayout.BottomSheetLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -342,55 +337,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*@Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController(getPackageManager(), getPackageName(), this);
-        nearbyConnectionsController.clickedDrawerFragment(menuItem);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        switch (menuItem.getItemId()) {
-
-            case R.id.nav_advertise:
-            case R.id.nav_discover: {
-                //drawer.closeDrawer(GravityCompat.START);
-                //Toast.makeText(instance, "You may now close the drawer.", Toast.LENGTH_SHORT).show();
-                //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                break;
-            }
-        }
-        return true;
-    }*/
-
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragments = new ArrayList<>();
-        private final List<String> mFragmentTitles = new ArrayList<>();
-
-        Adapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        void addFragment(Fragment fragment, String title) {
-            mFragments.add(fragment);
-            mFragmentTitles.add(title);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitles.get(position);
-        }
-    }
-
-    //TODO need to actually implement all permissions properly
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -411,38 +357,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             break;
-            case 1: {
-
-            }
-            break;
-         /*   case 1: {
-                NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController();
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (nearbyConnectionsController.getIsAdvertising()) {
-                        nearbyConnectionsController.advertise();
-                    } else if (nearbyConnectionsController.getIsDiscovering()) {
-                        nearbyConnectionsController.discover();
-                    }
-                } else {  // permission denied
-                    nearbyConnectionsController.setIsAdvertising(false);
-                    nearbyConnectionsController.setIsDiscovering(false);
-                    Toast.makeText(MainActivity.this, "Permission denied to access your device's location.", Toast.LENGTH_SHORT).show();
-                }
-            }
-            break;
-           /* case 2: {
-                NearbyConnectionsController nearbyConnectionsController = new NearbyConnectionsController();
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Searching for devices.", Toast.LENGTH_SHORT).show();
-                    nearbyConnectionsController.discover();
-                }
-                else {  // permission denied
-                    nearbyConnectionsController.setIsDiscovering(false);
-                    Toast.makeText(MainActivity.this, "Permission denied to access your device's location.", Toast.LENGTH_SHORT).show();
-                }
-            }*/
         }
     }
 }

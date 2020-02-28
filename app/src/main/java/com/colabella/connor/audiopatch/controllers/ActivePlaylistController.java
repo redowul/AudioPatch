@@ -240,9 +240,6 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
     // Selects the previous item in the list, if one is available, and plays the audio.
     // When at index 0 of audioList it will loop around and play the last item in the audioList.
     private void playPreviousItem() {
-        //Controller controller = new Controller();
-        //if (controller.getUser().getRecyclerViewPermission()) {  // Checks the global user state to see if the user has permission to alter the RecyclerView
-        //TODO set permission up properly
         int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
 
         boolean isCurrentlyPlaying = false;
@@ -292,9 +289,6 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
     // Selects the next available item in the RecyclerView if one is already selected to move from.
     // If the selected item is the last in the list, it selects the item at the top of the list instead (index 0).
     private void playNextItem() {
-        //Controller controller = new Controller();
-        //if (controller.getUser().getRecyclerViewPermission()) {  // Checks the global user state to see if the user has permission to alter the RecyclerView
-        //TODO set permission up properly
         int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
 
         boolean isCurrentlyPlaying = false;

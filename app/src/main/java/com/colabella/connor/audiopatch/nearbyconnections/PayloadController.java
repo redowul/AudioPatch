@@ -1,6 +1,8 @@
 package com.colabella.connor.audiopatch.nearbyconnections;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,11 +39,14 @@ public class PayloadController extends NearbyConnections {
     // Nearby leaves junk data behind. This method is responsible for deleting it all.
     public void deleteTempFiles() {
         MainActivity mainActivity = new MainActivity();
-        String download = mainActivity.getInstance().getResources().getString(R.string.download); // Download ; Using a string resource for localization purposes (is that necessary?)
-        String nearby = mainActivity.getInstance().getResources().getString(R.string.nearby); // Nearby ; Using a string resource for localization purposes (is that necessary?)
-        File nearbyTempFileDir = new File(Environment.getExternalStorageDirectory().toString() + File.separator + download + File.separator + nearby);
-        for(File tempFile : nearbyTempFileDir.listFiles()) {
-            tempFile.delete();
+        PackageManager packageManager = mainActivity.getInstance().getPackageManager();
+        if (packageManager.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, mainActivity.getInstance().getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+            String download = mainActivity.getInstance().getResources().getString(R.string.download); // Download ; Using a string resource for localization purposes (is that necessary?)
+            String nearby = mainActivity.getInstance().getResources().getString(R.string.nearby); // Nearby ; Using a string resource for localization purposes (is that necessary?)
+            File nearbyTempFileDir = new File(Environment.getExternalStorageDirectory().toString() + File.separator + download + File.separator + nearby);
+            for (File tempFile : nearbyTempFileDir.listFiles()) {
+                tempFile.delete();
+            }
         }
     }
 
@@ -142,8 +147,6 @@ public class PayloadController extends NearbyConnections {
 
                     if (inputSplit[0].equals("filename")) {
                         MainActivity mainActivity = new MainActivity();
-                        Context context = mainActivity.getInstance();
-                        Toast.makeText(context, inputSplit[1], Toast.LENGTH_SHORT).show();
 
                         String filename = inputSplit[1]; // get filename from the array ; format is [filename|audio.getTitle()]
                         String artist = inputSplit[2];
