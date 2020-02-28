@@ -15,6 +15,7 @@ import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.fragments.GuestFragment;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
+import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
 
 import java.util.ArrayList;
 import java.util.List;

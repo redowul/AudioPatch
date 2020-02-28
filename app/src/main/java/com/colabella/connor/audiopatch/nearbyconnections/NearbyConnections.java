@@ -238,6 +238,8 @@ public class NearbyConnections {
                         }
                     }
                 }
+                PayloadController payloadController = new PayloadController();
+                payloadController.deleteTempFiles(); // delete temp data left behind by application
             }
         };
     }

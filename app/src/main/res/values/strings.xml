@@ -43,4 +43,7 @@
     <string name="shortest_duration">Shortest Duration</string>
     <string name="longest_duration">Longest Duration</string>
     <string name="total_albums">Total Albums</string>
+
+    <string name="download">Download</string>
+    <string name="nearby">Nearby</string>
 </resources>

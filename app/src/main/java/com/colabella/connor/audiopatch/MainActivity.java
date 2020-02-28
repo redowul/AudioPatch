@@ -37,6 +37,7 @@ import com.colabella.connor.audiopatch.controllers.AudioController;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.controllers.BottomSheetController;
 import com.colabella.connor.audiopatch.fragments.GuestFragment;
+import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
 import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.recyclerview.MainDrawerAdapter;
@@ -98,6 +99,12 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter receiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
         AudioController.HeadphonesInUseReceiver headphonesInUseReceiver = new AudioController.HeadphonesInUseReceiver();
         registerReceiver(headphonesInUseReceiver, receiverFilter);
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        PayloadController payloadController = new PayloadController();
+        payloadController.deleteTempFiles();
     }
 
     @Override

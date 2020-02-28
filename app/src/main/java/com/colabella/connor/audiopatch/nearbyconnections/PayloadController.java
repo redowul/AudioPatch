@@ -1,12 +1,15 @@
 package com.colabella.connor.audiopatch.nearbyconnections;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
+
+import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.AudioController;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
@@ -30,6 +33,17 @@ import java.util.ArrayList;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class PayloadController extends NearbyConnections {
+
+    // Nearby leaves junk data behind. This method is responsible for deleting it all.
+    public void deleteTempFiles() {
+        MainActivity mainActivity = new MainActivity();
+        String download = mainActivity.getInstance().getResources().getString(R.string.download); // Download ; Using a string resource for localization purposes (is that necessary?)
+        String nearby = mainActivity.getInstance().getResources().getString(R.string.nearby); // Nearby ; Using a string resource for localization purposes (is that necessary?)
+        File nearbyTempFileDir = new File(Environment.getExternalStorageDirectory().toString() + File.separator + download + File.separator + nearby);
+        for(File tempFile : nearbyTempFileDir.listFiles()) {
+            tempFile.delete();
+        }
+    }
 
     void sendImage(String endpointId, Bitmap albumCover, Context context) {
         if (albumCover != null) {
@@ -74,13 +88,9 @@ public class PayloadController extends NearbyConnections {
             e.printStackTrace();
         }
         if (filePayload != null) {
-            // if(filePayload != null) { // null check to make certain we have data to send
             String payloadFilename = "filename" + "|" + audio.getTitle() + "|" + audio.getArtist() + "|" + audio.getDuration() + "|" + audio.getSubmitter();
-            //String payloadFilename = "filename" + "|" + audio.getTitle();
             sendBytes(endpointId, payloadFilename, context); // send the payload; the goal is to attach it to the sent audio file and rebuild the object on the receiving device
-
             Nearby.getConnectionsClient(context).sendPayload(endpointId, filePayload); // send the payload
-            //}
         }
     }
 

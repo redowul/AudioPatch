@@ -21,7 +21,9 @@
         android:choiceMode="singleChoice"
         android:divider="@color/recyclerViewAccent"
         android:dividerHeight="1dp"
-        android:theme="@style/NavigationView">
+        android:theme="@style/NavigationView"
+        android:focusable="true"
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/drawer_header"
@@ -34,7 +36,7 @@
         <EditText
             android:id="@+id/username"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:inputType="text"
             android:layout_alignBottom="@+id/drawer_header"
             android:layout_marginBottom="0dp"
