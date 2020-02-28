@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
-import com.colabella.connor.audiopatch.controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.fragments.SongSelectionFragment;
 import com.colabella.connor.audiopatch.R;

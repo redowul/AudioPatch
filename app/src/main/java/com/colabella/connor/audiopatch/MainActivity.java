@@ -353,7 +353,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // permission denied
                     Toast.makeText(this, "Permission to read your external storage was denied", Toast.LENGTH_SHORT).show();
-                    //closeNow();
                 }
             }
             break;

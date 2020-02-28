@@ -11,12 +11,10 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.util.Base64;
 
-import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.audio.Audio;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

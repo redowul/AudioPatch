@@ -29,7 +29,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
     private static MediaPlayer mediaPlayer;
 
     public MediaPlayer getMediaPlayer() {
-        if(mediaPlayer == null) {
+        if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
         }
         return mediaPlayer;
@@ -55,8 +55,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
             if (context != null && uri != null) {
                 if (mediaPlayer == null) {
                     mediaPlayer = new MediaPlayer();
-                }
-                else if (mediaPlayer.isPlaying()) {
+                } else if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                     mediaPlayer.stop();
                     mediaPlayer.release();
@@ -77,21 +76,19 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                         Drawable.ConstantState repeatOneSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_one_selected_24dp).getConstantState();
                         Drawable.ConstantState shuffleSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.shuffle_selected_24dp).getConstantState();
 
-                        if(repeatButtonCurrentState.equals(repeatSelected)) {
+                        if (repeatButtonCurrentState.equals(repeatSelected)) {
                             repeatPlaylist = true;
-                        }
-                        else if (repeatButtonCurrentState.equals(repeatOneSelected)) {
+                        } else if (repeatButtonCurrentState.equals(repeatOneSelected)) {
                             repeatSong = true;
-                        }
-                        else if(shuffleButtonCurrentState.equals(shuffleSelected)) {
+                        } else if (shuffleButtonCurrentState.equals(shuffleSelected)) {
                             shufflePlaylist = true;
                         }
                     }
 
                     Audio currentlySelectedItem = null;
-                    if(!repeatSong) { // Default state, which is skipped if an alternative trigger is tripped above (repeating)
+                    if (!repeatSong) { // Default state, which is skipped if an alternative trigger is tripped above (repeating)
                         //TODO add a boolean to the audio objects so we can mark them off when searching for a random song to play. (So we can play every song out of order without repeats)
-                        if(shufflePlaylist) { // play a random song in the playlist
+                        if (shufflePlaylist) { // play a random song in the playlist
                             int playlistSize = getItemCount();
 
                             Random random = new Random();
@@ -102,8 +99,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                             initializeMediaPlayer(currentlySelectedItem);
                             startMediaPlayer();
                             togglePlayButtonState();
-                        }
-                        else {
+                        } else {
                             int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
                             if (currentlySelectedItemIndex == getItemCount() - 1) { // if song played was last in the list
                                 SeekBar seekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
@@ -114,8 +110,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                                     currentlySelectedItem = getSelectedAudio();
                                     initializeMediaPlayer(currentlySelectedItem);
                                     startMediaPlayer();
-                                }
-                                else { // notify the playlist that the song is finished
+                                } else { // notify the playlist that the song is finished
                                     SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
                                 }
                                 togglePlayButtonState();
@@ -126,8 +121,7 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                                 startMediaPlayer();
                             }
                         }
-                    }
-                    else { // repeat the current track
+                    } else { // repeat the current track
                         currentlySelectedItem = getSelectedAudio();
                         initializeMediaPlayer(currentlySelectedItem);
                         startMediaPlayer();
@@ -155,19 +149,9 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                     if (getItemCount() > 0) {
                         mediaPlayer = new MediaPlayer();
                         boolean isItemSelected = isItemSelected();
-                        if(isItemSelected) {
-                            //int selectedItem = AudioSingleton.getInstance().getActivePlaylistAdapter().getCurrentlySelectedItemIndex();
-                            //initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
+                        if (isItemSelected) {
                             startMediaPlayer();
-                            //playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedItem(selectedItem));
                         }
-                        else {
-                            // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(0);
-                            // initializeMediaPlayer(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
-                            //mediaPlayer.start();
-                            //playSelectedAudio(AudioSingleton.getInstance().getActivePlaylistAdapter().getSelectedAudio());
-                        }
-                        // AudioSingleton.getInstance().getActivePlaylistAdapter().setSelectedAudio(selectedItem); // Set item at clicked position's isClicked to true
                         view.setBackgroundResource(R.drawable.ic_pause_24dp);
                     }
                 } else { // mediaPlayer is not null
@@ -244,15 +228,15 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
 
         boolean isCurrentlyPlaying = false;
         MediaPlayer mediaPlayer = getMediaPlayer();
-        if(mediaPlayer != null) {
-            if(mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
                 isCurrentlyPlaying = true;
             }
         }
 
         if (currentlySelectedItemIndex >= 0) {
             AudioController audioController = new AudioController();
-            if(mediaPlayer != null) {
+            if (mediaPlayer != null) {
                 String time = audioController.milliSecondsToTimer(mediaPlayer.getCurrentPosition());
 
                 int minutes = Integer.valueOf(time.substring(0, time.indexOf(':')));
@@ -293,8 +277,8 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
 
         boolean isCurrentlyPlaying = false;
         MediaPlayer mediaPlayer = getMediaPlayer();
-        if(mediaPlayer != null) {
-            if(mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
                 isCurrentlyPlaying = true;
             }
         }
@@ -308,10 +292,9 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                 initializeMediaPlayer(getAudioAtIndex(currentlySelectedItemIndex + 1));
             }
 
-            if(isCurrentlyPlaying) { // begin playing audio
+            if (isCurrentlyPlaying) { // begin playing audio
                 startMediaPlayer();
-            }
-            else { // reset seekbars and timestamp
+            } else { // reset seekbars and timestamp
                 MainActivity mainActivity = new MainActivity();
 
                 SeekBar bottomSheetSeekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
@@ -323,14 +306,13 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
             }
             togglePlayButtonState();
         }
-        //}
     }
 
     public void togglePlayButtonState() {
         MainActivity mainActivity = new MainActivity();
         Button playButton = mainActivity.getInstance().findViewById(R.id.play_button);
         playButton.setBackgroundResource(R.drawable.ic_play_24dp);
-        if(mediaPlayer != null) {
+        if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
                 playButton.setBackgroundResource(R.drawable.ic_pause_24dp);
             }

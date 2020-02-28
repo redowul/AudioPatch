@@ -3,19 +3,17 @@ package com.colabella.connor.audiopatch.nearbyconnections;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
+import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.AudioController;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
-import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.fragments.GuestFragment;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.Payload;
@@ -146,7 +144,6 @@ public class PayloadController extends NearbyConnections {
                     String[] inputSplit = input.split("\\|");
 
                     if (inputSplit[0].equals("filename")) {
-                        MainActivity mainActivity = new MainActivity();
 
                         String filename = inputSplit[1]; // get filename from the array ; format is [filename|audio.getTitle()]
                         String artist = inputSplit[2];
