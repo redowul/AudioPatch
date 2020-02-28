@@ -19,9 +19,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -61,9 +65,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        // drawer.openDrawer(GravityCompat.START); //TODO open and lock the drawer on boot to force the user to select advertise or discover
-        //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-
         BottomSheetController bottomSheetController = new BottomSheetController();
         ActivePlaylistController activePlaylistController = new ActivePlaylistController();
 
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Automatically retrieves audio files from storage if the application has already been granted permission to do so
         PackageManager packageManager = getPackageManager();
-        if(packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+        if (packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
             if (SingletonController.getInstance().getAudioList() != null) {
                 if (SingletonController.getInstance().getAudioList().size() == 0) {
                     AudioController audioController = new AudioController();
@@ -95,34 +96,39 @@ public class MainActivity extends AppCompatActivity {
 
         // Handles headphone plugging and unplugging
         IntentFilter receiverFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-        AudioController.HeadphonesInUseReceiver headphonesInUseReceiver = new AudioController.HeadphonesInUseReceiver ();
-        registerReceiver( headphonesInUseReceiver, receiverFilter );
+        AudioController.HeadphonesInUseReceiver headphonesInUseReceiver = new AudioController.HeadphonesInUseReceiver();
+        registerReceiver(headphonesInUseReceiver, receiverFilter);
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if(getSupportFragmentManager().getBackStackEntryCount() > 0 && !drawer.isDrawerOpen(GravityCompat.START)) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0 && !drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.openDrawer(GravityCompat.START); // Open the drawer
-        }
-        else if (drawer.isDrawerOpen(GravityCompat.START)) { // close drawer, set add audio button to be visible
-            Button addAudioButton = findViewById(R.id. add_audio_button);
+        } else if (drawer.isDrawerOpen(GravityCompat.START)) { // close drawer, set add audio button to be visible
+            Button addAudioButton = findViewById(R.id.add_audio_button);
             addAudioButton.setVisibility(View.VISIBLE);
 
             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             drawer.closeDrawer(GravityCompat.START);
 
+            EditText username = findViewById(R.id.username);
+            if (username.length() == 0) {
+                String phoneModel = android.os.Build.MODEL;
+                username.setText(phoneModel, null);
+                SingletonController.getInstance().setUsername(phoneModel);
+            }
+
             MainDrawerAdapter mainDrawerAdapter = SingletonController.getInstance().getMainDrawerAdapter();
             mainDrawerAdapter.setSelectedMenuItem(0);
 
-            if(SingletonController.getInstance().isGuest()) {
+            if (SingletonController.getInstance().isGuest()) {
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 GuestFragment guestFragment = new GuestFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
                 addAudioButton.setVisibility(View.GONE);
             }
-        }
-        else { // Move the task containing this activity to the back of the activity stack.
+        } else { // Move the task containing this activity to the back of the activity stack.
             moveTaskToBack(true);
         }
     }
@@ -152,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         //mainDrawerAdapter.addItem(about, false);
         primaryItemsRecyclerView.setAdapter(mainDrawerAdapter);
 
-        TextView username = findViewById(R.id.username);
+        EditText username = findViewById(R.id.username);
         String phoneModel = SingletonController.getInstance().getUsername();
         username.setText(phoneModel);
 
@@ -171,6 +177,38 @@ public class MainActivity extends AppCompatActivity {
 
         secondaryItemsRecyclerView.setAdapter(mainDrawerSecondaryAdapter);
 
+        username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable input) { }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence input, int start, int before, int count) {
+                if (input.length() != 0) {
+                    String newUsername = input.toString();
+                    SingletonController.getInstance().setUsername(newUsername);
+                }
+                else {
+                    SingletonController.getInstance().setUsername(phoneModel);
+                }
+            }
+        });
+
+        username.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    if (username.length() == 0) {
+                        username.setText(phoneModel, null);
+                        SingletonController.getInstance().setUsername(phoneModel);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
 
     }
 
@@ -233,8 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 seekBar.setY((int) (currentY + (bottomSheetSize * .50)));
                 seekbarPosition.setY((int) (currentY + (bottomSheetSize * .49)));
                 audioLength.setY((int) (currentY + (bottomSheetSize * .49)));
-            }
-            else {
+            } else {
                 seekBar.setY((int) (currentY + (bottomSheetSize * .70)));
                 seekbarPosition.setY((int) (currentY + (bottomSheetSize * .69)));
                 audioLength.setY((int) (currentY + (bottomSheetSize * .69)));
@@ -284,17 +321,16 @@ public class MainActivity extends AppCompatActivity {
     //Enables audio selection
     public void startDataRetrievalActivity(View view) {
         PackageManager packageManager = getPackageManager();
-        if(packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+        if (packageManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
             if (SingletonController.getInstance().getAudioList() != null) {
                 if (SingletonController.getInstance().getAudioList().size() == 0) {
-                     AudioController audioController = new AudioController();
-                     audioController.getAudioFilesFromDeviceStorage(); // Retrieves audio files from storage
+                    AudioController audioController = new AudioController();
+                    audioController.getAudioFilesFromDeviceStorage(); // Retrieves audio files from storage
                 }
             }
             Intent myIntent = new Intent(MainActivity.this, DataRetrievalActivity.class);
             MainActivity.this.startActivity(myIntent);
-        }
-        else {
+        } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
         }
     }

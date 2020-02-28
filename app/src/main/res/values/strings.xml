@@ -7,7 +7,7 @@
 
     <string name="logo">AudioPatch Logo</string>
 
-    <string name="username">Username</string>
+    <string name="username">Enter a username</string>
     <string name="secondary_information">Host or Join to begin a session</string>
 
     <string name="home">Home</string>

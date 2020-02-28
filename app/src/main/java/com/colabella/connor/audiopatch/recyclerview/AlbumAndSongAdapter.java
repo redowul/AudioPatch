@@ -1,5 +1,6 @@
 package com.colabella.connor.audiopatch.recyclerview;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,12 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.colabella.connor.audiopatch.MainActivity;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.controllers.ActivePlaylistController;
 import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.fragments.SongSelectionFragment;
 import com.colabella.connor.audiopatch.R;
+import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
 
 import java.util.List;
 
@@ -108,8 +112,8 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ActivePlaylistController activePlaylistController = new ActivePlaylistController();
                         Audio item = songDataSet.get(songPosition);
+                        item.setSubmitter(SingletonController.getInstance().getUsername());
                         for (List<Audio> album: albumDataSet) {
                             if(item.getAlbum().equalsIgnoreCase(album.get(0).getAlbum())) {
                                 item.setAlbumArt(album.get(0).getAlbumArt());
@@ -117,11 +121,26 @@ public class AlbumAndSongAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             }
                         }
 
+                        DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
+                        dataRetrievalActivity.endActivity();
+
+                        PayloadController payloadController = new PayloadController();
+                        if(SingletonController.getInstance().getEndpointIdList() != null) {
+                            if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
+                                if(SingletonController.getInstance().isGuest()) {
+                                    String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
+
+                                    MainActivity mainActivity = new MainActivity();
+                                    Context context = mainActivity.getInstance();
+
+                                    payloadController.sendAudio(endpointId, item, context);
+                                    return;
+                                }
+                            }
+                        }
                         ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
                         activePlaylistAdapter.addItem(Audio.copy(item));
                         activePlaylistAdapter.notifyDataSetChanged();
-                        DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                        dataRetrievalActivity.endActivity();
                     }
                 });
                 break;

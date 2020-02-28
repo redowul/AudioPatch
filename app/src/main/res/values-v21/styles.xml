@@ -40,4 +40,10 @@
         <item name="android:headerDividersEnabled">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
+    <style name="EditUnderBar" parent="android:Widget.Holo.Light.TextView">
+        <item name="colorControlNormal">@color/textColor</item>
+        <item name="colorControlActivated">@color/textColor</item>
+        <item name="colorControlHighlight">@color/textColor</item>
+    </style>
 </resources>

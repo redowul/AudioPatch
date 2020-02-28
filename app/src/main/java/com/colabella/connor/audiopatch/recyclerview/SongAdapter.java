@@ -57,6 +57,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     Audio item = dataSet.get(position);
+                    item.setSubmitter(SingletonController.getInstance().getUsername());
 
                     DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
                     dataRetrievalActivity.endActivity();

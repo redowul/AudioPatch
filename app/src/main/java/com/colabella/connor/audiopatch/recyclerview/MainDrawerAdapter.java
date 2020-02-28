@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,7 +65,7 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
 
     public String getSelectedItemName() {
         for (int i = 0; i < getItemCount(); i++) {
-            if(menuItems.get(i).isSelected()) {
+            if (menuItems.get(i).isSelected()) {
                 return menuItems.get(i).getItemTitle();
             }
         }
@@ -112,82 +113,29 @@ public class MainDrawerAdapter extends RecyclerView.Adapter<MainDrawerAdapter.Vi
             if (menuItems != null) {
                 if (menuItems.size() > 0) {
                     setSelectedMenuItem(position);
-                    //Button addAudioButton = mainActivity.getInstance().findViewById(R.id.add_audio_button);
                     switch (position) {
                         case 0: { // return to Home Activity
-
-                            if(!SingletonController.getInstance().isGuest()) {
+                            if (!SingletonController.getInstance().isGuest()) {
                                 mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                 //addAudioButton.setVisibility(View.VISIBLE);
-                            }
-                            else {
-                                if(mainActivity.getInstance().getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                            } else {
+                                if (mainActivity.getInstance().getSupportFragmentManager().getBackStackEntryCount() == 0) {
                                     mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                             guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
-                                   // addAudioButton.setVisibility(View.VISIBLE);
                                 }
                             }
                         }
                         break;
-                        case 1: { // open Settings fragment
-                            mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                    guestFragment, "GuestFragment").addToBackStack("open_guest").commit();
-                            //addAudioButton.setVisibility(View.GONE);
-                            if (SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
-                                // if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
-                                //String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
-                                    /*String endpointId = "test";
-                                    PayloadController payloadController = new PayloadController();
-                                    Audio audio = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
-                                    payloadController.sendAudio(endpointId, audio, mainActivity.getInstance());
-                                     */
-                                // }
-                            }
-                        }
-                        break;
-                        /*
-                        case 2: { // open About fragment
-                            if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
-                                if(SingletonController.getInstance().getActivePlaylistAdapter().getItemCount() > 0) {
-                                    Audio selectedItem = SingletonController.getInstance().getActivePlaylistAdapter().getSelectedAudio();
-                                    if (selectedItem != null) {
-
-
-                                        AudioController audioController = new AudioController();
-                                        Bitmap input = selectedItem.getAlbumArt();
-                                        //String albumCover = audioController.bitmapToBase64(selectedItem.getAlbumArt());
-                                       // byte[] x = albumCover.getBytes();
-                                        //System.out.println(x);
-                                        
-                                        //String input = "currentItem" + "|" + albumCover;
-                                    }
-                                }
-                            }*/
-
-                            // String s = "Test";
-                            //  guestFragment.getGuestViewModel().setText(s);
-
-
-
-                            /*mainActivity.getInstance().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            mainActivity.getInstance().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                    new AboutFragment(), "AboutFragment").addToBackStack("open_about").commit();
-                            addAudioButton.setVisibility(View.GONE);
-                           */
-                            /*if(SingletonController.getInstance().getEndpointIdList() != null) {
-                                if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
-                                    String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
-                                    PayloadController payloadController = new PayloadController();
-                                    String s = " test";
-                                    payloadController.sendBytes(endpointId, s, mainActivity.getInstance());
-                                }
-                            }*/
-                        /*}
-                        break;*/
                     }
                     DrawerLayout drawer = mainActivity.getInstance().findViewById(R.id.drawer_layout);
                     drawer.closeDrawer(GravityCompat.START);
+
+                    EditText username = mainActivity.getInstance().findViewById(R.id.username);
+                    if (username.length() == 0) {
+                        String phoneModel = android.os.Build.MODEL;
+                        username.setText(phoneModel, null);
+                        SingletonController.getInstance().setUsername(phoneModel);
+                    }
                 }
             }
         });

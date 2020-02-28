@@ -106,18 +106,6 @@ public class AudioController {
         }
         return null;
     }
-
-    public String bitmapToBase64(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream .toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
-    }
-
-    public Bitmap base64ToBitmap(String b64) {
-        byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-    }
 }
 
 class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
@@ -149,9 +137,8 @@ class RetrieveAudioTask extends AsyncTask<Context, Void, Void> {
                     AudioController audioController = new AudioController();
                     int rawDuration = Integer.parseInt(duration);
                     duration = audioController.milliSecondsToTimer(valueOf(rawDuration)); // Sets duration to readable format (##:## rather than the duration in milliseconds, e.g. ######)
-                    String submitter = SingletonController.getInstance().getUsername();
 
-                    Audio item = new Audio(data, title, null, artist, album, duration, submitter, false, rawDuration);
+                    Audio item = new Audio(data, title, null, artist, album, duration, null, false, rawDuration);
                     SingletonController.getInstance().getAudioList().add(item);
                     SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
                     sortAudioByAlbum(item);
