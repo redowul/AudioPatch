@@ -46,7 +46,14 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
         holder.itemArtist.setText(artist);
         String duration = dataSet.get(position).getDuration();
         holder.itemDuration.setText(duration);
-        String itemNumber = Integer.toString(position + 1);
+        int number = position + 1;
+        String itemNumber;
+        if(number <= 99) {
+           itemNumber = Integer.toString(position + 1);
+        }
+        else {
+            itemNumber = "99+"; // Needed because the design can't fit any song positions higher than 99 without pushing other text off the screen
+        }
         holder.itemNumber.setText(itemNumber);
     }
 

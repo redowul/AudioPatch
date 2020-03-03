@@ -1,7 +1,10 @@
 package com.colabella.connor.audiopatch.controllers;
 
+import android.support.design.widget.FloatingActionButton;
+
+import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.audio.Audio;
-import com.colabella.connor.audiopatch.fragments.GuestFragment;
 import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
 import com.colabella.connor.audiopatch.recyclerview.AlbumAdapter;
 import com.colabella.connor.audiopatch.recyclerview.ArtistAdapter;
@@ -29,6 +32,7 @@ public class SingletonController {
     private boolean isGuest;
     private String username;
     private String filter;
+    private Audio selectedAudio;
 
     private SingletonController() {
         this.audioList = new ArrayList<>();
@@ -45,6 +49,7 @@ public class SingletonController {
         this.isGuest = false;
         this.username = android.os.Build.MODEL;
         this.filter = null;
+        this.selectedAudio = null;
     }
 
     public static SingletonController getInstance() {
@@ -163,6 +168,14 @@ public class SingletonController {
         else {
             this.filter = null;
         }
+    }
+
+    public Audio getSelectedAudio() {
+        return selectedAudio;
+    }
+
+    public void setSelectedAudio(Audio selectedAudio) {
+        this.selectedAudio = selectedAudio;
     }
 }
 

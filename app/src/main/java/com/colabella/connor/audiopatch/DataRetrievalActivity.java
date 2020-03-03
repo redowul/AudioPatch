@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,10 +24,15 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.fragments.SongListFragment;
+import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
+import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
+import com.colabella.connor.audiopatch.recyclerview.SongAdapter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +90,38 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // Confirmation button
+        FloatingActionButton confirmationButton = findViewById(R.id.confirmation_button);
+        confirmationButton.setOnClickListener(view -> {
+            Audio item = SingletonController.getInstance().getSelectedAudio();
+
+            if (item != null) {
+                item.setSelected(false);
+                endActivity();
+
+                PayloadController payloadController = new PayloadController();
+                if (SingletonController.getInstance().getEndpointIdList() != null) {
+                    if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
+                        if (SingletonController.getInstance().isGuest()) {
+                            String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
+
+                            MainActivity mainActivity = new MainActivity();
+                            Context context = mainActivity.getInstance();
+
+                            payloadController.sendAudio(endpointId, item, context);
+                            return;
+                        }
+                    }
+                }
+                ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
+                activePlaylistAdapter.addItem(Audio.copy(item));
+                activePlaylistAdapter.notifyDataSetChanged();
+
+                SingletonController.getInstance().setSelectedAudio(null);
+            }
+        });
+        confirmationButton.hide();
     }
 
     private void filterAudio(String userInput) {
@@ -253,7 +292,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
 
                 // Filters all items by user input after they've been sorted
                 String filter = SingletonController.getInstance().getFilter();
-                if(filter != null) {
+                if (filter != null) {
                     filterAudio(filter);
                 }
                 return false;
@@ -316,7 +355,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-       Adapter adapter = new Adapter(getSupportFragmentManager());
+        Adapter adapter = new Adapter(getSupportFragmentManager());
         String[] fragmentTitles = {"Artists", "Albums"}; // Titles to be displayed at the top of our ViewPager's gridDisplayFragment tabs
 
         for (int i = 0; i <= 1; i++) { // Loops twice, once for each item passed
@@ -365,9 +404,24 @@ public class DataRetrievalActivity extends AppCompatActivity {
         SingletonController.getInstance().getSongAdapter().updateDataSet(SingletonController.getInstance().getAudioList());
         SingletonController.getInstance().getAlbumAdapter().updateDataSet(SingletonController.getInstance().getAlbumList());
         SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
+
+        SingletonController.getInstance().getSongAdapter().deselectAll();
     }
 
-    public void backButtonPressed(View view) { // Attached to song selection recyclerView xml.
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            if(SingletonController.getInstance().getSelectedAudio() != null) {
+                SingletonController.getInstance().getSongAdapter().deselectAll();
+            }
+            endActivity();
+        }
+        else {
+            getSupportFragmentManager().popBackStack();
+        }
+    }
+
+    public void backButtonPressed(View view) { // Attached to a button in fragment_album_song_selection.xml; does not override the back button
         onBackPressed();
     }
 

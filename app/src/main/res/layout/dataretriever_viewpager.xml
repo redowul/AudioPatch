@@ -6,56 +6,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<android.support.design.widget.AppBarLayout
-    android:id="@+id/appbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <RelativeLayout
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <android.support.v7.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="wrap_content"
+                android:layout_height="?attr/actionBarSize"
+                android:focusable="false"
+                android:inputType="textNoSuggestions"
+                android:paddingTop="8dp"
+                android:queryHint="Search"
+                app:iconifiedByDefault="false"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:searchIcon="@drawable/ic_search_24dp">
+            </android.support.v7.widget.SearchView>
+
+            <Button
+                android:id="@+id/menu_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="end"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/menu_icon"
+                android:onClick="showPopup" />
+        </RelativeLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/confirmation_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_scrollFlags="scroll|enterAlways">
-
-    <android.support.v7.widget.SearchView
-        android:id="@+id/searchView"
-        android:paddingTop="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/actionBarSize"
-        app:iconifiedByDefault="false"
-        android:queryHint="Search"
-        android:inputType="textNoSuggestions"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:searchIcon="@drawable/ic_search_24dp"
-        android:focusable="false">
-    </android.support.v7.widget.SearchView>
-
-       <Button
-            android:id="@+id/menu_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/menu_icon"
-            android:layout_gravity="end"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="24dp"
-            android:onClick="showPopup"/>
-    </RelativeLayout>
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-</android.support.design.widget.AppBarLayout>
-
-<android.support.v4.view.ViewPager
-    android:id="@+id/viewpager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="18dp"
+        android:src="@drawable/check_24dp"
+        app:borderWidth="0dp" />
 
 </android.support.design.widget.CoordinatorLayout>
-

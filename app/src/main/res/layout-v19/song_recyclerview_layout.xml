@@ -37,8 +37,8 @@
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
             android:layout_marginTop="1dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
             android:layout_marginBottom="0dp"
             android:layout_toEndOf="@id/item_artist"
             android:orientation="horizontal"
@@ -54,7 +54,7 @@
             android:ellipsize="end"
             android:paddingStart="0dp"
             android:paddingTop="0dp"
-            android:paddingEnd="15dp"
+            android:paddingEnd="4dp"
             android:singleLine="true"
             android:text="@string/title"
             android:textSize="16sp" />
@@ -73,5 +73,13 @@
             android:singleLine="true"
             android:text="@string/artist"
             android:textSize="12sp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_check"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="0dp"
+            android:layout_alignParentEnd="true"
+            app:borderWidth="2dp"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

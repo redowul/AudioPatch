@@ -2,18 +2,18 @@ package com.colabella.connor.audiopatch.recyclerview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
-import com.colabella.connor.audiopatch.DataRetrievalActivity;
-import com.colabella.connor.audiopatch.MainActivity;
-import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
-import com.colabella.connor.audiopatch.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,32 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_recyclerview_layout, parent,false);
         return new ViewHolder(view);
+    }
+
+    void setSelectedIndex(int selectedAudioPos, FloatingActionButton confirmationButton) {
+        boolean wasSelected = false;
+        for (int i = 0; i < getItemCount(); i++) {
+            if( dataSet.get(i).isSelected() && i == selectedAudioPos) {
+                wasSelected = true;
+            }
+            dataSet.get(i).setSelected(false);
+            if (i == selectedAudioPos) {
+                if(!wasSelected) {
+                    dataSet.get(i).setSelected(true);
+                }
+                else {
+                    confirmationButton.hide();
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void deselectAll() {
+        for (int i = 0; i < getItemCount(); i++) {
+            dataSet.get(i).setSelected(false);
+        }
+        notifyDataSetChanged();
     }
 
     // binds the data to the TextView in each row
@@ -53,32 +79,35 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 holder.albumArt.setImageResource(R.drawable.audiopatch_logo_square);
             }
 
+            MainActivity mainActivity = new MainActivity();
+            if(dataSet.get(position).isSelected()) {
+                int selectedColor = mainActivity.getInstance().getResources().getColor(R.color.colorPrimaryAccent);
+
+                holder.itemTitle.setTextColor(selectedColor);
+                holder.itemArtist.setTextColor(selectedColor);
+                holder.itemDuration.setTextColor(selectedColor);
+            }
+            else {
+                int selectedColor = mainActivity.getInstance().getResources().getColor(R.color.textColor);
+
+                holder.itemTitle.setTextColor(selectedColor);
+                holder.itemArtist.setTextColor(selectedColor);
+                holder.itemDuration.setTextColor(selectedColor);
+            }
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    FloatingActionButton confirmationButton = v.getRootView().findViewById(R.id.confirmation_button);
+                    if(confirmationButton != null) {
+                        confirmationButton.show();
+                    }
+
                     Audio item = dataSet.get(position);
                     item.setSubmitter(SingletonController.getInstance().getUsername());
 
-                    DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-                    dataRetrievalActivity.endActivity();
-
-                    PayloadController payloadController = new PayloadController();
-                    if(SingletonController.getInstance().getEndpointIdList() != null) {
-                        if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
-                            if(SingletonController.getInstance().isGuest()) {
-                                String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
-
-                                MainActivity mainActivity = new MainActivity();
-                                Context context = mainActivity.getInstance();
-
-                                payloadController.sendAudio(endpointId, item, context);
-                                return;
-                            }
-                        }
-                    }
-                    ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
-                    activePlaylistAdapter.addItem(Audio.copy(item));
-                    activePlaylistAdapter.notifyDataSetChanged();
+                    setSelectedIndex(position, confirmationButton);
+                    SingletonController.getInstance().setSelectedAudio(item);
                 }
             });
         }
