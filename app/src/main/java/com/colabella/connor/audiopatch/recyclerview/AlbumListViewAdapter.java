@@ -1,6 +1,6 @@
 package com.colabella.connor.audiopatch.recyclerview;
 
-import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,17 +8,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
-import com.colabella.connor.audiopatch.DataRetrievalActivity;
-import com.colabella.connor.audiopatch.R;
-import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdapter.ViewHolder> {
     private static List<Audio> dataSet = new ArrayList<>();
+    private boolean selectedYet = false;
 
     public AlbumListViewAdapter(List<Audio> selectedAlbum) {
         if(dataSet != null) {
@@ -30,6 +29,35 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
 
     public void setDataSet(List<Audio> selectedAlbum) { // Sets RecyclerView data
         dataSet = selectedAlbum;
+    }
+
+    private void setSelectedIndex(int selectedAudioPos, FloatingActionButton confirmationButton) {
+        boolean wasSelected = false;
+        for (int i = 0; i < getItemCount(); i++) {
+            if( dataSet.get(i).isSelected() && i == selectedAudioPos) {
+                wasSelected = true;
+            }
+            dataSet.get(i).setSelected(false);
+            if (i == selectedAudioPos) {
+                if(!wasSelected) {
+                    if(!selectedYet) {
+                        SingletonController.getInstance().getSongAdapter().deselectAll();
+                        selectedYet = true;
+                        SingletonController.getInstance().setItemSelected(true);
+                    }
+
+                    dataSet.get(i).setSelected(true);
+                    Audio item = dataSet.get(selectedAudioPos);
+                    SingletonController.getInstance().setSelectedAudio(item);
+                }
+                else {
+                    confirmationButton.hide();
+                    SingletonController.getInstance().setSelectedAudio(null);
+                    SingletonController.getInstance().setItemSelected(false);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -55,6 +83,24 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
             itemNumber = "99+"; // Needed because the design can't fit any song positions higher than 99 without pushing other text off the screen
         }
         holder.itemNumber.setText(itemNumber);
+
+        MainActivity mainActivity = new MainActivity();
+        if(dataSet.get(position).isSelected()) {
+            int selectedColor = mainActivity.getInstance().getResources().getColor(R.color.colorPrimaryAccent);
+
+            holder.itemTitle.setTextColor(selectedColor);
+            holder.itemArtist.setTextColor(selectedColor);
+            holder.itemDuration.setTextColor(selectedColor);
+            holder.itemNumber.setTextColor(selectedColor);
+        }
+        else {
+            int selectedColor = mainActivity.getInstance().getResources().getColor(R.color.textColor);
+
+            holder.itemTitle.setTextColor(selectedColor);
+            holder.itemArtist.setTextColor(selectedColor);
+            holder.itemDuration.setTextColor(selectedColor);
+            holder.itemNumber.setTextColor(selectedColor);
+        }
     }
 
     @Override
@@ -82,30 +128,11 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
 
         @Override
         public void onClick(View view) {
-            Audio item = dataSet.get(this.getAdapterPosition());
-            item.setSubmitter(SingletonController.getInstance().getUsername());
-            if(dataSet.get(0).getAlbumArt() != null) { item.setAlbumArt(dataSet.get(0).getAlbumArt()); }
-
-            DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
-            dataRetrievalActivity.endActivity();
-
-            PayloadController payloadController = new PayloadController();
-            if(SingletonController.getInstance().getEndpointIdList() != null) {
-                if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
-                    if(SingletonController.getInstance().isGuest()) {
-                        String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
-
-                        MainActivity mainActivity = new MainActivity();
-                        Context context = mainActivity.getInstance();
-
-                        payloadController.sendAudio(endpointId, item, context);
-                        return;
-                    }
-                }
+            FloatingActionButton confirmationButton = view.getRootView().findViewById(R.id.confirmation_button_album_menu);
+            if(confirmationButton != null) {
+                confirmationButton.show();
             }
-            ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
-            activePlaylistAdapter.addItem(Audio.copy(item));
-            activePlaylistAdapter.notifyDataSetChanged();
+            setSelectedIndex(this.getAdapterPosition(), confirmationButton);
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.colabella.connor.audiopatch.recyclerview;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
@@ -41,9 +40,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             if (i == selectedAudioPos) {
                 if(!wasSelected) {
                     dataSet.get(i).setSelected(true);
+                    SingletonController.getInstance().setItemSelected(true);
                 }
                 else {
                     confirmationButton.hide();
+                    SingletonController.getInstance().setSelectedAudio(null);
+                    SingletonController.getInstance().setItemSelected(false);
                 }
             }
         }

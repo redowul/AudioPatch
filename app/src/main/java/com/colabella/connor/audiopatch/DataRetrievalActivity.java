@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,7 +30,6 @@ import com.colabella.connor.audiopatch.fragments.GridDisplayFragment;
 import com.colabella.connor.audiopatch.fragments.SongListFragment;
 import com.colabella.connor.audiopatch.nearbyconnections.PayloadController;
 import com.colabella.connor.audiopatch.recyclerview.ActivePlaylistAdapter;
-import com.colabella.connor.audiopatch.recyclerview.SongAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,34 +92,41 @@ public class DataRetrievalActivity extends AppCompatActivity {
         // Confirmation button
         FloatingActionButton confirmationButton = findViewById(R.id.confirmation_button);
         confirmationButton.setOnClickListener(view -> {
-            Audio item = SingletonController.getInstance().getSelectedAudio();
+           submitAudio();
+        });
+        if(SingletonController.getInstance().getSelectedAudio() == null) {
+            confirmationButton.hide(); // hides button on initialization
+        }
+    }
 
-            if (item != null) {
-                item.setSelected(false);
-                endActivity();
+    public void submitAudio() {
+        Audio item = SingletonController.getInstance().getSelectedAudio();
 
-                PayloadController payloadController = new PayloadController();
-                if (SingletonController.getInstance().getEndpointIdList() != null) {
-                    if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
-                        if (SingletonController.getInstance().isGuest()) {
-                            String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
+        if (item != null) {
+            item.setSelected(false);
+            item.setSubmitter(SingletonController.getInstance().getUsername());
+            endActivity();
 
-                            MainActivity mainActivity = new MainActivity();
-                            Context context = mainActivity.getInstance();
+            PayloadController payloadController = new PayloadController();
+            if (SingletonController.getInstance().getEndpointIdList() != null) {
+                if (SingletonController.getInstance().getEndpointIdList().size() > 0) {
+                    if (SingletonController.getInstance().isGuest()) {
+                        String endpointId = SingletonController.getInstance().getEndpointIdList().get(0);
 
-                            payloadController.sendAudio(endpointId, item, context);
-                            return;
-                        }
+                        MainActivity mainActivity = new MainActivity();
+                        Context context = mainActivity.getInstance();
+
+                        payloadController.sendAudio(endpointId, item, context);
+                        return;
                     }
                 }
-                ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
-                activePlaylistAdapter.addItem(Audio.copy(item));
-                activePlaylistAdapter.notifyDataSetChanged();
-
-                SingletonController.getInstance().setSelectedAudio(null);
             }
-        });
-        confirmationButton.hide();
+            ActivePlaylistAdapter activePlaylistAdapter = SingletonController.getInstance().getActivePlaylistAdapter();
+            activePlaylistAdapter.addItem(Audio.copy(item));
+            activePlaylistAdapter.notifyDataSetChanged();
+
+            SingletonController.getInstance().setSelectedAudio(null);
+        }
     }
 
     private void filterAudio(String userInput) {
@@ -406,6 +411,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
         SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
 
         SingletonController.getInstance().getSongAdapter().deselectAll();
+        SingletonController.getInstance().setItemSelected(false);
     }
 
     @Override
@@ -415,9 +421,20 @@ public class DataRetrievalActivity extends AppCompatActivity {
                 SingletonController.getInstance().getSongAdapter().deselectAll();
             }
             endActivity();
+            SingletonController.getInstance().setSelectedAudio(null);
         }
         else {
             getSupportFragmentManager().popBackStack();
+            if(getSupportFragmentManager().getBackStackEntryCount() == 1) {
+                FloatingActionButton confirmationButton = findViewById(R.id.confirmation_button);
+                if(SingletonController.getInstance().isItemSelected()) {
+                    confirmationButton.show(); // show the confirmation button
+                }
+                else {
+                    confirmationButton.hide(); // hide the confirmation button
+                    SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
+                }
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.colabella.connor.audiopatch.fragments;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.colabella.connor.audiopatch.DataRetrievalActivity;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
 import com.colabella.connor.audiopatch.R;
@@ -25,6 +28,16 @@ public class SongSelectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_album_song_selection, container, false);
+
+        // Handles the confirmation button visibility
+        FloatingActionButton confirmationButton = view.getRootView().findViewById(R.id.confirmation_button_album_menu);
+        if(!SingletonController.getInstance().isItemSelected()) {
+            confirmationButton.hide();
+        }
+        confirmationButton.setOnClickListener(v -> {
+            DataRetrievalActivity dataRetrievalActivity = new DataRetrievalActivity();
+            dataRetrievalActivity.submitAudio();
+        });
 
         Bundle bundle = this.getArguments(); // Accepts passed album title from AlbumSelectionFragment. Since we're only passing a string, the value is small enough to avoid a TransactionTooLarge Exception.
         if (bundle != null) {
