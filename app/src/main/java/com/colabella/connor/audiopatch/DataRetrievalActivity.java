@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
@@ -94,9 +95,7 @@ public class DataRetrievalActivity extends AppCompatActivity {
         confirmationButton.setOnClickListener(view -> {
            submitAudio();
         });
-        if(SingletonController.getInstance().getSelectedAudio() == null) {
-            confirmationButton.hide(); // hides button on initialization
-        }
+        confirmationButton.hide(); // hides button on initialization
     }
 
     public void submitAudio() {
@@ -365,10 +364,11 @@ public class DataRetrievalActivity extends AppCompatActivity {
 
         for (int i = 0; i <= 1; i++) { // Loops twice, once for each item passed
             Bundle bundle = new Bundle();
-            Fragment gridDisplayFragment = new GridDisplayFragment();
             bundle.putInt("key", i); // Int arguments get passed to a switch statement inside the fragment to determine which set of data to display
+            GridDisplayFragment gridDisplayFragment = new GridDisplayFragment();
             gridDisplayFragment.setArguments(bundle);
             adapter.addFragment(gridDisplayFragment, fragmentTitles[i]); // Fragment, Title to display on fragment's ViewPager tab
+
         }
         adapter.addFragment(new SongListFragment(), "Songs");
         viewPager.setAdapter(adapter);
@@ -411,7 +411,6 @@ public class DataRetrievalActivity extends AppCompatActivity {
         SingletonController.getInstance().getArtistAdapter().updateDataSet(SingletonController.getInstance().getArtistList());
 
         SingletonController.getInstance().getSongAdapter().deselectAll();
-        SingletonController.getInstance().setItemSelected(false);
     }
 
     @Override
@@ -424,16 +423,26 @@ public class DataRetrievalActivity extends AppCompatActivity {
             SingletonController.getInstance().setSelectedAudio(null);
         }
         else {
-            getSupportFragmentManager().popBackStack();
-            if(getSupportFragmentManager().getBackStackEntryCount() == 1) {
-                FloatingActionButton confirmationButton = findViewById(R.id.confirmation_button);
-                if(SingletonController.getInstance().isItemSelected()) {
-                    confirmationButton.show(); // show the confirmation button
+            // only triggered when returning from a selected album in the artist selection screen
+            if(getSupportFragmentManager().getBackStackEntryCount() == 2) {
+                if(SingletonController.getInstance().getSelectedAudio() != null) {
+                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("key", 2);
+                    String selectedArtist = SingletonController.getInstance().getSelectedAudio().getArtist();
+                    bundle.putString("selectedArtist", selectedArtist);
+
+                    Fragment gridDisplayFragment = new GridDisplayFragment();
+                    gridDisplayFragment.setArguments(bundle);
+
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out); // Sets fade in/out animations for transitioning between album selection and song selection screens
+                    fragmentTransaction.add(R.id.fragment_container, gridDisplayFragment, "FromArtists").addToBackStack("SelectedAlbum");
+                    fragmentTransaction.commit();
                 }
-                else {
-                    confirmationButton.hide(); // hide the confirmation button
-                    SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
-                }
+            }
+            else {
+                getSupportFragmentManager().popBackStack();
             }
         }
     }

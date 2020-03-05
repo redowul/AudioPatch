@@ -40,12 +40,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             if (i == selectedAudioPos) {
                 if(!wasSelected) {
                     dataSet.get(i).setSelected(true);
-                    SingletonController.getInstance().setItemSelected(true);
                 }
                 else {
                     confirmationButton.hide();
-                    SingletonController.getInstance().setSelectedAudio(null);
-                    SingletonController.getInstance().setItemSelected(false);
                 }
             }
         }

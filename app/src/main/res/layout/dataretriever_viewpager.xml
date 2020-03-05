@@ -57,14 +57,4 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/confirmation_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="18dp"
-        android:src="@drawable/check_24dp"
-        app:borderWidth="0dp" />
-
 </android.support.design.widget.CoordinatorLayout>

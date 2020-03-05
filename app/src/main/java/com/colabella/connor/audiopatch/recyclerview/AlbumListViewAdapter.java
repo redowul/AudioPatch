@@ -17,7 +17,7 @@ import java.util.List;
 
 public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdapter.ViewHolder> {
     private static List<Audio> dataSet = new ArrayList<>();
-    private boolean selectedYet = false;
+    private boolean selectedYet = false; // Used as a "buffer" of sorts to avoid shuttering the songAdapter every time an item is selected
 
     public AlbumListViewAdapter(List<Audio> selectedAlbum) {
         if(dataSet != null) {
@@ -39,24 +39,23 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
             }
             dataSet.get(i).setSelected(false);
             if (i == selectedAudioPos) {
-                if(!wasSelected) {
+                if(!wasSelected) { // the item was not selected, so now we're selecting it
                     if(!selectedYet) {
                         SingletonController.getInstance().getSongAdapter().deselectAll();
                         selectedYet = true;
-                        SingletonController.getInstance().setItemSelected(true);
                     }
-
                     dataSet.get(i).setSelected(true);
                     Audio item = dataSet.get(selectedAudioPos);
                     SingletonController.getInstance().setSelectedAudio(item);
+                    confirmationButton.show();
                 }
-                else {
+                else { // the item was selected, so we're deselecting it
                     confirmationButton.hide();
-                    SingletonController.getInstance().setSelectedAudio(null);
-                    SingletonController.getInstance().setItemSelected(false);
+                    SingletonController.getInstance().getSongAdapter().deselectAll();
                 }
             }
         }
+        SingletonController.getInstance().getSongAdapter().notifyDataSetChanged();
         notifyDataSetChanged();
     }
 
@@ -128,10 +127,7 @@ public class AlbumListViewAdapter extends RecyclerView.Adapter<AlbumListViewAdap
 
         @Override
         public void onClick(View view) {
-            FloatingActionButton confirmationButton = view.getRootView().findViewById(R.id.confirmation_button_album_menu);
-            if(confirmationButton != null) {
-                confirmationButton.show();
-            }
+            FloatingActionButton confirmationButton = view.getRootView().findViewById(R.id.confirmation_button);
             setSelectedIndex(this.getAdapterPosition(), confirmationButton);
         }
     }

@@ -26,7 +26,6 @@ public class SingletonController {
     private boolean isSeekBarTracked; // Handles the draggable seekbar's movement
     private boolean isSeekBarStarted; // Allows for movement of seekpar position before the song has started
     private boolean isGuest;
-    private boolean itemSelected;
     private String username;
     private String filter;
     private Audio selectedAudio;
@@ -44,7 +43,6 @@ public class SingletonController {
         this.isSeekBarTracked = false;
         this.isSeekBarTracked = false;
         this.isGuest = false;
-        this.itemSelected = false;
         this.username = android.os.Build.MODEL;
         this.filter = null;
         this.selectedAudio = null;
@@ -174,14 +172,6 @@ public class SingletonController {
 
     public void setSelectedAudio(Audio selectedAudio) {
         this.selectedAudio = selectedAudio;
-    }
-
-    public boolean isItemSelected() {
-        return itemSelected;
-    }
-
-    public void setItemSelected(boolean itemSelected) {
-        this.itemSelected = itemSelected;
     }
 }
 

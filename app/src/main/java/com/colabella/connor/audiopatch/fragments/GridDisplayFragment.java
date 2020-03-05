@@ -5,19 +5,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.colabella.connor.audiopatch.MainActivity;
+import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.AudioController;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
-import com.colabella.connor.audiopatch.R;
 import com.colabella.connor.audiopatch.recyclerview.AlbumAndSongAdapter;
 
 import java.util.ArrayList;
@@ -25,16 +24,15 @@ import java.util.List;
 
 public class GridDisplayFragment extends Fragment {
 
+    public GridDisplayFragment() { }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_album_selection, container, false);
-
-        RecyclerView gridView = view.findViewById(R.id.grid_layout);
-                // inflater.inflate(R.layout.fragment_album_selection, container, false);
+        RecyclerView gridView = (RecyclerView) inflater.inflate(R.layout.fragment_album_selection, container, false);
         readBundle(getArguments(), gridView); // Receives int bundle from fragment initialization and determines which set of data to display via a switch statement
-        return view;
+        return gridView;
     }
 
     private void readBundle(Bundle bundle, RecyclerView gridView) { // Method to receive int bundle from fragment initialization
@@ -44,23 +42,18 @@ public class GridDisplayFragment extends Fragment {
     }
 
     private void initializeGridView(RecyclerView gridView, int arguments, Bundle bundle) {
-        AudioController audioController = new AudioController();
-        FloatingActionButton confirmationButton = gridView.getRootView().findViewById(R.id.confirmation_button2);
         switch(arguments) { // Instructs fragment whether to display artists or albums
             case 0: { // Display Artists
                 gridView.setAdapter(SingletonController.getInstance().getArtistAdapter());
-                confirmationButton.hide();
             }
             break;
             case 1: { // Display All Albums
                 gridView.setAdapter(SingletonController.getInstance().getAlbumAdapter()); // Fetches album list, which contains all available albums
-                confirmationButton.hide();
             }
             break;
             case 2: { // Display Albums & Songs
-                confirmationButton.show();
-
                 String artist = bundle.getString("selectedArtist");
+                AudioController audioController = new AudioController();
                 final List<List<Audio>> albumList = audioController.getAlbumsByArtist(artist); // List of all albums by selected artist
                 List<Audio> songList = new ArrayList<>();
 
