@@ -46,4 +46,18 @@
 
     <string name="download">Download</string>
     <string name="nearby">Nearby</string>
+
+    <string name="null_item">Selected file is corrupted; cannot submit it</string>
+    <string name="external_storage_permission">Permission to access your external storage denied</string>
+    <string name="endpoint_found">Endpoint found! Requesting access…</string>
+    <string name="no_endpoints_found">No endpoints discovered.</string>
+    <string name="connection_to">Connection to</string>
+    <string name="was_successful">was successful.</string>
+    <string name="connection_rejected">Connection rejected</string>
+    <string name="connection_error_occurred">Connection error occurred.</string>
+    <string name="disconnection_successful">Disconnection successful.</string>
+
+
+
+
 </resources>

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.MainActivity;
@@ -29,9 +30,6 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
     private static MediaPlayer mediaPlayer;
 
     public MediaPlayer getMediaPlayer() {
-        if (mediaPlayer == null) {
-            mediaPlayer = new MediaPlayer();
-        }
         return mediaPlayer;
     }
 
@@ -61,78 +59,83 @@ public class ActivePlaylistController extends ActivePlaylistAdapter {
                     mediaPlayer.release();
                 }
                 mediaPlayer = MediaPlayer.create(context, uri);
-                mediaPlayer.setOnCompletionListener(mp -> {
-                    boolean repeatPlaylist = false;
-                    boolean repeatSong = false;
-                    boolean shufflePlaylist = false;
-                    Button repeatButton = mainActivity.getInstance().findViewById(R.id.repeat_button);
-                    Drawable.ConstantState repeatButtonCurrentState = repeatButton.getBackground().getConstantState();
+                if(mediaPlayer != null) {
+                    mediaPlayer.setOnCompletionListener(mp -> {
+                        boolean repeatPlaylist = false;
+                        boolean repeatSong = false;
+                        boolean shufflePlaylist = false;
+                        Button repeatButton = mainActivity.getInstance().findViewById(R.id.repeat_button);
+                        Drawable.ConstantState repeatButtonCurrentState = repeatButton.getBackground().getConstantState();
 
-                    Button shuffleButton = mainActivity.getInstance().findViewById(R.id.shuffle_button);
-                    Drawable.ConstantState shuffleButtonCurrentState = shuffleButton.getBackground().getConstantState();
+                        Button shuffleButton = mainActivity.getInstance().findViewById(R.id.shuffle_button);
+                        Drawable.ConstantState shuffleButtonCurrentState = shuffleButton.getBackground().getConstantState();
 
-                    if (repeatButtonCurrentState != null && shuffleButtonCurrentState != null) {
-                        Drawable.ConstantState repeatSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_selected_24dp).getConstantState();
-                        Drawable.ConstantState repeatOneSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_one_selected_24dp).getConstantState();
-                        Drawable.ConstantState shuffleSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.shuffle_selected_24dp).getConstantState();
+                        if (repeatButtonCurrentState != null && shuffleButtonCurrentState != null) {
+                            Drawable.ConstantState repeatSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_selected_24dp).getConstantState();
+                            Drawable.ConstantState repeatOneSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.repeat_one_selected_24dp).getConstantState();
+                            Drawable.ConstantState shuffleSelected = mainActivity.getInstance().getResources().getDrawable(R.drawable.shuffle_selected_24dp).getConstantState();
 
-                        if (repeatButtonCurrentState.equals(repeatSelected)) {
-                            repeatPlaylist = true;
-                        } else if (repeatButtonCurrentState.equals(repeatOneSelected)) {
-                            repeatSong = true;
-                        } else if (shuffleButtonCurrentState.equals(shuffleSelected)) {
-                            shufflePlaylist = true;
+                            if (repeatButtonCurrentState.equals(repeatSelected)) {
+                                repeatPlaylist = true;
+                            } else if (repeatButtonCurrentState.equals(repeatOneSelected)) {
+                                repeatSong = true;
+                            } else if (shuffleButtonCurrentState.equals(shuffleSelected)) {
+                                shufflePlaylist = true;
+                            }
                         }
-                    }
 
-                    Audio currentlySelectedItem = null;
-                    if (!repeatSong) { // Default state, which is skipped if an alternative trigger is tripped above (repeating)
-                        //TODO add a boolean to the audio objects so we can mark them off when searching for a random song to play. (So we can play every song out of order without repeats)
-                        if (shufflePlaylist) { // play a random song in the playlist
-                            int playlistSize = getItemCount();
+                        Audio currentlySelectedItem = null;
+                        if (!repeatSong) { // Default state, which is skipped if an alternative trigger is tripped above (repeating)
+                            //TODO add a boolean to the audio objects so we can mark them off when searching for a random song to play. (So we can play every song out of order without repeats)
+                            if (shufflePlaylist) { // play a random song in the playlist
+                                int playlistSize = getItemCount();
 
-                            Random random = new Random();
-                            int randomNumber = random.nextInt(playlistSize); // generate random number ranging from 0 to the size of the playlist (exclusive) e.g. input of 3 generates range of 0 to 2
+                                Random random = new Random();
+                                int randomNumber = random.nextInt(playlistSize); // generate random number ranging from 0 to the size of the playlist (exclusive) e.g. input of 3 generates range of 0 to 2
 
-                            setSelectedAudio(randomNumber);
-                            currentlySelectedItem = getSelectedAudio();
-                            initializeMediaPlayer(currentlySelectedItem);
-                            startMediaPlayer();
-                            togglePlayButtonState();
-                        } else {
-                            int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
-                            if (currentlySelectedItemIndex == getItemCount() - 1) { // if song played was last in the list
-                                SeekBar seekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
-                                seekbar.setProgress(0);
-
-                                if (repeatPlaylist) { // repeatPlaylist is enabled, so we can loop the playlist
-                                    setSelectedAudio(0);
-                                    currentlySelectedItem = getSelectedAudio();
-                                    initializeMediaPlayer(currentlySelectedItem);
-                                    startMediaPlayer();
-                                } else { // notify the playlist that the song is finished
-                                    SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
-                                }
-                                togglePlayButtonState();
-                            } else { // item isn't the last item, so we play it
-                                setSelectedAudio(getCurrentlySelectedItemIndex() + 1);
+                                setSelectedAudio(randomNumber);
                                 currentlySelectedItem = getSelectedAudio();
                                 initializeMediaPlayer(currentlySelectedItem);
                                 startMediaPlayer();
-                            }
-                        }
-                    } else { // repeat the current track
-                        currentlySelectedItem = getSelectedAudio();
-                        initializeMediaPlayer(currentlySelectedItem);
-                        startMediaPlayer();
-                    }
-                });
-                showNotification(selectedItem);
-                TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
-                audioLength.setText(selectedItem.getDuration()); // setting the duration
+                                togglePlayButtonState();
+                            } else {
+                                int currentlySelectedItemIndex = getCurrentlySelectedItemIndex();
+                                if (currentlySelectedItemIndex == getItemCount() - 1) { // if song played was last in the list
+                                    SeekBar seekbar = mainActivity.getInstance().findViewById(R.id.bottom_sheet_seekbar);
+                                    seekbar.setProgress(0);
 
-                PayloadController payloadController = new PayloadController();
-                payloadController.sendUpdate(); // distribute currently playing item data to all connected guests
+                                    if (repeatPlaylist) { // repeatPlaylist is enabled, so we can loop the playlist
+                                        setSelectedAudio(0);
+                                        currentlySelectedItem = getSelectedAudio();
+                                        initializeMediaPlayer(currentlySelectedItem);
+                                        startMediaPlayer();
+                                    } else { // notify the playlist that the song is finished
+                                        SingletonController.getInstance().getActivePlaylistAdapter().notifyDataSetChanged();
+                                    }
+                                    togglePlayButtonState();
+                                } else { // item isn't the last item, so we play it
+                                    setSelectedAudio(getCurrentlySelectedItemIndex() + 1);
+                                    currentlySelectedItem = getSelectedAudio();
+                                    initializeMediaPlayer(currentlySelectedItem);
+                                    startMediaPlayer();
+                                }
+                            }
+                        } else { // repeat the current track
+                            currentlySelectedItem = getSelectedAudio();
+                            initializeMediaPlayer(currentlySelectedItem);
+                            startMediaPlayer();
+                        }
+                    });
+                    showNotification(selectedItem);
+                    TextView audioLength = mainActivity.getInstance().findViewById(R.id.audio_length); // textView of the duration of the current audio file
+                    audioLength.setText(selectedItem.getDuration()); // setting the duration
+
+                    PayloadController payloadController = new PayloadController();
+                    payloadController.sendUpdate(); // distribute currently playing item data to all connected guests
+                } else {
+                    String null_item_string = mainActivity.getInstance().getResources().getString(R.string.null_item);
+                    Toast.makeText(mainActivity.getInstance(), null_item_string, Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

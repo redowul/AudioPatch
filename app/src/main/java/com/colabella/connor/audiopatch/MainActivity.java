@@ -228,6 +228,16 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
+    private boolean isTablet() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        float yInches = metrics.heightPixels/metrics.ydpi;
+        float xInches= metrics.widthPixels/metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
+        return diagonalInches >= 6.5; // returns true if the device is 6.5 inches or bigger
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initializeBottomSheet() {
         // For calculating the width of the screen
@@ -282,6 +292,13 @@ public class MainActivity extends AppCompatActivity {
             /* Bottom Sheet Capstone Text blocks */
             TextView bottomSheetCapstoneTitle = findViewById(R.id.bottom_sheet_capstone_title);
             TextView bottomSheetCapstoneArtist = findViewById(R.id.bottom_sheet_capstone_artist);
+
+            boolean isTablet = isTablet();
+            if(isTablet) {
+                bottomSheetCapstoneTitle.setTextSize(14);
+                bottomSheetCapstoneArtist.setTextSize(14);
+            }
+
             if (bottomSheetCapstoneTitle.getVisibility() == View.VISIBLE && bottomSheetCapstoneArtist.getVisibility() == View.VISIBLE) {
                 bottomSheetCapstoneTitle.setTextColor(Color.argb(alpha, 255, 255, 255));  // transparency of capstone song title
                 bottomSheetCapstoneArtist.setTextColor(Color.argb(alpha, 255, 255, 255)); // transparency of capstone artist title
@@ -352,7 +369,10 @@ public class MainActivity extends AppCompatActivity {
                     this.startActivity(myIntent);
                 } else {
                     // permission denied
-                    Toast.makeText(this, "Permission to read your external storage was denied", Toast.LENGTH_SHORT).show();
+
+                    MainActivity mainActivity = new MainActivity();
+                    String externalStoragePermission = mainActivity.getInstance().getResources().getString(R.string.external_storage_permission);
+                    Toast.makeText(this, externalStoragePermission , Toast.LENGTH_SHORT).show();
                 }
             }
             break;

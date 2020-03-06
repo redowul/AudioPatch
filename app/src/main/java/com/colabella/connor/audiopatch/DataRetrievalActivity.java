@@ -3,6 +3,8 @@ package com.colabella.connor.audiopatch;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.colabella.connor.audiopatch.audio.Audio;
 import com.colabella.connor.audiopatch.controllers.SingletonController;
@@ -93,7 +96,15 @@ public class DataRetrievalActivity extends AppCompatActivity {
         // Confirmation button
         FloatingActionButton confirmationButton = findViewById(R.id.confirmation_button);
         confirmationButton.setOnClickListener(view -> {
-           submitAudio();
+            MainActivity mainActivity = new MainActivity();
+            Uri uri = Uri.parse(SingletonController.getInstance().getSelectedAudio().getData());
+            MediaPlayer mediaPlayer = MediaPlayer.create(mainActivity.getInstance(), uri);
+            if(mediaPlayer != null) {
+                submitAudio();
+            } else {
+                String null_item_string = mainActivity.getInstance().getResources().getString(R.string.null_item);
+                Toast.makeText(mainActivity.getInstance(), null_item_string, Toast.LENGTH_SHORT).show();
+            }
         });
         confirmationButton.hide(); // hides button on initialization
     }

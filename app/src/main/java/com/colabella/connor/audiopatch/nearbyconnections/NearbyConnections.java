@@ -103,14 +103,16 @@ public class NearbyConnections {
                         connectionLifeCycle)
                         .addOnSuccessListener(
                                 unusedResult -> {
-                                    Toast.makeText(context, "Endpoint found! Requesting access...", Toast.LENGTH_SHORT).show();
+                                    String endpointFound = mainActivity.getInstance().getResources().getString(R.string.endpoint_found);
+                                    Toast.makeText(context, endpointFound, Toast.LENGTH_SHORT).show();
                                     isDiscovering = true;
                                     // We successfully requested a connection. Now both sides
                                     // must accept before the connection is established.
                                 })
                         .addOnFailureListener(
                                 e -> {
-                                    Toast.makeText(context, "No endpoints discovered.", Toast.LENGTH_SHORT).show();
+                                    String noEndpointsFound = mainActivity.getInstance().getResources().getString(R.string.no_endpoints_found);
+                                    Toast.makeText(context,  noEndpointsFound , Toast.LENGTH_SHORT).show();
                                     // Nearby Connections failed to request the connection.
                                 });
             }
@@ -162,7 +164,9 @@ public class NearbyConnections {
                 switch (result.getStatus().getStatusCode()) {
                     case ConnectionsStatusCodes.STATUS_OK: {
                         // We're connected! Can now start sending and receiving data.
-                        Toast.makeText(context, "Connection to " + endpointId + " was successful.", Toast.LENGTH_SHORT).show();
+                        String connectionTo = mainActivity.getInstance().getResources().getString(R.string.connection_to);
+                        String wasSuccessful = mainActivity.getInstance().getResources().getString(R.string.was_successful);
+                        Toast.makeText(context, connectionTo + " " + endpointId + " " + wasSuccessful, Toast.LENGTH_SHORT).show();
                         if(isDiscovering) {
                             SingletonController.getInstance().setGuest(true);
                             GuestFragment guestFragment = new GuestFragment();
@@ -195,13 +199,15 @@ public class NearbyConnections {
                     }
                     case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED: {
                         // The connection was rejected by one or both sides.
-                        Toast.makeText(context, "Connection rejected.", Toast.LENGTH_SHORT).show();
+                        String connectionRejected = mainActivity.getInstance().getResources().getString(R.string.connection_rejected);
+                        Toast.makeText(context, connectionRejected, Toast.LENGTH_SHORT).show();
                         isDiscovering = false;
                         break;
                     }
                     case ConnectionsStatusCodes.STATUS_ERROR: {
                         // The connection broke before it was able to be accepted.
-                        Toast.makeText(context, "Connection error occurred.", Toast.LENGTH_SHORT).show();
+                        String connectionErrorOccurred = mainActivity.getInstance().getResources().getString(R.string.connection_error_occurred);
+                        Toast.makeText(context, connectionErrorOccurred, Toast.LENGTH_SHORT).show();
                         isDiscovering = false;
                         break;
                     }
@@ -227,7 +233,8 @@ public class NearbyConnections {
 
                 // Handles resetting the home menu to normal state
                 if(SingletonController.getInstance().isGuest()) {
-                    Toast.makeText(context, "Disconnected successfully.", Toast.LENGTH_SHORT).show();
+                    String disconnectionSuccessful = mainActivity.getInstance().getResources().getString(R.string.disconnection_successful);
+                    Toast.makeText(context, disconnectionSuccessful, Toast.LENGTH_SHORT).show();
 
                     SingletonController.getInstance().setGuest(false);
                     String selectedDrawerItem = SingletonController.getInstance().getMainDrawerAdapter().getSelectedItemName();
