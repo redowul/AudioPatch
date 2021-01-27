@@ -2,4 +2,4 @@ Connect multiple devices via Bluetooth to communally build a playlist. Build a m
 
 Features include a queue, audio objects constructed on-the-fly from transferred / tokenized data, asynchronous tasks, a search algorithm, and a file manager.
 
-Download link found here: https://www.connorcolabella.com/audiopatch
+Download here: https://www.connorcolabella.com/audiopatch
